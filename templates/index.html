@@ -1,0 +1,53 @@
+ <!-- This is the main application file for the Lucas Garage landing page. must be mobile responsive -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucas Garage</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Lucas Garage</div>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="/login">Admin Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <h1>Expert Auto Care & Maintenance</h1>
+            <p>Quality service you can trust for all makes and models.</p>
+            <a href="#contact" class="btn">Book an Appointment</a>
+        </section>
+
+        <section id="services">
+            <h2>Our Services</h2>
+            <div class="service-grid">
+                <div class="service-card">
+                    <h3>Oil Change</h3>
+                    <p>Keep your engine running smoothly with our premium oil services.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Brake Repair</h3>
+                    <p>Safety first. Complete brake inspections and replacements.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Diagnostics</h3>
+                    <p>Advanced computer diagnostics to find the root of any issue.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Lucas Garage. All rights reserved.</p>
+    </footer>
+</body>
+</html>
