@@ -7,3 +7,6 @@ app = Flask(__name__)
 def home():
     garage_name = "Luca's Garage"
     return render_template('index.html', name=garage_name)
+
+if __name__ == '__main__':
+    app.run(debug=True)
