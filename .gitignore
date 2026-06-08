@@ -216,3 +216,11 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+#database files
+*.db
+instance/
+
+#Ignore the uploads folder
+static/uploads/*
+!static/uploads/.gitkeep

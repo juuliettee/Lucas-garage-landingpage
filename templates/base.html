@@ -1,0 +1,46 @@
+<!-- This is the base template for the website. It includes the common HTML structure, navigation bar, and footer. -->
+<!-- Other templates will extend this base template and fill in the content block with page-specific content. -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luca's Garage - London</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 text-gray-900 flex flex-column min-vh-100 flex flex-col min-vh-100 min-h-screen">
+
+<nav class="bg-gray-900 text-white shadow-md">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="{{ url_for('home') }}" class="text-xl font-bold tracking-wide hover:text-blue-400 transition">
+            Luca's Garage
+        </a>
+        <div class="space-x-6 text-sm font-medium flex items-center">
+            <a href="{{ url_for('home') }}" class="hover:text-blue-400 transition">Home</a>
+            <a href="{{ url_for('cars') }}" class="hover:text-blue-400 transition">Cars For Sale</a>
+
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('admin_dashboard') }}" class="text-blue-400 hover:text-blue-300 transition">Admin
+                Panel</a>
+            <a href="{{ url_for('logout') }}"
+                class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-xs transition">
+                Log Out
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 py-6 text-center text-xs mt-auto">
+        <p>&copy; 2026 Luca's Garage. London, UK.</p>
+    </footer>
+
+</body>
+
+</html>

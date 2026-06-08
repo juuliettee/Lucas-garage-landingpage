@@ -1,0 +1,50 @@
+<!-- temporary views for testing database connection and image uploads, will be replaced with more polished versions in the future -->
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Vehicles For Sale</h1>
+        <p class="mt-3 max-w-2xl mx-auto text-xl text-gray-500 sm:mt-4">
+            Get in touch to book a viewing.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for car in cars %}
+        <div
+            class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition">
+            <div class="relative aspect-video bg-gray-100 overflow-hidden">
+                <img src="{{ url_for('static', filename='uploads/' + car.image_filename) }}" alt="{{ car.make_model }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+            </div>
+
+            <div class="p-6 flex flex-col flex-grow">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">{{ car.make_model }}</h3>
+
+                <div class="mt-auto flex justify-between items-center pt-4 border-t border-gray-50">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                        {{ car.year }}
+                    </span>
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                        {{ car.TransmissionType }}
+                    </span>
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                        {{ car.fuel_type }}
+                    </span>
+                    <span class="text-2xl font-black text-green-600">
+                        £{{ "{:,}".format(car.price) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-gray-200">
+            <p class="text-gray-500 font-medium">No cars currently listed for sale. Check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
