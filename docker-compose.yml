@@ -1,0 +1,52 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+
+### this uses hardcoded credentials for development purposes only. Change these in production. this ignored the .env file
+services:
+  server:
+    build:
+      context: .
+    container_name: running-flask-site
+    restart: always
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/app
+    environment:
+      - DATABASE_URL=mysql+pymysql://root:password123@db/lucas_garage 
+      - SECRET_KEY=super-secret-production-key-xyz  ### development use only change this in production
+      
+      # Site admin credentials for the Flask application. Change these in production.
+      - ADMIN_USER=admin  ### development use only change this in production
+      - ADMIN_PASSWORD=Password123!  ### development use only change this in production
+    depends_on:
+      - db
+  db:
+    image: mysql:8.0
+    container_name: lucas-mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password123  ### development use only change this in production
+      MYSQL_DATABASE: lucas_garage  ### development use only change this in production
+      MYSQL_USER: lucas_user  ### development use only change this in production
+      MYSQL_PASSWORD: your_user_password ### development use only change this in production
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+  
+  ### this is a commented out section for a Cloudflare tunnel. Uncomment and configure if you want to use Cloudflare for secure tunneling.
+  # Cloudflare_tunnel:
+  #   image: cloudflare/cloudflared:latest
+  #   restart: always
+  #   command: tunnel --url http://server:5000
+
+volumes:
+  mysql_data:

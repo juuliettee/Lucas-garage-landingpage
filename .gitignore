@@ -224,3 +224,11 @@ instance/
 #Ignore the uploads folder
 static/uploads/*
 !static/uploads/.gitkeep
+
+# Ignore local system hidden files
+.DS_Store
+Thumbs.db
+
+# CRITICAL: Ignore your local persistent Docker database storage!
+# (Otherwise, Git will try to commit thousands of heavy MySQL system files)
+mysql_data/
