@@ -13,9 +13,23 @@ must be mobile responsive -->
 <body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
     <div class="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
         <div class="text-center mb-8">
+            <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage Logo"
+                class="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-md border border-slate-200 object-cover">
             <h2 class="text-3xl font-extrabold text-gray-900">Garage Portal</h2>
             <p class="text-sm text-gray-500 mt-2">Sign in to update car sales inventory</p>
         </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-6">
+            {% for category, message in messages %}
+            <div class="p-3 rounded-lg text-sm font-medium mb-2 {% if category == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% elif category == 'danger' %}bg-rose-50 text-rose-800 border border-rose-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
 
         <form action="{{ url_for('login') }}" method="POST" class="space-y-6">
             <div>

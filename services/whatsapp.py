@@ -55,10 +55,18 @@ def send_whatsapp_booking_alert(booking, car):
     if booking.notes:
         alert_message += f"• *Notes:* {booking.notes}\n"
 
-    print("\n" + "="*50)
-    print("WHATSAPP NOTIFICATION TO LUCA:")
-    print(alert_message)
-    print("="*50 + "\n")
+    try:
+        print("\n" + "="*50)
+        print("WHATSAPP NOTIFICATION TO LUCA:")
+        print(alert_message)
+        print("="*50 + "\n")
+    except Exception:
+        # Fallback for Windows console encodings like cp1252 that don't support emojis
+        safe_message = alert_message.encode('ascii', errors='replace').decode('ascii')
+        print("\n" + "="*50)
+        print("WHATSAPP NOTIFICATION TO LUCA:")
+        print(safe_message)
+        print("="*50 + "\n")
 
     if CALLMEBOT_API_KEY:
         try:

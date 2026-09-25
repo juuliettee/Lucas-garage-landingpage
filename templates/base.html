@@ -7,13 +7,32 @@
     <title>Luca's Garage | 40 Penrose St, London SE17 | Repairs & Used Cars</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='img/logo.png') }}">
     <style>
-        @keyframes pulse-subtle {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.92; transform: scale(1.03); }
+        /* Clean Google Translate UI - hide unwanted banners and toolbars */
+        .goog-te-banner-frame.skiptranslate, 
+        .goog-te-banner-frame,
+        .goog-te-gadget-icon,
+        iframe.skiptranslate,
+        .VIpgJd-ZVi9od-ORHb-OEVmcd,
+        #goog-gt-tt {
+            display: none !important;
+            visibility: hidden !important;
         }
-        .chat-pulse {
-            animation: pulse-subtle 3s infinite ease-in-out;
+        body {
+            top: 0px !important;
+            position: static !important;
+        }
+        .goog-tooltip, .goog-tooltip:hover {
+            display: none !important;
+        }
+        .goog-text-highlight {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        #google_translate_element {
+            display: none !important;
         }
     </style>
 </head>
@@ -30,19 +49,32 @@
             </div>
             <div class="flex items-center space-x-3">
                 <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition">
-                    <i class="fa-brands fa-whatsapp text-sm mr-1"></i> WhatsApp Luca: 07535 321145
+                    <i class="fa-brands fa-whatsapp text-sm mr-1"></i> WhatsApp: 07535 321145
                 </a>
+                
+                <span class="text-slate-700">|</span>
+
+                <!-- Language Selector (English / Spanish) -->
+                <div class="inline-flex items-center bg-slate-800/90 rounded-lg p-0.5 border border-slate-700 text-[11px] shadow-sm notranslate">
+                    <button type="button" onclick="changeLanguage('en')" id="lang-btn-en"
+                        class="px-2 py-0.5 rounded font-bold transition text-white bg-blue-600 shadow-sm flex items-center gap-1 cursor-pointer">
+                        <span>🇬🇧</span> <span>EN</span>
+                    </button>
+                    <button type="button" onclick="changeLanguage('es')" id="lang-btn-es"
+                        class="px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer">
+                        <span>🇪🇸</span> <span>ES</span>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Main Navigation -->
     <nav class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-3.5 flex justify-between items-center">
-            <a href="{{ url_for('home') }}" class="flex items-center space-x-2 group">
-                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-black text-xl shadow-md group-hover:bg-blue-700 transition">
-                    <i class="fa-solid fa-wrench"></i>
-                </div>
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="{{ url_for('home') }}" class="flex items-center space-x-3 group">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage Logo"
+                    class="w-11 h-11 rounded-xl object-cover shadow-md border border-slate-200 group-hover:scale-105 transition">
                 <div>
                     <span class="text-xl font-black tracking-tight text-slate-900 block leading-tight">Luca's Garage</span>
                     <span class="text-xs text-blue-600 font-semibold tracking-wider uppercase">Mechanic & Certified Sales</span>
@@ -51,6 +83,7 @@
 
             <div class="space-x-6 text-sm font-semibold flex items-center">
                 <a href="{{ url_for('home') }}" class="text-slate-600 hover:text-blue-600 transition">Home</a>
+                <a href="{{ url_for('home') }}#services" class="text-slate-600 hover:text-blue-600 transition">Workshop Services</a>
                 <a href="{{ url_for('cars') }}" class="text-slate-600 hover:text-blue-600 transition">Cars For Sale</a>
                 
                 <a href="{{ default_whatsapp_url }}" target="_blank"
@@ -89,86 +122,34 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Floating 24/7 AI Sales Assistant Widget -->
-    <div id="aiChatWidget" class="fixed bottom-5 right-5 z-50">
-        <!-- Collapsed Button -->
-        <button id="chatToggleBtn" onclick="toggleChat()"
-            class="chat-pulse flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-5 py-3.5 rounded-full shadow-2xl transition duration-200 transform hover:-translate-y-1">
-            <i class="fa-solid fa-robot text-lg"></i>
-            <span class="font-bold text-sm tracking-wide">Ask Garage AI</span>
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 border-2 border-white animate-ping"></span>
-        </button>
-
-        <!-- Expanded Chat Window -->
-        <div id="chatBox" class="hidden flex-col bg-white w-96 max-w-[92vw] h-[520px] rounded-2xl shadow-2xl border border-slate-200 overflow-hidden transition-all duration-300">
-            <!-- Chat Header -->
-            <div class="bg-gradient-to-r from-slate-900 to-blue-900 text-white p-4 flex justify-between items-center shadow-sm">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-full bg-blue-500/30 border border-blue-400 flex items-center justify-center text-white">
-                        <i class="fa-solid fa-robot text-sm"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm leading-tight">Luca's Sales Assistant</h4>
-                        <p class="text-[11px] text-emerald-400 flex items-center">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 inline-block"></span> 24/7 AI Online &bull; 40 Penrose St
-                        </p>
-                    </div>
-                </div>
-                <button onclick="toggleChat()" class="text-slate-300 hover:text-white text-lg p-1">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+    <!-- Floating Workshop Hotline (Replaces Goofy AI Bot) -->
+    <div id="workshopHotlineWidget" class="fixed bottom-5 right-5 z-40 print:hidden">
+        <a href="{{ default_whatsapp_url }}" target="_blank" rel="noopener"
+           class="group flex items-center bg-slate-900 hover:bg-slate-800 text-white pl-3.5 pr-5 py-3 rounded-full shadow-2xl border border-slate-700/80 transition-all duration-200 transform hover:-translate-y-0.5">
+            <div class="relative mr-3 flex-shrink-0">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage"
+                    class="w-10 h-10 rounded-full object-cover shadow-inner border border-blue-400/40">
+                <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-slate-900 rounded-full"></span>
             </div>
-
-            <!-- Chat Messages Log -->
-            <div id="chatMessages" class="flex-1 p-4 overflow-y-auto space-y-3 text-xs bg-slate-50">
-                <div class="flex items-start space-x-2">
-                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center text-[10px] mt-0.5">
-                        <i class="fa-solid fa-wrench"></i>
-                    </div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 max-w-[82%] leading-relaxed">
-                        Hi there! 👋 I'm Luca's 24/7 assistant. Ask me anything about our cars, ULEZ compliance, Copart repair history, or book a viewing at 40 Penrose Street!
-                    </div>
+            <div class="text-left">
+                <div class="text-[10px] text-slate-400 font-medium leading-none mb-1">
+                    Direct Mechanic Line
                 </div>
-
-                <!-- Quick Suggested Prompt Chips -->
-                <div id="quickChips" class="flex flex-wrap gap-1.5 pt-2">
-                    <button onclick="sendQuickPrompt('Are your cars ULEZ compliant?')" class="text-[11px] bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 px-2.5 py-1 rounded-full transition">
-                        🚗 ULEZ compliant?
-                    </button>
-                    <button onclick="sendQuickPrompt('Tell me about your Copart repairs and warranty')" class="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 px-2.5 py-1 rounded-full transition">
-                        🔧 Copart repair info?
-                    </button>
-                    <button onclick="sendQuickPrompt('How do I book a viewing in person?')" class="text-[11px] bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full transition">
-                        📅 How to book a viewing?
-                    </button>
+                <div class="text-xs font-bold text-white tracking-tight group-hover:text-blue-400 transition flex items-center gap-1.5">
+                    <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
+                    <span>Message Luca on WhatsApp &rarr;</span>
                 </div>
             </div>
-
-            <!-- Chat Input Area -->
-            <div class="p-3 bg-white border-t border-slate-200">
-                <form id="chatForm" onsubmit="handleChatSubmit(event)" class="flex items-center space-x-2">
-                    <input type="text" id="chatInput" placeholder="Ask about ULEZ, repairs, MOT, viewings..."
-                        class="flex-1 px-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-3.5 py-2 rounded-xl text-xs font-semibold shadow-sm transition">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </form>
-                <div class="mt-1.5 text-center">
-                    <a href="{{ default_whatsapp_url }}" target="_blank" class="text-[10px] text-emerald-600 hover:underline font-semibold">
-                        Prefer WhatsApp? Click here to chat with Luca directly
-                    </a>
-                </div>
-            </div>
-        </div>
+        </a>
     </div>
 
     <!-- Global Footer -->
     <footer class="bg-slate-900 text-slate-400 py-10 border-t border-slate-800 text-sm mt-auto">
         <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-                <h3 class="text-white font-bold text-base mb-3 flex items-center">
-                    <i class="fa-solid fa-wrench text-blue-400 mr-2"></i> Luca's Garage London
+                <h3 class="text-white font-bold text-base mb-3 flex items-center space-x-2">
+                    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage" class="w-6 h-6 rounded-md object-cover inline-block">
+                    <span>Luca's Garage London</span>
                 </h3>
                 <p class="text-xs text-slate-400 leading-relaxed mb-3">
                     Independent mechanical workshop and certified used vehicle sales. Every car is hand-repaired to manufacturer specifications, serviced, MOT-checked, and sold with peace of mind.
@@ -214,104 +195,65 @@
         </div>
     </footer>
 
-    <!-- Chat JavaScript -->
-    <script>
-        function toggleChat() {
-            const chatBox = document.getElementById('chatBox');
-            const toggleBtn = document.getElementById('chatToggleBtn');
-            if (chatBox.classList.contains('hidden')) {
-                chatBox.classList.remove('hidden');
-                chatBox.classList.add('flex');
-                toggleBtn.classList.add('hidden');
-                document.getElementById('chatInput').focus();
+    <!-- Google Translate Container (Hidden) -->
+    <div id="google_translate_element" class="hidden"></div>
+
+    <!-- Language Translation Switcher JavaScript -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'en,es',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function changeLanguage(lang) {
+            const host = window.location.hostname;
+            const cookieVal = '/en/' + lang;
+
+            // Set googtrans cookie for root and domain
+            document.cookie = 'googtrans=' + cookieVal + '; path=/;';
+            if (host) {
+                document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + host + ';';
+            }
+            localStorage.setItem('luca_garage_lang', lang);
+
+            // Attempt on-page switch if widget is rendered
+            const select = document.querySelector('.goog-te-combo');
+            if (select) {
+                select.value = lang;
+                select.dispatchEvent(new Event('change'));
+                updateLangButtons(lang);
             } else {
-                chatBox.classList.add('hidden');
-                chatBox.classList.remove('flex');
-                toggleBtn.classList.remove('hidden');
+                location.reload();
             }
         }
 
-        function sendQuickPrompt(text) {
-            document.getElementById('chatInput').value = text;
-            handleChatSubmit(new Event('submit'));
-        }
+        function updateLangButtons(lang) {
+            const btnEn = document.getElementById('lang-btn-en');
+            const btnEs = document.getElementById('lang-btn-es');
+            if (!btnEn || !btnEs) return;
 
-        async function handleChatSubmit(e) {
-            e.preventDefault();
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            if (!message) return;
+            const activeClass = 'px-2 py-0.5 rounded font-bold transition text-white bg-blue-600 shadow-sm flex items-center gap-1 cursor-pointer';
+            const inactiveClass = 'px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer';
 
-            const messagesDiv = document.getElementById('chatMessages');
-            
-            // Append User Message
-            messagesDiv.innerHTML += `
-                <div class="flex items-start justify-end space-x-2">
-                    <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-sm max-w-[82%] leading-relaxed shadow-sm">
-                        ${escapeHtml(message)}
-                    </div>
-                </div>
-            `;
-            input.value = '';
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            // Loading indicator
-            const loadingId = 'loading-' + Date.now();
-            messagesDiv.innerHTML += `
-                <div id="${loadingId}" class="flex items-start space-x-2">
-                    <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center text-[10px] mt-0.5">
-                        <i class="fa-solid fa-wrench animate-spin"></i>
-                    </div>
-                    <div class="bg-white p-3 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-500">
-                        Luca's Assistant is typing...
-                    </div>
-                </div>
-            `;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            try {
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: message })
-                });
-                const data = await response.json();
-                document.getElementById(loadingId).remove();
-
-                const replyText = data.reply || "Sorry, I had trouble answering that. Feel free to contact Luca directly on WhatsApp!";
-                
-                messagesDiv.innerHTML += `
-                    <div class="flex items-start space-x-2">
-                        <div class="w-7 h-7 rounded-full bg-blue-600 text-white flex-shrink-0 flex items-center justify-center text-[10px] mt-0.5">
-                            <i class="fa-solid fa-wrench"></i>
-                        </div>
-                        <div class="bg-white p-3 rounded-2xl rounded-tl-sm border border-slate-200 shadow-sm text-slate-800 max-w-[82%] leading-relaxed">
-                            ${replyText}
-                        </div>
-                    </div>
-                `;
-            } catch (err) {
-                document.getElementById(loadingId).remove();
-                messagesDiv.innerHTML += `
-                    <div class="flex items-start space-x-2">
-                        <div class="w-7 h-7 rounded-full bg-rose-600 text-white flex-shrink-0 flex items-center justify-center text-[10px] mt-0.5">
-                            <i class="fa-solid fa-circle-exclamation"></i>
-                        </div>
-                        <div class="bg-rose-50 text-rose-700 p-3 rounded-2xl rounded-tl-sm border border-rose-200 max-w-[82%]">
-                            Unable to connect. You can message Luca directly on WhatsApp: <strong>07535 321145</strong>.
-                        </div>
-                    </div>
-                `;
+            if (lang === 'es') {
+                btnEs.className = activeClass;
+                btnEn.className = inactiveClass;
+            } else {
+                btnEn.className = activeClass;
+                btnEs.className = inactiveClass;
             }
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.innerText = text;
-            return div.innerHTML;
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            const cookieMatch = document.cookie.match(/googtrans=\/en\/([a-z]+)/);
+            const savedLang = cookieMatch ? cookieMatch[1] : (localStorage.getItem('luca_garage_lang') || 'en');
+            updateLangButtons(savedLang);
+        });
     </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 
 </html>

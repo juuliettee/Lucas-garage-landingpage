@@ -5,32 +5,189 @@
 <section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-4">
     <div class="max-w-5xl mx-auto text-center">
         <div class="inline-flex items-center space-x-2 bg-blue-500/20 text-blue-300 border border-blue-400/30 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-6">
-            <i class="fa-solid fa-certificate text-emerald-400"></i>
-            <span>Professional Mechanic Workshop &bull; Walworth, London SE17</span>
+            <i class="fa-solid fa-wrench text-blue-400"></i>
+            <span>Full Mechanical Workshop &bull; Walworth, London SE17</span>
         </div>
         <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight">
-            Mechanic-Certified Used Cars <br class="hidden sm:inline">
+            Independent Workshop Repairs & <br class="hidden sm:inline">
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-                Without The Dealership Markups
+                Mechanic-Certified Used Cars
             </span>
         </h1>
         <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-            Hand-repaired and serviced directly by Luca at our Penrose Street garage. Every vehicle comes road-tested, MOT-checked, ULEZ-verified, and backed with a 30-day warranty.
+            Quality mechanical servicing, diagnostics, MOT repairs, and certified used cars hand-repaired directly by Luca at 40 Penrose Street. Honest quotes, fast turnaround, and zero dealership markups.
         </p>
 
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="#services"
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5">
+                <i class="fa-solid fa-wrench"></i>
+                <span>Workshop & Repair Services</span>
+            </a>
             <a href="{{ url_for('cars') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold text-sm px-7 py-3.5 rounded-xl shadow transition transform hover:-translate-y-0.5">
                 <i class="fa-solid fa-car"></i>
                 <span>Browse Cars For Sale</span>
             </a>
-            <a href="{{ default_whatsapp_url }}" target="_blank"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-emerald-600/20 transition transform hover:-translate-y-0.5">
+            <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'd%20like%20a%20quote%20for%20a%20repair%20/%20service%20on%20my%20car" target="_blank"
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 transition transform hover:-translate-y-0.5">
                 <i class="fa-brands fa-whatsapp text-lg"></i>
-                <span>Chat Directly with Luca</span>
+                <span>Get a Repair Quote</span>
             </a>
         </div>
+    </div>
+</section>
+
+<!-- Comprehensive Workshop Services Section -->
+<section id="services" class="py-16 bg-white border-b border-slate-200 scroll-mt-14">
+    <div class="max-w-6xl mx-auto px-4">
+        
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+                40 Penrose Street Workshop
+            </span>
+            <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-4">
+                Full Mechanical Repairs & Servicing
+            </h2>
+            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Need your vehicle serviced, repaired, or inspected? Luca provides hands-on, transparent mechanic repairs for all makes and models right in Walworth. No main-dealer pricing, no unnecessary parts pushed.
+            </p>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            
+            <!-- Service 1: Full & Interim Servicing -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-oil-can"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">Vehicle Servicing</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Full and interim vehicle services following manufacturer schedules. Engine oil flush, OEM filter replacements, spark plugs, fluid levels, and comprehensive safety checks.
+                    </p>
+                </div>
+                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> OEM-spec oil & filters</li>
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Service book stamped</li>
+                </ul>
+            </div>
+
+            <!-- Service 2: Diagnostics & Fault Finding -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">Computer Diagnostics</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Advanced OBD-II computer scanning to trace engine management lights (EML), ABS, traction control, electrical shorts, DPF issues, and sensor faults.
+                    </p>
+                </div>
+                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Live data readout</li>
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Clear diagnostic explanation</li>
+                </ul>
+            </div>
+
+            <!-- Service 3: Brakes & Suspension -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-compact-disc"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">Brakes & Suspension</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Brake pads, vented discs, calipers, brake fluid flushes, coil springs, shock absorbers, wishbones, and suspension bushes replaced for safe London driving.
+                    </p>
+                </div>
+                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Quality brake parts (Brembo/Pagid)</li>
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Noise & judder elimination</li>
+                </ul>
+            </div>
+
+            <!-- Service 4: MOT Prep & Failure Repairs -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">MOT Prep & Repairs</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Full pre-MOT inspection and fast rectification for failed MOT tests. Emissions repair, headlight beam alignment, corrosion repairs, and advisory fixes.
+                    </p>
+                </div>
+                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Fast same-day turnaround</li>
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Advisory resolution</li>
+                </ul>
+            </div>
+
+            <!-- Service 5: Clutches, Exhausts & Mechanical -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-gears"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">Clutches & Drivetrain</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Clutch kit replacement, dual-mass flywheel (DMF) repairs, wheel bearings, exhaust system replacements, catalytic converters, and coolant leaks.
+                    </p>
+                </div>
+                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> LUK / Sachs clutch components</li>
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Smooth gear engagement</li>
+                </ul>
+            </div>
+
+            <!-- Service 6: Pre-Purchase & Ramp Inspections -->
+            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-xl mb-4">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-900 mb-2">Ramp Pre-Purchase Checks</h3>
+                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                        Thinking of buying a car privately or from an auction? Bring it down to Luca's workshop. We will hoist it on the ramp, check for hidden crash repairs, rust, and OBD codes.
+                    </p>
+                </div>
+                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Complete hydraulic lift inspection</li>
+                    <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Objective mechanic verdict</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Direct Repair Quote Banner -->
+        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-700/80 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-2 text-center md:text-left">
+                <div class="inline-flex items-center space-x-1.5 text-xs text-emerald-400 font-bold uppercase tracking-wider">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>Fast Free Quotes</span>
+                </div>
+                <h3 class="text-2xl font-black text-white">Need a repair price or service booking for your car?</h3>
+                <p class="text-slate-300 text-xs sm:text-sm max-w-xl">
+                    Message Luca directly on WhatsApp with your vehicle registration, the issue or service needed, and get a fast, honest estimate.
+                </p>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'd%20like%20a%20repair%20quote%20for%20my%20car.%20Reg:%20" target="_blank"
+                    class="inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg transition">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                    <span>WhatsApp Luca for Quote</span>
+                </a>
+                <a href="tel:07535321145"
+                    class="inline-flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-bold text-xs sm:text-sm px-5 py-3.5 rounded-xl transition">
+                    <i class="fa-solid fa-phone"></i>
+                    <span>07535 321145</span>
+                </a>
+            </div>
+        </div>
+
     </div>
 </section>
 
@@ -67,9 +224,9 @@
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-base text-slate-900 mb-1">Dedicated Viewing Slots</h3>
+                    <h3 class="font-bold text-base text-slate-900 mb-1">In-Person Viewings</h3>
                     <p class="text-xs text-slate-600 leading-relaxed">
-                        Book a 30-minute viewing online so Luca is ready for your test drive and can walk you through the car.
+                        Book a viewing online to inspect the vehicle at the workshop and walk through its condition directly with Luca.
                     </p>
                 </div>
             </div>

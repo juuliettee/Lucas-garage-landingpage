@@ -1,5 +1,19 @@
 import os
-from datetime import datetime, date
+import sys
+
+# Ensure UTF-8 output on Windows consoles
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+if hasattr(sys.stderr, 'reconfigure'):
+    try:
+        sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
+from datetime import datetime, date, timedelta
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
@@ -8,12 +22,25 @@ from dotenv import load_dotenv
 
 from models import db, Car, AdminUser, Booking
 from services.whatsapp import (
-    send_whatsapp_booking_alert,
     generate_customer_whatsapp_url,
     generate_luca_reply_whatsapp_url,
     GARAGE_MOBILE
 )
-from services.ai_assistant import generate_ai_response, GARAGE_INFO
+from services.verification import generate_verification_token, verify_booking_token
+from services.notifications import send_verification_email, dispatch_confirmed_booking_notifications
+from services.calendar_service import create_google_calendar_url
+
+GARAGE_INFO = {
+    "name": "Luca's Garage",
+    "address": "40 Penrose Street, Walworth, London SE17 3DW",
+    "phone": "07535 321145",
+    "hours": {
+        "monday_to_friday": "9:00 AM – 6:00 PM",
+        "saturday": "1:00 PM – 6:00 PM",
+        "sunday": "Closed"
+    },
+    "services": "Mechanical repairs, servicing, diagnostics, MOT prep, and certified used vehicle sales."
+}
 
 load_dotenv()
 
@@ -68,17 +95,7 @@ def car_detail(id):
     whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="inquiry")
     return render_template('car_detail.html', car=car, whatsapp_url=whatsapp_url)
 
-# ----------------- API ENDPOINTS (CHAT & BOOKINGS) ----------------- #
-
-@app.route('/api/chat', methods=['POST'])
-def chat_api():
-    data = request.get_json() or {}
-    user_message = data.get('message', '').strip()
-    if not user_message:
-        return jsonify({"error": "Empty message"}), 400
-
-    reply = generate_ai_response(user_message)
-    return jsonify({"reply": reply})
+# ----------------- BOOKING & VERIFICATION ROUTES ----------------- #
 
 @app.route('/api/book-viewing', methods=['POST'])
 def book_viewing_api():
@@ -92,8 +109,11 @@ def book_viewing_api():
     booking_time = data.get('booking_time', '').strip() # HH:MM
     notes = data.get('notes', '').strip()
 
-    if not (car_id and customer_name and customer_phone and booking_date and booking_time):
-        return jsonify({"success": False, "message": "Please fill in all required fields (Name, Phone, Date, Time)."}), 400
+    if not (car_id and customer_name and customer_phone and customer_email and booking_date and booking_time):
+        return jsonify({"success": False, "message": "Please fill in all fields (Name, Phone, Email, Date, Time)."}), 400
+
+    if "@" not in customer_email or "." not in customer_email:
+        return jsonify({"success": False, "message": "Please provide a valid email address to receive your confirmation link."}), 400
 
     car = Car.query.get(int(car_id))
     if not car:
@@ -127,6 +147,21 @@ def book_viewing_api():
     if existing:
         return jsonify({"success": False, "message": "This time slot is already reserved for this vehicle. Please choose another slot."}), 400
 
+    # Token payload for cryptographic 30-min verification
+    token_payload = {
+        "car_id": car.id,
+        "customer_name": customer_name,
+        "customer_phone": customer_phone,
+        "customer_email": customer_email,
+        "booking_date": booking_date,
+        "booking_time": booking_time,
+        "notes": notes,
+        "created_at": datetime.utcnow().isoformat()
+    }
+    token = generate_verification_token(token_payload)
+    token_expires_at = datetime.utcnow() + timedelta(minutes=30)
+
+    # Save as Pending_Verification to temporarily hold the slot
     booking = Booking(
         car_id=car.id,
         customer_name=customer_name,
@@ -135,25 +170,92 @@ def book_viewing_api():
         booking_date=booking_date,
         booking_time=booking_time,
         notes=notes,
-        status="Confirmed"
+        status="Pending_Verification",
+        verification_token=token,
+        token_expires_at=token_expires_at
     )
     db.session.add(booking)
     db.session.commit()
 
-    # Dispatch WhatsApp alert to Luca
-    send_whatsapp_booking_alert(booking, car)
+    # Generate 1-click verification URL
+    verification_url = url_for('verify_booking', token=token, _external=True)
 
-    # Customer 1-click confirmation link
-    customer_confirm_url = generate_customer_whatsapp_url(
+    # Send 1-click verification email
+    send_verification_email(
+        customer_email=customer_email,
+        customer_name=customer_name,
+        car=car,
+        booking_date=booking_date,
+        booking_time=booking_time,
+        verification_url=verification_url
+    )
+
+    # WhatsApp backup URL in case customer is on mobile or prefers instant messaging
+    whatsapp_backup_url = generate_customer_whatsapp_url(
         car_name=f"{car.year} {car.make_model}",
         message_type="viewing"
     )
 
     return jsonify({
         "success": True,
-        "message": f"Viewing confirmed for {booking_date} at {booking_time}! Luca has received your booking on WhatsApp.",
-        "customer_whatsapp_url": customer_confirm_url
+        "requires_verification": True,
+        "customer_email": customer_email,
+        "booking_date": booking_date,
+        "booking_time": booking_time,
+        "whatsapp_backup_url": whatsapp_backup_url,
+        "verification_url": verification_url, # Provided for local testing ease
+        "message": f"Slot temporarily held for 30 minutes! Please check your email ({customer_email}) to confirm your viewing."
     })
+
+
+@app.route('/booking/verify')
+def verify_booking():
+    token = request.args.get('token')
+    if not token:
+        return render_template('booking_confirmed.html', success=False, error_msg="Missing confirmation token.")
+
+    is_valid, data_or_err = verify_booking_token(token)
+    if not is_valid:
+        return render_template('booking_confirmed.html', success=False, error_msg=data_or_err)
+
+    booking = Booking.query.filter_by(verification_token=token).first()
+    if not booking:
+        return render_template('booking_confirmed.html', success=False, error_msg="Booking reference not found.")
+
+    car = booking.car or Car.query.get(booking.car_id)
+
+    if booking.status == "Confirmed":
+        gcal_url = create_google_calendar_url(car.make_model, booking.booking_date, booking.booking_time, booking.customer_name, booking.customer_phone)
+        whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="viewing")
+        return render_template('booking_confirmed.html', success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
+
+    # Check for double-booking conflict
+    conflict = Booking.query.filter(
+        Booking.car_id == booking.car_id,
+        Booking.booking_date == booking.booking_date,
+        Booking.booking_time == booking.booking_time,
+        Booking.status == "Confirmed",
+        Booking.id != booking.id
+    ).first()
+    if conflict:
+        booking.status = "Cancelled"
+        db.session.commit()
+        return render_template('booking_confirmed.html', success=False, error_msg="Another buyer just confirmed this slot. Please choose another time.")
+
+    # Flip status to Confirmed
+    booking.status = "Confirmed"
+    db.session.commit()
+
+    # Trigger multi-channel alerts (Buyer .ics calendar, Luca .ics calendar, and Telegram)
+    try:
+        dispatch_confirmed_booking_notifications(booking, car)
+    except Exception as e:
+        app.logger.warning(f"Notification dispatch error: {e}")
+
+    gcal_url = create_google_calendar_url(car.make_model, booking.booking_date, booking.booking_time, booking.customer_name, booking.customer_phone)
+    whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="viewing")
+
+    return render_template('booking_confirmed.html', success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
 
 # ----------------- ADMIN ROUTES ----------------- #
 
@@ -284,7 +386,7 @@ def marketplace_text(id):
         f"FEATURES:\n"
         f"{car.features or 'Standard features, electric windows, central locking'}\n\n"
         f"Comes with a 30-day mechanical warranty from Luca's Garage. "
-        f"Viewings and test drives welcome during opening hours (Mon-Sat). Please message or book to arrange."
+        f"Viewings welcome during opening hours (Mon-Sat). Please message or book to arrange."
     )
     return jsonify({"text": text})
 

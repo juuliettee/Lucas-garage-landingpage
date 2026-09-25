@@ -66,12 +66,21 @@ class Booking(db.Model):
     car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
     customer_name = db.Column(db.String(100), nullable=False)
     customer_phone = db.Column(db.String(30), nullable=False)
-    customer_email = db.Column(db.String(120), nullable=True)
+    customer_email = db.Column(db.String(120), nullable=False)
     booking_date = db.Column(db.String(20), nullable=False) # Format: YYYY-MM-DD
     booking_time = db.Column(db.String(20), nullable=False) # Format: HH:MM
     notes = db.Column(db.Text, nullable=True)
-    status = db.Column(db.String(30), nullable=False, default="Confirmed") # Confirmed, Completed, Cancelled
+    status = db.Column(db.String(30), nullable=False, default="Pending_Verification") # Pending_Verification, Confirmed, Completed, Cancelled
+    verification_token = db.Column(db.String(255), unique=True, index=True, nullable=True)
+    token_expires_at = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def is_token_valid(self):
+        return (
+            self.status == 'Pending_Verification' and
+            self.token_expires_at and
+            datetime.utcnow() <= self.token_expires_at
+        )
 
     def to_dict(self):
         return {
