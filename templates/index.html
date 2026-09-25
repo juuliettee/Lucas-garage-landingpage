@@ -2,36 +2,34 @@
 {% block content %}
 
 <!-- Hero Section -->
-<section class="bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 text-white py-16 px-4">
-    <div class="max-w-5xl mx-auto text-center">
-        <div class="inline-flex items-center space-x-2 bg-blue-500/20 text-blue-300 border border-blue-400/30 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-6">
-            <i class="fa-solid fa-wrench text-blue-400"></i>
+<section class="bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-800 via-[#0C0F17] to-[#06080D] text-white py-18 sm:py-20 px-4 border-b border-zinc-800/80 relative overflow-hidden">
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+        <div class="inline-flex items-center space-x-2 bg-zinc-900/90 text-amber-300 border border-amber-400/30 px-3.5 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-6 shadow-sm">
+            <i class="fa-solid fa-wrench text-amber-400"></i>
             <span>Full Mechanical Workshop &bull; Walworth, London SE17</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight">
+        <h1 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight mb-6 leading-tight text-white">
             Independent Workshop Repairs & <br class="hidden sm:inline">
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-                Mechanic-Certified Used Cars
-            </span>
+            <span class="text-blue-400">Mechanic-Certified</span> <span class="text-zinc-100">Used Cars</span>
         </h1>
-        <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p class="text-zinc-300 text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-normal">
             Quality mechanical servicing, diagnostics, MOT repairs, and certified used cars hand-repaired directly by Luca at 40 Penrose Street. Honest quotes, fast turnaround, and zero dealership markups.
         </p>
 
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#services"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition transform hover:-translate-y-0.5">
                 <i class="fa-solid fa-wrench"></i>
                 <span>Workshop & Repair Services</span>
             </a>
             <a href="{{ url_for('cars') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-bold text-sm px-7 py-3.5 rounded-xl shadow transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-zinc-800/90 hover:bg-zinc-700 text-white border border-zinc-700/80 font-bold text-sm px-7 py-3.5 rounded-xl shadow-sm transition transform hover:-translate-y-0.5">
                 <i class="fa-solid fa-car"></i>
                 <span>Browse Cars For Sale</span>
             </a>
             <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'd%20like%20a%20quote%20for%20a%20repair%20/%20service%20on%20my%20car" target="_blank"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg shadow-emerald-600/20 transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition transform hover:-translate-y-0.5">
                 <i class="fa-brands fa-whatsapp text-lg"></i>
                 <span>Get a Repair Quote</span>
             </a>
@@ -40,17 +38,17 @@
 </section>
 
 <!-- Comprehensive Workshop Services Section -->
-<section id="services" class="py-16 bg-white border-b border-slate-200 scroll-mt-14">
+<section id="services" class="py-16 bg-white border-b border-zinc-200/90 scroll-mt-14">
     <div class="max-w-6xl mx-auto px-4">
         
         <div class="text-center max-w-3xl mx-auto mb-12">
-            <span class="text-xs font-bold text-blue-600 uppercase tracking-wider bg-blue-50 border border-blue-200 px-3 py-1 rounded-full">
+            <span class="text-xs font-bold text-blue-700 uppercase tracking-wider bg-blue-50 border border-blue-200/80 px-3 py-1 rounded-full">
                 40 Penrose Street Workshop
             </span>
-            <h2 class="text-3xl sm:text-4xl font-black text-slate-900 mt-3 mb-4">
+            <h2 class="text-3xl sm:text-4xl font-black text-zinc-950 mt-3 mb-4">
                 Full Mechanical Repairs & Servicing
             </h2>
-            <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <p class="text-zinc-600 text-sm sm:text-base leading-relaxed">
                 Need your vehicle serviced, repaired, or inspected? Luca provides hands-on, transparent mechanic repairs for all makes and models right in Walworth. No main-dealer pricing, no unnecessary parts pushed.
             </p>
         </div>
@@ -59,47 +57,47 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
             
             <!-- Service 1: Full & Interim Servicing -->
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+            <div class="bg-[#F8F9FA] rounded-2xl p-6 border border-zinc-200/80 hover:border-zinc-400 hover:bg-white hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-xl mb-4 border border-zinc-800 shadow-sm group-hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-oil-can"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-2">Vehicle Servicing</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    <h3 class="font-bold text-lg text-zinc-950 mb-2">Vehicle Servicing</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed mb-4">
                         Full and interim vehicle services following manufacturer schedules. Engine oil flush, OEM filter replacements, spark plugs, fluid levels, and comprehensive safety checks.
                     </p>
                 </div>
-                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                <ul class="text-[11px] text-zinc-600 space-y-1.5 pt-3 border-t border-zinc-200/80">
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> OEM-spec oil & filters</li>
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Service book stamped</li>
                 </ul>
             </div>
 
             <!-- Service 2: Diagnostics & Fault Finding -->
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+            <div class="bg-[#F8F9FA] rounded-2xl p-6 border border-zinc-200/80 hover:border-zinc-400 hover:bg-white hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-xl mb-4 border border-zinc-800 shadow-sm group-hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-laptop-code"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-2">Computer Diagnostics</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    <h3 class="font-bold text-lg text-zinc-950 mb-2">Computer Diagnostics</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed mb-4">
                         Advanced OBD-II computer scanning to trace engine management lights (EML), ABS, traction control, electrical shorts, DPF issues, and sensor faults.
                     </p>
                 </div>
-                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                <ul class="text-[11px] text-zinc-600 space-y-1.5 pt-3 border-t border-zinc-200/80">
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Live data readout</li>
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Clear diagnostic explanation</li>
                 </ul>
             </div>
 
             <!-- Service 3: Brakes & Suspension -->
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+            <div class="bg-[#F8F9FA] rounded-2xl p-6 border border-zinc-200/80 hover:border-zinc-400 hover:bg-white hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-xl mb-4 border border-zinc-800 shadow-sm group-hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-compact-disc"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-2">Brakes & Suspension</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    <h3 class="font-bold text-lg text-zinc-950 mb-2">Brakes & Suspension</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed mb-4">
                         Brake pads, vented discs, calipers, brake fluid flushes, coil springs, shock absorbers, wishbones, and suspension bushes replaced for safe London driving.
                     </p>
                 </div>
@@ -110,51 +108,51 @@
             </div>
 
             <!-- Service 4: MOT Prep & Failure Repairs -->
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+            <div class="bg-[#F8F9FA] rounded-2xl p-6 border border-zinc-200/80 hover:border-zinc-400 hover:bg-white hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-xl mb-4 border border-zinc-800 shadow-sm group-hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-clipboard-check"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-2">MOT Prep & Repairs</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    <h3 class="font-bold text-lg text-zinc-950 mb-2">MOT Prep & Repairs</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed mb-4">
                         Full pre-MOT inspection and fast rectification for failed MOT tests. Emissions repair, headlight beam alignment, corrosion repairs, and advisory fixes.
                     </p>
                 </div>
-                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                <ul class="text-[11px] text-zinc-600 space-y-1.5 pt-3 border-t border-zinc-200/80">
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Fast same-day turnaround</li>
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Advisory resolution</li>
                 </ul>
             </div>
 
             <!-- Service 5: Clutches, Exhausts & Mechanical -->
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+            <div class="bg-[#F8F9FA] rounded-2xl p-6 border border-zinc-200/80 hover:border-zinc-400 hover:bg-white hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-xl mb-4 border border-zinc-800 shadow-sm group-hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-gears"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-2">Clutches & Drivetrain</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    <h3 class="font-bold text-lg text-zinc-950 mb-2">Clutches & Drivetrain</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed mb-4">
                         Clutch kit replacement, dual-mass flywheel (DMF) repairs, wheel bearings, exhaust system replacements, catalytic converters, and coolant leaks.
                     </p>
                 </div>
-                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                <ul class="text-[11px] text-zinc-600 space-y-1.5 pt-3 border-t border-zinc-200/80">
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> LUK / Sachs clutch components</li>
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Smooth gear engagement</li>
                 </ul>
             </div>
 
             <!-- Service 6: Pre-Purchase & Ramp Inspections -->
-            <div class="bg-slate-50 rounded-2xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-md transition flex flex-col justify-between">
+            <div class="bg-[#F8F9FA] rounded-2xl p-6 border border-zinc-200/80 hover:border-zinc-400 hover:bg-white hover:shadow-lg transition-all duration-200 flex flex-col justify-between group">
                 <div>
-                    <div class="w-12 h-12 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center text-xl mb-4">
+                    <div class="w-12 h-12 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-xl mb-4 border border-zinc-800 shadow-sm group-hover:scale-105 transition-transform duration-200">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <h3 class="font-bold text-lg text-slate-900 mb-2">Ramp Pre-Purchase Checks</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                    <h3 class="font-bold text-lg text-zinc-950 mb-2">Ramp Pre-Purchase Checks</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed mb-4">
                         Thinking of buying a car privately or from an auction? Bring it down to Luca's workshop. We will hoist it on the ramp, check for hidden crash repairs, rust, and OBD codes.
                     </p>
                 </div>
-                <ul class="text-[11px] text-slate-500 space-y-1.5 pt-3 border-t border-slate-200">
+                <ul class="text-[11px] text-zinc-600 space-y-1.5 pt-3 border-t border-zinc-200/80">
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Complete hydraulic lift inspection</li>
                     <li><i class="fa-solid fa-check text-emerald-600 mr-1.5"></i> Objective mechanic verdict</li>
                 </ul>
@@ -163,25 +161,25 @@
         </div>
 
         <!-- Direct Repair Quote Banner -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white rounded-3xl p-8 sm:p-10 shadow-xl border border-slate-700/80 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="bg-[#0C0F17] text-white rounded-3xl p-8 sm:p-10 shadow-xl border border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6">
             <div class="space-y-2 text-center md:text-left">
-                <div class="inline-flex items-center space-x-1.5 text-xs text-emerald-400 font-bold uppercase tracking-wider">
+                <div class="inline-flex items-center space-x-1.5 text-xs text-amber-400 font-bold uppercase tracking-wider">
                     <i class="fa-brands fa-whatsapp"></i>
                     <span>Fast Free Quotes</span>
                 </div>
                 <h3 class="text-2xl font-black text-white">Need a repair price or service booking for your car?</h3>
-                <p class="text-slate-300 text-xs sm:text-sm max-w-xl">
+                <p class="text-zinc-300 text-xs sm:text-sm max-w-xl">
                     Message Luca directly on WhatsApp with your vehicle registration, the issue or service needed, and get a fast, honest estimate.
                 </p>
             </div>
             <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'd%20like%20a%20repair%20quote%20for%20my%20car.%20Reg:%20" target="_blank"
-                    class="inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-lg transition">
+                    class="inline-flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-md transition transform hover:-translate-y-0.5">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
                     <span>WhatsApp Luca for Quote</span>
                 </a>
                 <a href="tel:07535321145"
-                    class="inline-flex items-center justify-center space-x-2 bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-bold text-xs sm:text-sm px-5 py-3.5 rounded-xl transition">
+                    class="inline-flex items-center justify-center space-x-2 bg-zinc-800 hover:bg-zinc-700 text-white border border-zinc-700 font-bold text-xs sm:text-sm px-5 py-3.5 rounded-xl transition">
                     <i class="fa-solid fa-phone"></i>
                     <span>07535 321145</span>
                 </a>
@@ -192,40 +190,40 @@
 </section>
 
 <!-- Trust & Mechanics Highlights -->
-<section class="py-12 bg-white border-b border-slate-200">
+<section class="py-12 bg-white border-b border-zinc-200/90">
     <div class="max-w-6xl mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex items-start space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
+            <div class="p-6 rounded-2xl bg-[#F8F9FA] border border-zinc-200/80 flex items-start space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center text-xl flex-shrink-0">
                     <i class="fa-solid fa-wrench"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-base text-slate-900 mb-1">Repaired by a Real Mechanic</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <h3 class="font-bold text-base text-zinc-950 mb-1">Repaired by a Real Mechanic</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed">
                         Unlike auction flippers, every car is repaired, serviced, and tested directly on the lift at 40 Penrose Street.
                     </p>
                 </div>
             </div>
 
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex items-start space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0">
+            <div class="p-6 rounded-2xl bg-[#F8F9FA] border border-zinc-200/80 flex items-start space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-xl flex-shrink-0">
                     <i class="fa-solid fa-leaf"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-base text-slate-900 mb-1">London ULEZ Verified</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <h3 class="font-bold text-base text-zinc-950 mb-1">London ULEZ Verified</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed">
                         We explicitly verify ULEZ exemption on every listing so you avoid the £12.50 daily London charge.
                     </p>
                 </div>
             </div>
 
-            <div class="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex items-start space-x-4">
-                <div class="w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl flex-shrink-0">
+            <div class="p-6 rounded-2xl bg-[#F8F9FA] border border-zinc-200/80 flex items-start space-x-4">
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center text-xl flex-shrink-0">
                     <i class="fa-solid fa-calendar-check"></i>
                 </div>
                 <div>
-                    <h3 class="font-bold text-base text-slate-900 mb-1">In-Person Viewings</h3>
-                    <p class="text-xs text-slate-600 leading-relaxed">
+                    <h3 class="font-bold text-base text-zinc-950 mb-1">In-Person Viewings</h3>
+                    <p class="text-xs text-zinc-600 leading-relaxed">
                         Book a viewing online to inspect the vehicle at the workshop and walk through its condition directly with Luca.
                     </p>
                 </div>
@@ -235,80 +233,80 @@
 </section>
 
 <!-- Featured Stock Section -->
-<section class="py-16 bg-slate-50">
+<section class="py-16 bg-[#F8F9FA]">
     <div class="max-w-6xl mx-auto px-4">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 gap-4">
             <div>
-                <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">In-Stock Vehicles</span>
-                <h2 class="text-3xl font-black text-slate-900">Current Cars For Sale</h2>
+                <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">In-Stock Vehicles</span>
+                <h2 class="text-3xl font-black text-zinc-950">Current Cars For Sale</h2>
             </div>
-            <a href="{{ url_for('cars') }}" class="text-sm font-bold text-blue-600 hover:text-blue-700 flex items-center">
+            <a href="{{ url_for('cars') }}" class="text-sm font-bold text-zinc-900 hover:text-blue-700 transition flex items-center">
                 View all inventory <i class="fa-solid fa-arrow-right ml-1.5 text-xs"></i>
             </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for car in cars %}
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col group hover:shadow-md transition">
-                <div class="relative aspect-video bg-slate-100 overflow-hidden">
+            <div class="bg-white rounded-2xl shadow-sm border border-zinc-200/90 overflow-hidden flex flex-col group hover:shadow-lg hover:border-zinc-300 transition duration-200">
+                <div class="relative aspect-video bg-zinc-100 overflow-hidden">
                     <img src="{{ url_for('static', filename='uploads/' + car.image_filename) }}" alt="{{ car.make_model }}"
                         class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                     
                     <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
                         {% if car.ulez_compliant %}
-                        <span class="bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                        <span class="bg-emerald-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                             <i class="fa-solid fa-leaf mr-1"></i> ULEZ
                         </span>
                         {% endif %}
                         {% if car.copart_category and 'Cat' in car.copart_category %}
-                        <span class="bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                        <span class="bg-amber-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm">
                             {{ car.copart_category }}
                         </span>
                         {% endif %}
                     </div>
 
-                    <div class="absolute bottom-3 right-3 bg-slate-900/90 text-white font-black text-lg px-3 py-1 rounded-xl shadow">
+                    <div class="absolute bottom-3 right-3 bg-[#0C0F17]/95 backdrop-blur-sm text-white font-black text-lg px-3.5 py-1 rounded-xl shadow-md border border-zinc-700/60">
                         £{{ "{:,}".format(car.price) }}
                     </div>
                 </div>
 
                 <div class="p-6 flex flex-col flex-grow">
-                    <h3 class="text-lg font-bold text-slate-900 mb-2">{{ car.year }} {{ car.make_model }}</h3>
+                    <h3 class="text-lg font-bold text-zinc-950 mb-2">{{ car.year }} {{ car.make_model }}</h3>
                     
-                    <div class="flex flex-wrap gap-2 text-xs text-slate-600 mb-4">
-                        <span class="bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
-                            <i class="fa-solid fa-gauge text-slate-400 mr-1"></i> {{ "{:,}".format(car.mileage) if car.mileage else 'N/A' }} mi
+                    <div class="flex flex-wrap gap-2 text-xs text-zinc-600 mb-4">
+                        <span class="bg-[#F8F9FA] border border-zinc-200/80 px-2.5 py-1 rounded-lg font-semibold text-zinc-700">
+                            <i class="fa-solid fa-gauge text-zinc-400 mr-1"></i> {{ "{:,}".format(car.mileage) if car.mileage else 'N/A' }} mi
                         </span>
-                        <span class="bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
-                            <i class="fa-solid fa-gears text-slate-400 mr-1"></i> {{ car.TransmissionType }}
+                        <span class="bg-[#F8F9FA] border border-zinc-200/80 px-2.5 py-1 rounded-lg font-semibold text-zinc-700">
+                            <i class="fa-solid fa-gears text-zinc-400 mr-1"></i> {{ car.TransmissionType }}
                         </span>
-                        <span class="bg-slate-100 px-2.5 py-1 rounded-lg font-medium">
-                            <i class="fa-solid fa-gas-pump text-slate-400 mr-1"></i> {{ car.fuel_type }}
+                        <span class="bg-[#F8F9FA] border border-zinc-200/80 px-2.5 py-1 rounded-lg font-semibold text-zinc-700">
+                            <i class="fa-solid fa-gas-pump text-zinc-400 mr-1"></i> {{ car.fuel_type }}
                         </span>
                     </div>
 
-                    <div class="text-xs text-slate-500 line-clamp-2 mb-6 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                        <strong class="text-slate-700">Mechanic notes:</strong> {{ car.repair_notes or 'Inspected, serviced, and road tested.' }}
+                    <div class="text-xs text-zinc-700 line-clamp-2 mb-6 bg-amber-50/60 p-2.5 rounded-xl border border-amber-200/60">
+                        <strong class="text-amber-900"><i class="fa-solid fa-wrench mr-1 text-amber-700"></i> Mechanic notes:</strong> {{ car.repair_notes or 'Inspected, serviced, and road tested.' }}
                     </div>
 
-                    <div class="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div class="mt-auto pt-4 border-t border-zinc-100 flex items-center justify-between gap-2">
                         <a href="{{ url_for('car_detail', id=car.id) }}"
-                            class="flex-1 text-center bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition shadow-sm">
+                            class="flex-1 text-center bg-zinc-900 hover:bg-blue-600 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition shadow-sm">
                             View & Book Viewing
                         </a>
                         <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'm%20interested%20in%20the%20{{ car.year }}%20{{ car.make_model|urlencode }}"
                             target="_blank"
-                            class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-bold py-2.5 px-3 rounded-xl transition">
+                            class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold py-2.5 px-3 rounded-xl transition">
                             <i class="fa-brands fa-whatsapp text-sm"></i>
                         </a>
                     </div>
                 </div>
             </div>
             {% else %}
-            <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-slate-200">
-                <i class="fa-solid fa-car text-4xl text-slate-300 mb-3"></i>
-                <p class="text-slate-600 font-bold">No cars currently listed for sale.</p>
-                <p class="text-xs text-slate-400 mt-1">Check back soon or message Luca to ask about upcoming stock.</p>
+            <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-zinc-300">
+                <i class="fa-solid fa-car text-4xl text-zinc-300 mb-3"></i>
+                <p class="text-zinc-600 font-bold">No cars currently listed for sale.</p>
+                <p class="text-xs text-zinc-400 mt-1">Check back soon or message Luca to ask about upcoming stock.</p>
             </div>
             {% endfor %}
         </div>
@@ -316,31 +314,31 @@
 </section>
 
 <!-- Workshop Location & Hours -->
-<section class="py-16 bg-white border-t border-slate-200">
+<section class="py-16 bg-white border-t border-zinc-200/90">
     <div class="max-w-6xl mx-auto px-4">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-                <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">Visit The Workshop</span>
-                <h2 class="text-3xl font-black text-slate-900 mt-1 mb-4">40 Penrose Street, Walworth</h2>
-                <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                <span class="text-xs font-bold text-blue-700 uppercase tracking-wider">Visit The Workshop</span>
+                <h2 class="text-3xl font-black text-zinc-950 mt-1 mb-4">40 Penrose Street, Walworth</h2>
+                <p class="text-zinc-600 text-sm leading-relaxed mb-6">
                     Located in Walworth (London Borough of Southwark), Luca's Garage provides full mechanical servicing, diagnostics, MOT preparation, and quality repaired vehicles.
                 </p>
 
-                <div class="space-y-3 text-sm text-slate-700 mb-8">
+                <div class="space-y-3 text-sm text-zinc-700 mb-8">
                     <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center text-sm">
                             <i class="fa-solid fa-location-dot"></i>
                         </div>
                         <span>40 Penrose Street, London, SE17 3DW</span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-sm">
                             <i class="fa-brands fa-whatsapp"></i>
                         </div>
                         <span>WhatsApp / Mobile: <strong>07535 321145</strong></span>
                     </div>
                     <div class="flex items-center space-x-3">
-                        <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm">
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 flex items-center justify-center text-sm">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
                         <span>All vehicles sold with 30-day mechanical warranty</span>
@@ -349,34 +347,34 @@
 
                 <div class="flex flex-wrap gap-4">
                     <a href="https://maps.google.com/?q=40+Penrose+Street+London+SE17+3DW" target="_blank"
-                        class="inline-flex items-center space-x-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow">
-                        <i class="fa-solid fa-diamond-turn-right"></i>
+                        class="inline-flex items-center space-x-2 bg-[#0C0F17] hover:bg-zinc-800 text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow">
+                        <i class="fa-solid fa-diamond-turn-right text-amber-400"></i>
                         <span>Get Directions on Google Maps</span>
                     </a>
                 </div>
             </div>
 
             <!-- Operating Hours Card -->
-            <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-sm">
-                <h3 class="text-lg font-bold text-slate-900 mb-6 flex items-center">
-                    <i class="fa-solid fa-clock text-blue-600 mr-2.5"></i> Garage Working Hours
+            <div class="bg-[#F8F9FA] p-8 rounded-3xl border border-zinc-200/90 shadow-sm">
+                <h3 class="text-lg font-bold text-zinc-950 mb-6 flex items-center">
+                    <i class="fa-solid fa-clock text-amber-500 mr-2.5"></i> Garage Working Hours
                 </h3>
                 <div class="space-y-4 text-sm">
-                    <div class="flex justify-between items-center py-2.5 border-b border-slate-200">
-                        <span class="font-medium text-slate-700">Monday – Friday</span>
-                        <span class="font-bold text-slate-900 bg-white px-3 py-1 rounded-lg border border-slate-200">9:00 AM – 6:00 PM</span>
+                    <div class="flex justify-between items-center py-2.5 border-b border-zinc-200/80">
+                        <span class="font-medium text-zinc-700">Monday – Friday</span>
+                        <span class="font-bold text-zinc-950 bg-white px-3 py-1 rounded-lg border border-zinc-200/80">9:00 AM – 6:00 PM</span>
                     </div>
-                    <div class="flex justify-between items-center py-2.5 border-b border-slate-200">
-                        <span class="font-medium text-slate-700">Saturday</span>
-                        <span class="font-bold text-slate-900 bg-white px-3 py-1 rounded-lg border border-slate-200">1:00 PM – 6:00 PM</span>
+                    <div class="flex justify-between items-center py-2.5 border-b border-zinc-200/80">
+                        <span class="font-medium text-zinc-700">Saturday</span>
+                        <span class="font-bold text-zinc-950 bg-white px-3 py-1 rounded-lg border border-zinc-200/80">1:00 PM – 6:00 PM</span>
                     </div>
-                    <div class="flex justify-between items-center py-2.5 text-slate-400">
+                    <div class="flex justify-between items-center py-2.5 text-zinc-400">
                         <span>Sunday</span>
                         <span class="font-medium">Closed</span>
                     </div>
                 </div>
 
-                <div class="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-4 text-xs text-blue-900 flex items-start space-x-3">
+                <div class="mt-8 bg-blue-50/80 border border-blue-200/80 rounded-2xl p-4 text-xs text-blue-950 flex items-start space-x-3">
                     <i class="fa-solid fa-circle-info text-blue-600 text-base mt-0.5"></i>
                     <p class="leading-relaxed">
                         <strong>Viewing Tip:</strong> To make sure the car isn't on a lift or in road-testing, please reserve a viewing slot online or message on WhatsApp before coming down.
