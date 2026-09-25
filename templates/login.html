@@ -25,20 +25,20 @@ must be mobile responsive -->
     <link rel="icon" type="image/jpeg" href="{{ url_for('static', filename='img/logo.png') }}">
 </head>
 
-<body class="bg-[#F8F9FA] text-zinc-900 min-h-screen flex items-center justify-center px-4 font-sans antialiased">
-    <div class="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 sm:p-10 border border-zinc-200/90">
+<body class="bg-[#0B0E14] text-zinc-100 min-h-screen flex items-center justify-center px-4 font-sans antialiased">
+    <div class="max-w-md w-full bg-[#141926] rounded-3xl shadow-2xl p-8 sm:p-10 border border-zinc-800">
         <div class="text-center mb-8">
             <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage Logo"
-                class="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-sm border border-zinc-200 object-cover">
-            <h2 class="text-2xl sm:text-3xl font-black text-zinc-950">Workshop Portal</h2>
-            <p class="text-xs text-zinc-500 mt-2">Sign in to manage car inventory and viewings</p>
+                class="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-sm border border-zinc-800 object-cover">
+            <h2 class="text-2xl sm:text-3xl font-black text-white">Workshop Portal</h2>
+            <p class="text-xs text-zinc-400 mt-2">Sign in to manage car inventory and viewings</p>
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div class="mb-6">
             {% for category, message in messages %}
-            <div class="p-3 rounded-xl text-xs font-semibold mb-2 {% if category == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% elif category == 'danger' %}bg-rose-50 text-rose-800 border border-rose-200{% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+            <div class="p-3 rounded-xl text-xs font-semibold mb-2 {% if category == 'success' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/25{% elif category == 'danger' %}bg-rose-500/10 text-rose-400 border border-rose-500/25{% else %}bg-amber-500/10 text-amber-400 border border-amber-500/25{% endif %}">
                 {{ message }}
             </div>
             {% endfor %}
@@ -48,23 +48,23 @@ must be mobile responsive -->
 
         <form action="{{ url_for('login') }}" method="POST" class="space-y-5">
             <div>
-                <label class="block text-xs font-bold text-zinc-700 mb-1">Username</label>
+                <label class="block text-xs font-bold text-zinc-300 mb-1">Username</label>
                 <input type="text" name="username" required
-                    class="w-full px-4 py-3 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm transition">
+                    class="w-full px-4 py-3 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white placeholder-zinc-500 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
             </div>
             <div>
-                <label class="block text-xs font-bold text-zinc-700 mb-1">Password</label>
+                <label class="block text-xs font-bold text-zinc-300 mb-1">Password</label>
                 <input type="password" name="password" required
-                    class="w-full px-4 py-3 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none text-sm transition">
+                    class="w-full px-4 py-3 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white placeholder-zinc-500 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none text-sm transition">
             </div>
             <button type="submit"
-                class="w-full bg-[#0C0F17] hover:bg-zinc-800 text-white font-bold py-3.5 rounded-xl shadow-md transition text-sm">
+                class="w-full bg-white hover:bg-zinc-200 text-zinc-950 font-bold py-3.5 rounded-xl shadow-lg transition text-sm">
                 Sign In
             </button>
         </form>
 
         <div class="mt-6 text-center">
-            <a href="{{ url_for('home') }}" class="text-xs text-zinc-400 hover:text-blue-700 font-semibold transition">
+            <a href="{{ url_for('home') }}" class="text-xs text-zinc-400 hover:text-white font-semibold transition">
                 &larr; Return to main site
             </a>
         </div>

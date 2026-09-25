@@ -1,27 +1,27 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-12">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-zinc-200/90 gap-4">
+<div class="max-w-6xl mx-auto px-4 py-12 text-white">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-zinc-800/80 gap-4">
         <div>
-            <h1 class="text-3xl sm:text-4xl font-black text-zinc-950">Vehicles For Sale</h1>
-            <p class="mt-2 text-sm text-zinc-600">
+            <h1 class="text-3xl sm:text-4xl font-black text-white">Vehicles For Sale</h1>
+            <p class="mt-2 text-sm text-zinc-400">
                 All vehicles serviced, safety-inspected, and sold with a 30-day garage warranty at 40 Penrose Street, SE17.
             </p>
         </div>
         <div class="flex items-center space-x-3">
-            <span class="inline-flex items-center text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-xl">
-                <i class="fa-solid fa-leaf mr-1.5 text-emerald-600"></i> London ULEZ Checked
+            <span class="inline-flex items-center text-xs font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-3 py-1.5 rounded-xl">
+                <i class="fa-solid fa-leaf mr-1.5 text-emerald-400"></i> London ULEZ Checked
             </span>
-            <span class="inline-flex items-center text-xs font-bold text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl">
-                <i class="fa-solid fa-shield-halved mr-1.5 text-blue-600"></i> 30-Day Warranty
+            <span class="inline-flex items-center text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/25 px-3 py-1.5 rounded-xl">
+                <i class="fa-solid fa-shield-halved mr-1.5 text-amber-400"></i> 30-Day Warranty
             </span>
         </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for car in cars %}
-        <div class="bg-white rounded-2xl shadow-sm border border-zinc-200/90 overflow-hidden flex flex-col group hover:shadow-lg hover:border-zinc-300 transition duration-200">
-            <div class="relative aspect-video bg-zinc-100 overflow-hidden">
+        <div class="bg-[#141926] rounded-2xl shadow-lg border border-zinc-800/80 overflow-hidden flex flex-col group hover:border-zinc-600 transition duration-200">
+            <div class="relative aspect-video bg-zinc-950 overflow-hidden">
                 <img src="{{ url_for('static', filename='uploads/' + car.image_filename) }}" alt="{{ car.make_model }}"
                     class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                 
@@ -47,60 +47,60 @@
                     {% endif %}
                 </div>
 
-                <div class="absolute bottom-3 right-3 bg-[#0C0F17]/95 backdrop-blur-sm text-white font-black text-lg px-3.5 py-1 rounded-xl shadow-md border border-zinc-700/60">
+                <div class="absolute bottom-3 right-3 bg-[#0B0E14]/95 backdrop-blur-sm text-white font-mono font-black text-lg px-3.5 py-1 rounded-xl shadow-md border border-zinc-700/60">
                     £{{ "{:,}".format(car.price) }}
                 </div>
             </div>
 
             <div class="p-6 flex flex-col flex-grow">
                 <div class="flex justify-between items-start mb-2">
-                    <h3 class="text-xl font-bold text-zinc-950">{{ car.year }} {{ car.make_model }}</h3>
+                    <h3 class="text-xl font-bold text-white">{{ car.year }} {{ car.make_model }}</h3>
                 </div>
 
-                <div class="grid grid-cols-3 gap-2 text-center text-xs text-zinc-600 mb-4 bg-[#F8F9FA] p-2.5 rounded-xl border border-zinc-200/70">
+                <div class="grid grid-cols-3 gap-2 text-center text-xs text-zinc-300 mb-4 bg-[#0B0E14] p-2.5 rounded-xl border border-zinc-800/80">
                     <div>
-                        <span class="text-zinc-400 block text-[10px] uppercase font-semibold">Mileage</span>
-                        <span class="font-bold text-zinc-900">{{ "{:,}".format(car.mileage) if car.mileage else 'Low' }} mi</span>
+                        <span class="text-zinc-500 block text-[10px] uppercase font-semibold">Mileage</span>
+                        <span class="font-bold text-white">{{ "{:,}".format(car.mileage) if car.mileage else 'Low' }} mi</span>
                     </div>
                     <div>
-                        <span class="text-zinc-400 block text-[10px] uppercase font-semibold">Gearbox</span>
-                        <span class="font-bold text-zinc-900">{{ car.TransmissionType }}</span>
+                        <span class="text-zinc-500 block text-[10px] uppercase font-semibold">Gearbox</span>
+                        <span class="font-bold text-white">{{ car.TransmissionType }}</span>
                     </div>
                     <div>
-                        <span class="text-zinc-400 block text-[10px] uppercase font-semibold">Fuel</span>
-                        <span class="font-bold text-zinc-900">{{ car.fuel_type }}</span>
+                        <span class="text-zinc-500 block text-[10px] uppercase font-semibold">Fuel</span>
+                        <span class="font-bold text-white">{{ car.fuel_type }}</span>
                     </div>
                 </div>
 
-                <div class="text-xs text-zinc-600 mb-4 space-y-1">
-                    <div><strong class="text-zinc-800">MOT:</strong> {{ car.mot_expiry or '12 Months Included' }}</div>
-                    <div><strong class="text-zinc-800">History:</strong> {{ car.copart_category or 'Clean / Inspected' }}</div>
+                <div class="text-xs text-zinc-400 mb-4 space-y-1">
+                    <div><strong class="text-zinc-200">MOT:</strong> {{ car.mot_expiry or '12 Months Included' }}</div>
+                    <div><strong class="text-zinc-200">History:</strong> {{ car.copart_category or 'Clean / Inspected' }}</div>
                 </div>
 
                 {% if car.repair_notes %}
-                <div class="text-xs text-zinc-700 line-clamp-2 mb-6 bg-amber-50/70 p-2.5 rounded-xl border border-amber-200/70">
-                    <strong class="text-amber-950"><i class="fa-solid fa-wrench mr-1 text-amber-700"></i> Work Done:</strong> {{ car.repair_notes }}
+                <div class="text-xs text-amber-200/90 line-clamp-2 mb-6 bg-amber-950/20 p-2.5 rounded-xl border border-amber-500/25">
+                    <strong class="text-amber-400"><i class="fa-solid fa-wrench mr-1"></i> Work Done:</strong> {{ car.repair_notes }}
                 </div>
                 {% endif %}
 
-                <div class="mt-auto pt-4 border-t border-zinc-100 flex items-center justify-between gap-2">
+                <div class="mt-auto pt-4 border-t border-zinc-800/80 flex items-center justify-between gap-2">
                     <a href="{{ url_for('car_detail', id=car.id) }}"
-                        class="flex-1 text-center bg-zinc-900 hover:bg-blue-600 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition shadow-sm">
+                        class="flex-1 text-center bg-white hover:bg-zinc-200 text-zinc-950 font-bold text-xs py-2.5 px-3 rounded-xl transition shadow-sm">
                         View Details & Book
                     </a>
                     <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'm%20inquiring%20about%20the%20{{ car.year }}%20{{ car.make_model|urlencode }}"
                         target="_blank"
-                        class="bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center" title="Chat on WhatsApp">
+                        class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/25 text-xs font-bold py-2.5 px-3 rounded-xl transition flex items-center" title="Chat on WhatsApp">
                         <i class="fa-brands fa-whatsapp text-sm mr-1"></i> WhatsApp
                     </a>
                 </div>
             </div>
         </div>
         {% else %}
-        <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-dashed border-zinc-300">
-            <i class="fa-solid fa-car text-4xl text-zinc-300 mb-3"></i>
-            <p class="text-zinc-600 font-bold">No vehicles currently listed for sale.</p>
-            <p class="text-xs text-zinc-400 mt-1">Check back soon as new cars are repaired and prepped regularly.</p>
+        <div class="col-span-full text-center py-16 bg-[#141926] rounded-2xl border border-dashed border-zinc-800">
+            <i class="fa-solid fa-car text-4xl text-zinc-600 mb-3"></i>
+            <p class="text-zinc-300 font-bold">No vehicles currently listed for sale.</p>
+            <p class="text-xs text-zinc-500 mt-1">Check back soon as new cars are repaired and prepped regularly.</p>
         </div>
         {% endfor %}
     </div>

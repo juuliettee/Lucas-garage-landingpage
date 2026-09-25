@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-10">
+<div class="max-w-6xl mx-auto px-4 py-10 text-white">
 
     <!-- Breadcrumb & Back -->
-    <div class="mb-6 flex items-center justify-between text-xs text-zinc-500">
-        <a href="{{ url_for('cars') }}" class="hover:text-blue-700 font-bold flex items-center transition">
+    <div class="mb-6 flex items-center justify-between text-xs text-zinc-400">
+        <a href="{{ url_for('cars') }}" class="hover:text-white font-bold flex items-center transition">
             <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to all vehicles
         </a>
         <span>40 Penrose Street, Walworth, SE17 3DW</span>
@@ -15,7 +15,7 @@
         <!-- Left: Vehicle Photos & Full Details (7 cols) -->
         <div class="lg:col-span-7 space-y-8">
             <!-- Main Photo Card -->
-            <div class="bg-white rounded-3xl overflow-hidden border border-zinc-200/90 shadow-sm">
+            <div class="bg-[#141926] rounded-3xl overflow-hidden border border-zinc-800/80 shadow-lg">
                 <div class="relative aspect-video bg-zinc-950">
                     <img src="{{ url_for('static', filename='uploads/' + car.image_filename) }}" alt="{{ car.make_model }}"
                         class="w-full h-full object-cover">
@@ -44,50 +44,50 @@
                 </div>
 
                 <div class="p-6 sm:p-8">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-100">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-800">
                         <div>
-                            <h1 class="text-2xl sm:text-3xl font-black text-zinc-950">{{ car.year }} {{ car.make_model }}</h1>
-                            <p class="text-xs text-zinc-500 mt-1">Listed by Luca's Garage &bull; Repaired & Certified in London</p>
+                            <h1 class="text-2xl sm:text-3xl font-black text-white">{{ car.year }} {{ car.make_model }}</h1>
+                            <p class="text-xs text-zinc-400 mt-1">Listed by Luca's Garage &bull; Repaired & Certified in London</p>
                         </div>
-                        <div class="text-3xl font-black text-zinc-950 font-mono tracking-tight">
+                        <div class="text-3xl font-black text-white font-mono tracking-tight">
                             £{{ "{:,}".format(car.price) }}
                         </div>
                     </div>
 
                     <!-- Quick Specs Grid -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-6">
-                        <div class="bg-[#F8F9FA] p-3.5 rounded-2xl border border-zinc-200/70 text-center">
-                            <span class="text-zinc-400 block text-[11px] uppercase font-bold">Mileage</span>
-                            <span class="text-zinc-950 font-bold text-sm">{{ "{:,}".format(car.mileage) if car.mileage else 'Low Miles' }} mi</span>
+                        <div class="bg-[#0B0E14] p-3.5 rounded-2xl border border-zinc-800/80 text-center">
+                            <span class="text-zinc-500 block text-[11px] uppercase font-bold">Mileage</span>
+                            <span class="text-white font-bold text-sm">{{ "{:,}".format(car.mileage) if car.mileage else 'Low Miles' }} mi</span>
                         </div>
-                        <div class="bg-[#F8F9FA] p-3.5 rounded-2xl border border-zinc-200/70 text-center">
-                            <span class="text-zinc-400 block text-[11px] uppercase font-bold">Gearbox</span>
-                            <span class="text-zinc-950 font-bold text-sm">{{ car.TransmissionType }}</span>
+                        <div class="bg-[#0B0E14] p-3.5 rounded-2xl border border-zinc-800/80 text-center">
+                            <span class="text-zinc-500 block text-[11px] uppercase font-bold">Gearbox</span>
+                            <span class="text-white font-bold text-sm">{{ car.TransmissionType }}</span>
                         </div>
-                        <div class="bg-[#F8F9FA] p-3.5 rounded-2xl border border-zinc-200/70 text-center">
-                            <span class="text-zinc-400 block text-[11px] uppercase font-bold">Fuel Type</span>
-                            <span class="text-zinc-950 font-bold text-sm">{{ car.fuel_type }}</span>
+                        <div class="bg-[#0B0E14] p-3.5 rounded-2xl border border-zinc-800/80 text-center">
+                            <span class="text-zinc-500 block text-[11px] uppercase font-bold">Fuel Type</span>
+                            <span class="text-white font-bold text-sm">{{ car.fuel_type }}</span>
                         </div>
-                        <div class="bg-[#F8F9FA] p-3.5 rounded-2xl border border-zinc-200/70 text-center">
-                            <span class="text-zinc-400 block text-[11px] uppercase font-bold">Year</span>
-                            <span class="text-zinc-950 font-bold text-sm">{{ car.year }}</span>
+                        <div class="bg-[#0B0E14] p-3.5 rounded-2xl border border-zinc-800/80 text-center">
+                            <span class="text-zinc-500 block text-[11px] uppercase font-bold">Year</span>
+                            <span class="text-white font-bold text-sm">{{ car.year }}</span>
                         </div>
                     </div>
 
                     <!-- Mechanic Provenance & Copart Repair Transparency -->
-                    <div class="bg-amber-50/60 rounded-2xl p-6 border border-amber-200/80 my-6">
+                    <div class="bg-amber-950/20 rounded-2xl p-6 border border-amber-500/25 my-6">
                         <div class="flex items-center space-x-3 mb-3">
-                            <div class="w-9 h-9 rounded-xl bg-[#0C0F17] text-amber-400 flex items-center justify-center text-sm border border-zinc-800 shadow-sm">
+                            <div class="w-9 h-9 rounded-xl bg-[#0B0E14] text-amber-400 flex items-center justify-center text-sm border border-zinc-700/60 shadow-sm">
                                 <i class="fa-solid fa-wrench"></i>
                             </div>
                             <div>
-                                <h3 class="font-bold text-sm text-zinc-950">Mechanic Inspection & Provenance</h3>
-                                <p class="text-[11px] text-amber-900 font-medium">Transparency statement from Luca (Owner & Head Mechanic)</p>
+                                <h3 class="font-bold text-sm text-white">Mechanic Inspection & Provenance</h3>
+                                <p class="text-[11px] text-amber-400 font-medium">Transparency statement from Luca (Owner & Head Mechanic)</p>
                             </div>
                         </div>
 
-                        <div class="space-y-2 text-xs text-zinc-700 leading-relaxed">
-                            <p><strong>History Category:</strong> <span class="bg-white px-2 py-0.5 rounded border border-amber-300 font-bold text-zinc-950">{{ car.copart_category or 'Clean / Unrecorded' }}</span></p>
+                        <div class="space-y-2 text-xs text-zinc-300 leading-relaxed">
+                            <p><strong>History Category:</strong> <span class="bg-[#0B0E14] px-2 py-0.5 rounded border border-amber-500/40 font-bold text-amber-300">{{ car.copart_category or 'Clean / Unrecorded' }}</span></p>
                             <p><strong>Repairs & Service Work:</strong> {{ car.repair_notes or 'Fully serviced, inspected, replacement fluids, safety-checked, and test-driven.' }}</p>
                             <p><strong>Warranty:</strong> Sold with a 30-day mechanical guarantee from Luca's Garage.</p>
                         </div>
@@ -95,25 +95,25 @@
 
                     <!-- Technical Specifications Table -->
                     <div class="my-6">
-                        <h3 class="text-sm font-bold text-zinc-950 mb-3 uppercase tracking-wider">Vehicle Details</h3>
+                        <h3 class="text-sm font-bold text-white mb-3 uppercase tracking-wider">Vehicle Details</h3>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-6 text-xs">
-                            <div class="flex justify-between py-2 border-b border-zinc-100">
-                                <span class="text-zinc-500">MOT Expiry:</span>
-                                <span class="font-bold text-zinc-900">{{ car.mot_expiry or '12 Months MOT' }}</span>
+                            <div class="flex justify-between py-2 border-b border-zinc-800">
+                                <span class="text-zinc-400">MOT Expiry:</span>
+                                <span class="font-bold text-white">{{ car.mot_expiry or '12 Months MOT' }}</span>
                             </div>
-                            <div class="flex justify-between py-2 border-b border-zinc-100">
-                                <span class="text-zinc-500">ULEZ Exemption:</span>
-                                <span class="font-bold {% if car.ulez_compliant %}text-emerald-700{% else %}text-rose-600{% endif %}">
+                            <div class="flex justify-between py-2 border-b border-zinc-800">
+                                <span class="text-zinc-400">ULEZ Exemption:</span>
+                                <span class="font-bold {% if car.ulez_compliant %}text-emerald-400{% else %}text-rose-400{% endif %}">
                                     {{ "Exempt (No charge)" if car.ulez_compliant else "Subject to £12.50 daily fee" }}
                                 </span>
                             </div>
-                            <div class="flex justify-between py-2 border-b border-zinc-100">
-                                <span class="text-zinc-500">Location:</span>
-                                <span class="font-bold text-zinc-900">40 Penrose St, SE17 3DW</span>
+                            <div class="flex justify-between py-2 border-b border-zinc-800">
+                                <span class="text-zinc-400">Location:</span>
+                                <span class="font-bold text-white">40 Penrose St, SE17 3DW</span>
                             </div>
-                            <div class="flex justify-between py-2 border-b border-zinc-100">
-                                <span class="text-zinc-500">Features:</span>
-                                <span class="font-bold text-zinc-900">{{ car.features or 'Standard features' }}</span>
+                            <div class="flex justify-between py-2 border-b border-zinc-800">
+                                <span class="text-zinc-400">Features:</span>
+                                <span class="font-bold text-white">{{ car.features or 'Standard features' }}</span>
                             </div>
                         </div>
                     </div>
@@ -125,21 +125,21 @@
         <div class="lg:col-span-5 space-y-6">
             
             <!-- Booking Card -->
-            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-zinc-200/90 shadow-sm sticky top-20">
+            <div class="bg-[#141926] rounded-3xl p-6 sm:p-8 border border-zinc-800/80 shadow-lg sticky top-20 text-white">
                 <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-blue-50 text-blue-700 border border-blue-100 flex items-center justify-center text-base">
+                    <div class="w-10 h-10 rounded-xl bg-[#0B0E14] text-amber-400 border border-zinc-700/60 flex items-center justify-center text-base">
                         <i class="fa-solid fa-calendar-check"></i>
                     </div>
                     <div>
-                        <h2 class="text-lg font-black text-zinc-950">Book In-Person Viewing</h2>
-                        <p class="text-xs text-zinc-500">Luca will get an instant alert</p>
+                        <h2 class="text-lg font-black text-white">Book In-Person Viewing</h2>
+                        <p class="text-xs text-zinc-400">Luca will get an instant alert</p>
                     </div>
                 </div>
 
-                <div class="bg-[#F8F9FA] p-3 rounded-xl border border-zinc-200/70 text-[11px] text-zinc-600 mb-6 flex items-start space-x-2">
-                    <i class="fa-solid fa-clock text-amber-500 text-xs mt-0.5"></i>
+                <div class="bg-[#0B0E14] p-3 rounded-xl border border-zinc-800 text-[11px] text-zinc-300 mb-6 flex items-start space-x-2">
+                    <i class="fa-solid fa-clock text-amber-400 text-xs mt-0.5"></i>
                     <div>
-                        <strong>Hours:</strong> Mon–Fri 9am–6pm, Sat 1pm–6pm (Closed Sun). <br>
+                        <strong class="text-white">Hours:</strong> Mon–Fri 9am–6pm, Sat 1pm–6pm (Closed Sun). <br>
                         Viewings arranged by appointment so Luca can walk you through the vehicle.
                     </div>
                 </div>
@@ -149,35 +149,35 @@
                     <input type="hidden" name="car_id" value="{{ car.id }}">
 
                     <div>
-                        <label class="block font-bold text-zinc-800 mb-1">Your Full Name *</label>
+                        <label class="block font-bold text-zinc-300 mb-1">Your Full Name *</label>
                         <input type="text" name="customer_name" required placeholder="e.g. David Smith"
-                            class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition">
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white placeholder-zinc-500 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400 outline-none transition">
                     </div>
 
                     <div>
-                        <label class="block font-bold text-zinc-800 mb-1">Mobile Phone (WhatsApp) *</label>
+                        <label class="block font-bold text-zinc-300 mb-1">Mobile Phone (WhatsApp) *</label>
                         <input type="tel" name="customer_phone" required placeholder="e.g. 07123 456789"
-                            class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition">
-                        <span class="text-[10px] text-zinc-400">Used solely to confirm your viewing appointment.</span>
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white placeholder-zinc-500 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400 outline-none transition">
+                        <span class="text-[10px] text-zinc-500">Used solely to confirm your viewing appointment.</span>
                     </div>
 
                     <div>
-                        <label class="block font-bold text-zinc-800 mb-1">Email Address *</label>
+                        <label class="block font-bold text-zinc-300 mb-1">Email Address *</label>
                         <input type="email" name="customer_email" required placeholder="e.g. david@example.com"
-                            class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition">
-                        <span class="text-[10px] text-zinc-400">We'll email your 1-click confirmation link & calendar invite.</span>
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white placeholder-zinc-500 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400 outline-none transition">
+                        <span class="text-[10px] text-zinc-500">We'll email your 1-click confirmation link & calendar invite.</span>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block font-bold text-zinc-800 mb-1">Select Date *</label>
+                            <label class="block font-bold text-zinc-300 mb-1">Select Date *</label>
                             <input type="date" name="booking_date" id="bookingDateInput" required
-                                class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition">
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400 outline-none transition">
                         </div>
                         <div>
-                            <label class="block font-bold text-zinc-800 mb-1">Time Slot *</label>
+                            <label class="block font-bold text-zinc-300 mb-1">Time Slot *</label>
                             <select name="booking_time" required
-                                class="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition">
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400 outline-none transition">
                                 <option value="09:30">09:30 AM (Mon-Fri)</option>
                                 <option value="10:30">10:30 AM (Mon-Fri)</option>
                                 <option value="11:30">11:30 AM (Mon-Fri)</option>
@@ -191,14 +191,14 @@
                     </div>
 
                     <div>
-                        <label class="block font-bold text-zinc-800 mb-1">Notes / Questions (Optional)</label>
+                        <label class="block font-bold text-zinc-300 mb-1">Notes / Questions (Optional)</label>
                         <textarea name="notes" rows="2" placeholder="e.g. Interested in putting it on the ramp, checking ULEZ, etc."
-                            class="w-full px-3.5 py-2 rounded-xl border border-zinc-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 outline-none transition"></textarea>
+                            class="w-full px-3.5 py-2 rounded-xl bg-[#0B0E14] border border-zinc-700 text-white placeholder-zinc-500 focus:ring-1 focus:ring-amber-400/50 focus:border-amber-400 outline-none transition"></textarea>
                     </div>
 
                     <button type="submit" id="submitBookingBtn"
-                        class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-md transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-calendar-check"></i>
+                        class="w-full bg-white hover:bg-zinc-200 text-zinc-950 font-black py-3.5 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-calendar-check text-zinc-950"></i>
                         <span>Reserve Viewing Slot</span>
                     </button>
                 </form>
@@ -207,9 +207,9 @@
                 <div id="bookingResultArea" class="hidden mt-4"></div>
 
                 <!-- Workshop Trust Reassurance -->
-                <div class="mt-6 pt-5 border-t border-zinc-100 text-left text-[11px] text-zinc-600 space-y-2">
-                    <div class="flex items-center text-zinc-950 font-bold">
-                        <i class="fa-solid fa-shield-halved text-amber-500 mr-1.5"></i> Luca's Viewing Guarantee
+                <div class="mt-6 pt-5 border-t border-zinc-800 text-left text-[11px] text-zinc-400 space-y-2">
+                    <div class="flex items-center text-white font-bold">
+                        <i class="fa-solid fa-shield-halved text-amber-400 mr-1.5"></i> Luca's Viewing Guarantee
                     </div>
                     <p>&bull; Full access granted to hydraulic lift ramp for underbody inspection.</p>
                     <p>&bull; Bring your own mechanic or OBD diagnostic scanner—full transparency.</p>
@@ -217,11 +217,11 @@
                 </div>
 
                 <!-- Direct WhatsApp Alternative -->
-                <div class="mt-4 pt-4 border-t border-zinc-100 text-center">
-                    <p class="text-xs text-zinc-500 mb-2">Prefer to arrange via WhatsApp directly?</p>
+                <div class="mt-4 pt-4 border-t border-zinc-800 text-center">
+                    <p class="text-xs text-zinc-400 mb-2">Prefer to arrange via WhatsApp directly?</p>
                     <a href="{{ whatsapp_url }}" target="_blank"
-                        class="w-full inline-flex items-center justify-center space-x-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-xs py-2.5 rounded-xl transition">
-                        <i class="fa-brands fa-whatsapp text-base text-emerald-600"></i>
+                        class="w-full inline-flex items-center justify-center space-x-2 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/25 font-bold text-xs py-2.5 rounded-xl transition">
+                        <i class="fa-brands fa-whatsapp text-base text-emerald-400"></i>
                         <span>WhatsApp Luca: 07535 321145</span>
                     </a>
                 </div>
@@ -268,27 +268,27 @@
 
             if (data.success && data.requires_verification) {
                 resultArea.innerHTML = `
-                    <div class="p-5 rounded-2xl bg-blue-50/80 border border-blue-200 text-slate-800 space-y-3 text-left">
+                    <div class="p-5 rounded-2xl bg-[#0F131C] border border-zinc-700/80 text-zinc-200 space-y-3 text-left">
                         <div class="flex items-center space-x-2">
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/25">
                                 <i class="fa-solid fa-clock"></i> Held for 30 Mins
                             </span>
                         </div>
-                        <h4 class="font-extrabold text-sm text-slate-900">Check your email to confirm viewing</h4>
-                        <p class="text-xs text-slate-600 leading-relaxed">
-                            We've sent a 1-click confirmation link to <strong class="text-blue-700">${data.customer_email}</strong>. 
-                            Please tap the link to lock in your slot for <strong>${data.booking_date} at ${data.booking_time}</strong>.
+                        <h4 class="font-extrabold text-sm text-white">Check your email to confirm viewing</h4>
+                        <p class="text-xs text-zinc-300 leading-relaxed">
+                            We've sent a 1-click confirmation link to <strong class="text-amber-400">${data.customer_email}</strong>. 
+                            Please tap the link to lock in your slot for <strong class="text-white">${data.booking_date} at ${data.booking_time}</strong>.
                         </p>
                         
-                        <div class="pt-2 border-t border-blue-200/60 space-y-2">
+                        <div class="pt-2 border-t border-zinc-800 space-y-2">
                             <a href="${data.whatsapp_backup_url}" target="_blank"
-                                class="inline-flex items-center justify-center space-x-1.5 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition">
+                                class="inline-flex items-center justify-center space-x-1.5 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition">
                                 <i class="fa-brands fa-whatsapp text-sm"></i>
                                 <span>Prefer WhatsApp? Tap here to confirm directly</span>
                             </a>
                             ${data.verification_url ? `
-                            <p class="text-[10px] text-center text-slate-400">
-                                <a href="${data.verification_url}" class="underline hover:text-blue-600">Click here to verify directly (Dev link)</a>
+                            <p class="text-[10px] text-center text-zinc-400">
+                                <a href="${data.verification_url}" class="underline hover:text-amber-400">Click here to verify directly (Dev link)</a>
                             </p>
                             ` : ''}
                         </div>
@@ -297,15 +297,15 @@
                 form.reset();
             } else if (data.success) {
                 resultArea.innerHTML = `
-                    <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold">
+                    <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-xs font-semibold">
                         ${data.message}
                     </div>
                 `;
                 form.reset();
             } else {
                 resultArea.innerHTML = `
-                    <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium flex items-center space-x-2">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-600 text-base"></i>
+                    <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs font-medium flex items-center space-x-2">
+                        <i class="fa-solid fa-triangle-exclamation text-rose-400 text-base"></i>
                         <span>${data.message || "Failed to reserve slot."}</span>
                     </div>
                 `;
@@ -313,7 +313,7 @@
         } catch (err) {
             resultArea.classList.remove('hidden');
             resultArea.innerHTML = `
-                <div class="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs">
+                <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs">
                     Network error. Please message Luca on WhatsApp: <strong>07535 321145</strong>.
                 </div>
             `;
