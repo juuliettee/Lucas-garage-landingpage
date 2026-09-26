@@ -47,7 +47,10 @@ load_dotenv()
 app = Flask(__name__)
 
 app.secret_key = os.getenv('SECRET_KEY', 'default-fallback-dev-key-lucas-garage')
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///garage.db')
+raw_db_url = os.getenv('DATABASE_URL', 'sqlite:///garage.db')
+if raw_db_url.startswith("postgres://"):
+    raw_db_url = raw_db_url.replace("postgres://", "postgresql://", 1)
+app.config['SQLALCHEMY_DATABASE_URI'] = raw_db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')

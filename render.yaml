@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: lucas-garage
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: GARAGE_MOBILE
+        value: "447535321145"
+      - key: ADMIN_USER
+        value: admin
+      - key: ADMIN_PASSWORD
+        value: LucaGarage2026!
