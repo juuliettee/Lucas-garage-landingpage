@@ -18,18 +18,14 @@
                         mono: ['"JetBrains Mono"', 'monospace'],
                     },
                     colors: {
-                        carbon: {
-                            950: '#07090E',
-                            900: '#0C0F17',
-                            850: '#111622',
-                            800: '#182030',
-                            700: '#232D42',
-                        },
-                        workshop: {
-                            blue: '#1E40AF',
-                            blueHover: '#1D4ED8',
-                            amber: '#D97706',
-                            amberLight: '#FEF3C7',
+                        petrol: {
+                            950: '#070C11',
+                            900: '#0B1117',
+                            850: '#0F1720',
+                            800: '#141E28',
+                            750: '#1B2735',
+                            700: '#243344',
+                            600: '#35485E',
                         }
                     }
                 }
@@ -67,14 +63,14 @@
     </style>
 </head>
 
-<body class="bg-[#0B0E14] text-zinc-100 flex flex-col min-h-screen font-sans antialiased selection:bg-amber-500/30 selection:text-white">
+<body class="bg-[#0B1117] text-slate-100 flex flex-col min-h-screen font-sans antialiased selection:bg-amber-500/30 selection:text-amber-200">
 
     <!-- Top Notice Bar -->
-    <div class="bg-[#07090E] text-zinc-400 text-xs py-2 px-4 border-b border-zinc-800/80">
+    <div class="bg-[#070C11] text-slate-400 text-xs py-2 px-4 border-b border-[#243344]">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2">
             <div class="flex items-center space-x-4">
                 <span><i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 40 Penrose Street, Walworth, London SE17 3DW</span>
-                <span class="hidden sm:inline text-zinc-700">|</span>
+                <span class="hidden sm:inline text-slate-700">|</span>
                 <span class="hidden sm:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm</span>
             </div>
             <div class="flex items-center space-x-3">
@@ -82,16 +78,16 @@
                     <i class="fa-brands fa-whatsapp text-sm mr-1"></i> WhatsApp: 07535 321145
                 </a>
                 
-                <span class="text-zinc-700">|</span>
+                <span class="text-slate-700">|</span>
 
                 <!-- Language Selector (English / Spanish) -->
-                <div class="inline-flex items-center bg-zinc-900 rounded-lg p-0.5 border border-zinc-700/80 text-[11px] shadow-sm notranslate">
+                <div class="inline-flex items-center bg-[#0B1117] rounded-lg p-0.5 border border-[#243344] text-[11px] shadow-sm notranslate">
                     <button type="button" onclick="changeLanguage('en')" id="lang-btn-en"
-                        class="px-2 py-0.5 rounded font-black transition text-zinc-950 bg-white shadow-sm flex items-center gap-1 cursor-pointer">
+                        class="px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer">
                         <span>🇬🇧</span> <span>EN</span>
                     </button>
                     <button type="button" onclick="changeLanguage('es')" id="lang-btn-es"
-                        class="px-2 py-0.5 rounded font-bold transition text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer">
+                        class="px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1 cursor-pointer">
                         <span>🇪🇸</span> <span>ES</span>
                     </button>
                 </div>
@@ -100,21 +96,21 @@
     </div>
 
     <!-- Main Navigation -->
-    <nav class="bg-[#0E121B]/95 backdrop-blur-md border-b border-zinc-800/90 sticky top-0 z-40 shadow-md">
+    <nav class="bg-[#0B1117]/95 backdrop-blur-md border-b border-[#243344] sticky top-0 z-40 shadow-md">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <a href="{{ url_for('home') }}" class="flex items-center space-x-3 group">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage Logo"
-                    class="w-11 h-11 rounded-xl object-cover shadow-sm border border-zinc-700/80 group-hover:scale-105 transition">
+                    class="w-11 h-11 rounded-xl object-cover shadow-sm border border-[#243344] group-hover:scale-105 transition">
                 <div>
-                    <span class="text-xl font-black tracking-tight text-white block leading-tight">Luca's Garage</span>
+                    <span class="text-xl font-black tracking-tight text-slate-50 block leading-tight">Luca's Garage</span>
                     <span class="text-[11px] text-amber-400 font-bold tracking-wider uppercase">Mechanic & Certified Sales</span>
                 </div>
             </a>
 
             <div class="space-x-6 text-sm font-semibold flex items-center">
-                <a href="{{ url_for('home') }}" class="text-zinc-300 hover:text-white transition">Home</a>
-                <a href="{{ url_for('home') }}#services" class="text-zinc-300 hover:text-white transition">Workshop Services</a>
-                <a href="{{ url_for('cars') }}" class="text-zinc-300 hover:text-white transition">Cars For Sale</a>
+                <a href="{{ url_for('home') }}" class="text-slate-300 hover:text-amber-400 transition">Home</a>
+                <a href="{{ url_for('home') }}#services" class="text-slate-300 hover:text-amber-400 transition">Workshop Services</a>
+                <a href="{{ url_for('cars') }}" class="text-slate-300 hover:text-amber-400 transition">Cars For Sale</a>
                 
                 <a href="{{ default_whatsapp_url }}" target="_blank"
                     class="hidden md:inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/20 transition shadow-sm">
@@ -140,7 +136,7 @@
         {% if messages %}
         <div class="max-w-6xl mx-auto px-4 mt-6">
             {% for category, message in messages %}
-            <div class="p-4 rounded-xl text-sm font-medium mb-4 flex items-center {% if category == 'success' %}bg-emerald-950/60 text-emerald-300 border border-emerald-800{% elif category == 'danger' %}bg-rose-950/60 text-rose-300 border border-rose-800{% else %}bg-zinc-900 text-zinc-200 border border-zinc-800{% endif %}">
+            <div class="p-4 rounded-xl text-sm font-medium mb-4 flex items-center {% if category == 'success' %}bg-emerald-950/60 text-emerald-300 border border-emerald-800{% elif category == 'danger' %}bg-rose-950/60 text-rose-300 border border-rose-800{% else %}bg-[#141E28] text-slate-200 border border-[#243344]{% endif %}">
                 <i class="fa-solid {% if category == 'success' %}fa-circle-check text-emerald-400{% elif category == 'danger' %}fa-triangle-exclamation text-rose-400{% else %}fa-circle-info text-amber-400{% endif %} mr-2.5 text-base"></i>
                 <span>{{ message }}</span>
             </div>
@@ -155,17 +151,17 @@
     <!-- Floating Workshop Hotline (Replaces Goofy AI Bot) -->
     <div id="workshopHotlineWidget" class="fixed bottom-5 right-5 z-40 print:hidden">
         <a href="{{ default_whatsapp_url }}" target="_blank" rel="noopener"
-           class="group flex items-center bg-[#0C0F17] hover:bg-[#141A28] text-white pl-3.5 pr-5 py-3 rounded-full shadow-2xl border border-zinc-700/80 transition-all duration-200 transform hover:-translate-y-0.5">
+           class="group flex items-center bg-[#141E28] hover:bg-[#1B2735] text-slate-100 pl-3.5 pr-5 py-3 rounded-full shadow-2xl border border-[#243344] transition-all duration-200 transform hover:-translate-y-0.5">
             <div class="relative mr-3 flex-shrink-0">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage"
-                    class="w-10 h-10 rounded-full object-cover shadow-inner border border-zinc-600/60">
-                <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#0C0F17] rounded-full"></span>
+                    class="w-10 h-10 rounded-full object-cover shadow-inner border border-[#35485E]">
+                <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#141E28] rounded-full"></span>
             </div>
             <div class="text-left">
-                <div class="text-[10px] text-zinc-400 font-medium leading-none mb-1">
+                <div class="text-[10px] text-slate-400 font-medium leading-none mb-1">
                     Direct Mechanic Line
                 </div>
-                <div class="text-xs font-bold text-white tracking-tight group-hover:text-amber-400 transition flex items-center gap-1.5">
+                <div class="text-xs font-bold text-slate-100 tracking-tight group-hover:text-amber-400 transition flex items-center gap-1.5">
                     <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
                     <span>Message Luca on WhatsApp &rarr;</span>
                 </div>
@@ -174,53 +170,53 @@
     </div>
 
     <!-- Global Footer -->
-    <footer class="bg-[#0C0F17] text-zinc-400 py-12 border-t border-zinc-800/80 text-sm mt-auto">
+    <footer class="bg-[#070C11] text-slate-400 py-12 border-t border-[#243344] text-sm mt-auto">
         <div class="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div>
-                <h3 class="text-white font-bold text-base mb-3 flex items-center space-x-2">
+                <h3 class="text-slate-100 font-bold text-base mb-3 flex items-center space-x-2">
                     <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Luca's Garage" class="w-6 h-6 rounded-md object-cover inline-block">
                     <span>Luca's Garage London</span>
                 </h3>
-                <p class="text-xs text-zinc-400 leading-relaxed mb-3">
+                <p class="text-xs text-slate-400 leading-relaxed mb-3">
                     Independent mechanical workshop and certified used vehicle sales. Every car is hand-repaired to manufacturer specifications, serviced, MOT-checked, and sold with peace of mind.
                 </p>
-                <div class="text-xs text-zinc-300">
+                <div class="text-xs text-slate-300">
                     <i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 40 Penrose Street, Walworth, SE17 3DW
                 </div>
             </div>
 
             <div>
-                <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Opening Hours</h4>
-                <ul class="text-xs space-y-1.5 text-zinc-300">
-                    <li class="flex justify-between"><span>Monday – Friday:</span> <span class="font-semibold text-white">9:00 AM – 6:00 PM</span></li>
-                    <li class="flex justify-between"><span>Saturday:</span> <span class="font-semibold text-white">1:00 PM – 6:00 PM</span></li>
-                    <li class="flex justify-between text-zinc-500"><span>Sunday:</span> <span>Closed</span></li>
+                <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Opening Hours</h4>
+                <ul class="text-xs space-y-1.5 text-slate-300">
+                    <li class="flex justify-between"><span>Monday – Friday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Saturday:</span> <span class="font-semibold text-slate-100">1:00 PM – 6:00 PM</span></li>
+                    <li class="flex justify-between text-slate-500"><span>Sunday:</span> <span>Closed</span></li>
                 </ul>
-                <p class="text-[11px] text-zinc-400 mt-3">
+                <p class="text-[11px] text-slate-400 mt-3">
                     <i class="fa-solid fa-circle-info text-amber-400 mr-1.5"></i> In-person viewings are by appointment to ensure bay access.
                 </p>
             </div>
 
             <div>
-                <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-3">Direct Contact</h4>
-                <p class="text-xs text-zinc-300 mb-2">
-                    <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Workshop Mobile: <strong class="text-white">07535 321145</strong>
+                <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Direct Contact</h4>
+                <p class="text-xs text-slate-300 mb-2">
+                    <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Workshop Mobile: <strong class="text-slate-100">07535 321145</strong>
                 </p>
                 <a href="{{ default_whatsapp_url }}" target="_blank"
-                    class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white transition shadow-sm mb-3">
+                    class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white transition shadow-sm mb-3">
                     <i class="fa-brands fa-whatsapp text-sm mr-1.5"></i> Open WhatsApp Chat
                 </a>
-                <p class="text-[11px] text-zinc-500">
+                <p class="text-[11px] text-slate-500">
                     London Borough of Southwark &bull; Expanded ULEZ Zone
                 </p>
             </div>
         </div>
 
-        <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-zinc-800/80 text-center text-xs text-zinc-500 flex flex-wrap justify-between items-center">
+        <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-[#243344] text-center text-xs text-slate-500 flex flex-wrap justify-between items-center">
             <p>&copy; 2026 Luca's Garage. All rights reserved. 40 Penrose St, London SE17 3DW.</p>
             <div class="space-x-4 mt-2 sm:mt-0">
-                <a href="{{ url_for('cars') }}" class="hover:text-zinc-300 transition">View Stock</a>
-                <a href="{{ url_for('login') }}" class="hover:text-zinc-300 transition">Mechanic Login</a>
+                <a href="{{ url_for('cars') }}" class="hover:text-slate-300 transition">View Stock</a>
+                <a href="{{ url_for('login') }}" class="hover:text-slate-300 transition">Mechanic Login</a>
             </div>
         </div>
     </footer>
@@ -265,8 +261,8 @@
             const btnEs = document.getElementById('lang-btn-es');
             if (!btnEn || !btnEs) return;
 
-            const activeClass = 'px-2 py-0.5 rounded font-black transition text-zinc-950 bg-white shadow-sm flex items-center gap-1 cursor-pointer';
-            const inactiveClass = 'px-2 py-0.5 rounded font-bold transition text-zinc-400 hover:text-white flex items-center gap-1 cursor-pointer';
+            const activeClass = 'px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer';
+            const inactiveClass = 'px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1 cursor-pointer';
 
             if (lang === 'es') {
                 btnEs.className = activeClass;
