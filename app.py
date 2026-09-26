@@ -95,6 +95,14 @@ def car_detail(id):
     whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="inquiry")
     return render_template('car_detail.html', car=car, whatsapp_url=whatsapp_url)
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/pricing')
+def pricing():
+    return render_template('pricing.html')
+
 # ----------------- BOOKING & VERIFICATION ROUTES ----------------- #
 
 @app.route('/api/book-viewing', methods=['POST'])

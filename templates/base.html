@@ -107,14 +107,16 @@
                 </div>
             </a>
 
-            <div class="space-x-6 text-sm font-semibold flex items-center">
+            <div class="space-x-5 text-sm font-semibold flex items-center">
                 <a href="{{ url_for('home') }}" class="text-slate-300 hover:text-amber-400 transition">Home</a>
                 <a href="{{ url_for('home') }}#services" class="text-slate-300 hover:text-amber-400 transition">Services</a>
+                <a href="{{ url_for('pricing') }}" class="text-slate-300 hover:text-amber-400 transition">Pricing</a>
                 <a href="{{ url_for('cars') }}" class="text-slate-300 hover:text-amber-400 transition">Cars For Sale</a>
+                <a href="{{ url_for('about') }}" class="text-slate-300 hover:text-amber-400 transition">About Us</a>
                 
                 <a href="{{ default_whatsapp_url }}" target="_blank"
-                    class="hidden md:inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/20 transition shadow-sm">
-                    <i class="fa-brands fa-whatsapp text-sm mr-1.5 text-emerald-400"></i> Message on WhatsApp
+                    class="hidden lg:inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/20 transition shadow-sm">
+                    <i class="fa-brands fa-whatsapp text-sm mr-1.5 text-emerald-400"></i> WhatsApp
                 </a>
 
                 {% if current_user.is_authenticated %}
@@ -215,6 +217,10 @@
         <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-[#243344] text-center text-xs text-slate-500 flex flex-wrap justify-between items-center">
             <p>&copy; 2026 Luca's Garage. All rights reserved. 40 Penrose St, London SE17 3DW.</p>
             <div class="space-x-4 mt-2 sm:mt-0">
+                <a href="{{ url_for('home') }}" class="hover:text-slate-300 transition">Home</a>
+                <a href="{{ url_for('home') }}#services" class="hover:text-slate-300 transition">Services</a>
+                <a href="{{ url_for('pricing') }}" class="hover:text-slate-300 transition">Pricing</a>
+                <a href="{{ url_for('about') }}" class="hover:text-slate-300 transition">About Us</a>
                 <a href="{{ url_for('cars') }}" class="hover:text-slate-300 transition">View Stock</a>
                 <a href="{{ url_for('login') }}" class="hover:text-slate-300 transition">Mechanic Login</a>
             </div>
