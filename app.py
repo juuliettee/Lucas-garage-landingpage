@@ -161,11 +161,14 @@ def book_viewing_api():
         car.make_model, booking_date, booking_time, customer_name, customer_phone
     )
 
-    # WhatsApp direct chat link
-    whatsapp_url = generate_customer_whatsapp_url(
-        car_name=f"{car.year} {car.make_model}",
-        message_type="viewing"
+    # 1-Tap WhatsApp direct confirmation URL with full booking details
+    import urllib.parse
+    booking_msg = (
+        f"Hi Luca, I just booked a viewing for the {car.year} {car.make_model} "
+        f"on {booking_date} at {booking_time}. My name is {customer_name} ({customer_phone}). "
+        f"Booking Ref: #LG-{booking.id}"
     )
+    whatsapp_url = f"https://wa.me/{GARAGE_MOBILE}?text={urllib.parse.quote(booking_msg)}"
 
     # Multi-channel alerts (Buyer email if provided, Luca alert email/telegram)
     try:

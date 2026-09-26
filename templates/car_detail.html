@@ -222,11 +222,11 @@
 
                 <!-- Direct WhatsApp Alternative -->
                 <div class="mt-4 pt-4 border-t border-[#243344] text-center">
-                    <p class="text-xs text-slate-400 mb-2">Prefer to arrange via WhatsApp directly?</p>
+                    <p class="text-xs text-slate-400 mb-2">Prefer to skip the form and book right now?</p>
                     <a href="{{ whatsapp_url }}" target="_blank"
-                        class="w-full inline-flex items-center justify-center space-x-2 bg-[#1E2B3A] hover:bg-[#28394D] text-emerald-400 border border-[#243344] font-bold text-xs py-2.5 rounded-xl transition">
-                        <i class="fa-brands fa-whatsapp text-base text-emerald-400"></i>
-                        <span>WhatsApp Luca: 07535 321145</span>
+                        class="w-full inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-black text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-500/10">
+                        <i class="fa-brands fa-whatsapp text-base"></i>
+                        <span>⚡ Quick 1-Tap: WhatsApp Luca Directly</span>
                     </a>
                 </div>
             </div>
@@ -299,19 +299,19 @@
                             <div><i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Luca's Workshop: 07535 321145</div>
                         </div>
 
-                        <div class="pt-2 border-t border-[#243344] space-y-2">
+                        <div class="pt-3 border-t border-[#243344] space-y-2">
+                            <a href="${data.whatsapp_url}" target="_blank"
+                                class="inline-flex items-center justify-center space-x-2 w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-black py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20">
+                                <i class="fa-brands fa-whatsapp text-lg"></i>
+                                <span>💬 1-Tap WhatsApp Luca to Confirm Now</span>
+                            </a>
                             ${data.gcal_url ? `
                             <a href="${data.gcal_url}" target="_blank"
-                                class="inline-flex items-center justify-center space-x-1.5 w-full bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-bold py-2.5 px-3 rounded-xl text-xs transition shadow">
-                                <i class="fa-brands fa-google text-sm"></i>
+                                class="inline-flex items-center justify-center space-x-1.5 w-full bg-[#1E2B3A] hover:bg-[#28394D] text-slate-200 border border-[#243344] font-bold py-2.5 px-3 rounded-xl text-xs transition">
+                                <i class="fa-brands fa-google text-xs text-amber-400"></i>
                                 <span>Add to Google Calendar</span>
                             </a>
                             ` : ''}
-                            <a href="${data.whatsapp_url}" target="_blank"
-                                class="inline-flex items-center justify-center space-x-1.5 w-full bg-[#1E2B3A] hover:bg-[#28394D] text-emerald-400 border border-[#243344] font-bold py-2.5 px-3 rounded-xl text-xs transition">
-                                <i class="fa-brands fa-whatsapp text-sm"></i>
-                                <span>Message Luca on WhatsApp</span>
-                            </a>
                         </div>
                     </div>
                 `;
