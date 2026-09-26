@@ -144,7 +144,7 @@
                 </div>
 
                 <!-- Booking Form -->
-                <form id="viewingBookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-4 text-xs">
+                <form id="viewingBookingForm" onsubmit="handleBookingSubmit(event); return false;" class="space-y-4 text-xs">
                     <input type="hidden" name="car_id" value="{{ car.id }}">
 
                     <div>
@@ -254,8 +254,11 @@
     }
 
     async function handleBookingSubmit(e) {
-        e.preventDefault();
+        if (e && e.preventDefault) e.preventDefault();
         const form = document.getElementById('viewingBookingForm');
+        if (!form.reportValidity()) {
+            return false;
+        }
         const btn = document.getElementById('submitBookingBtn');
         const resultArea = document.getElementById('bookingResultArea');
 
@@ -327,6 +330,7 @@
                 <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs">
                     Network error. Please message Luca on WhatsApp: <strong>07535 321145</strong>.
                 </div>
+            `;
         } finally {
             btn.disabled = false;
             btn.innerHTML = `<i class="fa-solid fa-calendar-check text-[#0B1117]"></i><span>Book Viewing Slot</span>`;
