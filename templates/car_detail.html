@@ -46,8 +46,13 @@
                 <div class="p-6 sm:p-8">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#243344]">
                         <div>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> In Stock & Available
+                                </span>
+                            </div>
                             <h1 class="text-2xl sm:text-3xl font-black text-slate-50">{{ car.year }} {{ car.make_model }}</h1>
-                            <p class="text-xs text-slate-400 mt-1">Listed by <span class="notranslate font-semibold" translate="no">Lucas Garage</span> &bull; Repaired & Certified in London</p>
+                            <p class="text-xs text-slate-400 mt-1">Listed by <span class="notranslate font-semibold" translate="no">Lucas Garage</span> &bull; Inspected & Serviced in London</p>
                         </div>
                         <div class="text-3xl font-black text-amber-400 font-mono tracking-tight">
                             £{{ "{:,}".format(car.price) }}
@@ -135,11 +140,18 @@
                     </div>
                 </div>
 
-                <div class="bg-[#0B1117] p-3 rounded-xl border border-[#243344] text-[11px] text-slate-300 mb-6 flex items-start space-x-2">
-                    <i class="fa-solid fa-clock text-amber-400 text-xs mt-0.5"></i>
-                    <div>
-                        <strong class="text-slate-100">Hours:</strong> Mon–Fri 9am–6pm, Sat 1pm–6pm (Closed Sun). <br>
-                        Viewings arranged by appointment so Luca can walk you through the vehicle.
+                <div class="bg-[#0B1117] p-3 rounded-xl border border-[#243344] text-[11px] text-slate-300 mb-6 space-y-2">
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-100">Still Available?</strong> Yes — if this vehicle is displayed on our website, it is currently in stock. Listings are taken down the moment a deposit is accepted.
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-2 pt-1.5 border-t border-[#243344]/60">
+                        <i class="fa-solid fa-clock text-amber-400 text-xs mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-100">Viewing Hours:</strong> Mon–Fri 9am–6pm, Sat 1pm–6pm (Closed Sun). Viewings arranged by appointment so Luca can walk you through the vehicle.
+                        </div>
                     </div>
                 </div>
 

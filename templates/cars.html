@@ -10,6 +10,16 @@
         </div>
     </div>
 
+    <!-- Live Inventory Availability Notice -->
+    <div class="mb-8 p-4 rounded-2xl bg-[#141E28] border border-[#243344] flex items-start sm:items-center space-x-3.5 text-xs text-slate-300 shadow-sm">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-sm flex-shrink-0 mt-0.5 sm:mt-0">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <p class="leading-relaxed">
+            <strong class="text-slate-100 font-bold">Live Inventory:</strong> If a vehicle is visible on this page, it is currently in stock and available for viewing. Once a deposit is taken or a vehicle is sold, the listing is updated or removed immediately in real time.
+        </p>
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for car in cars %}
         <div class="bg-[#141E28] rounded-2xl shadow-xl border border-[#243344] overflow-hidden flex flex-col group hover:border-amber-500/40 transition duration-200">
