@@ -10,6 +10,9 @@
             <p class="text-xs text-slate-400 mt-1">40 Penrose Street &bull; Viewings, Stock & 1-Click Ad Generator</p>
         </div>
         <div class="flex items-center space-x-3">
+            <a href="{{ url_for('admin_test_email') }}" class="bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/25 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center" title="Send a test booking alert to Luca's email">
+                <i class="fa-solid fa-envelope text-sm mr-1.5 text-amber-400"></i> Test Email Alert
+            </a>
             <a href="{{ default_whatsapp_url }}" target="_blank" class="bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/25 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center">
                 <i class="fa-brands fa-whatsapp text-sm mr-1.5 text-emerald-400"></i> Test WhatsApp
             </a>

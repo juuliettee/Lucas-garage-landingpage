@@ -279,6 +279,30 @@ def admin_dashboard():
 
     return render_template('admin.html', cars=all_cars, bookings=booking_items)
 
+@app.route('/admin/test-email')
+@login_required
+def admin_test_email():
+    from services.notifications import send_email, LUCA_EMAIL, SMTP_USER, SMTP_PASS
+    resend_key = os.getenv("RESEND_API_KEY")
+    if not (SMTP_USER and SMTP_PASS) and not resend_key:
+        flash("Email alert not sent: SMTP_USER and SMTP_PASS (or RESEND_API_KEY) are not yet configured in your .env file.", "danger")
+        return redirect(url_for('admin_dashboard'))
+
+    test_subject = "Test Booking Alert - Lucas Garage"
+    test_body = f"""
+    <div style="font-family: Arial, sans-serif; padding: 20px; color: #1e293b;">
+        <h2 style="color: #0b1117;">Lucas Garage Email Alert Test</h2>
+        <p>This test email confirms your mailbox is properly connected to the Lucas Garage website.</p>
+        <p>Whenever a customer books a vehicle viewing, you will automatically receive an email alert with the customer's name, phone number, car, and appointment date/time.</p>
+    </div>
+    """
+    success = send_email(LUCA_EMAIL, test_subject, test_body)
+    if success:
+        flash(f"Test email successfully dispatched to {LUCA_EMAIL}!", "success")
+    else:
+        flash(f"Failed to deliver email to {LUCA_EMAIL}. Please verify your credentials in .env.", "danger")
+    return redirect(url_for('admin_dashboard'))
+
 @app.route('/admin/add', methods=['POST'])
 @login_required
 def add_car():
