@@ -117,11 +117,8 @@ def book_viewing_api():
     booking_time = data.get('booking_time', '').strip() # HH:MM
     notes = data.get('notes', '').strip()
 
-    if not (car_id and customer_name and customer_phone and customer_email and booking_date and booking_time):
-        return jsonify({"success": False, "message": "Please fill in all fields (Name, Phone, Email, Date, Time)."}), 400
-
-    if "@" not in customer_email or "." not in customer_email:
-        return jsonify({"success": False, "message": "Please provide a valid email address to receive your confirmation link."}), 400
+    if not (car_id and customer_name and customer_phone and booking_date and booking_time):
+        return jsonify({"success": False, "message": "Please fill in your Name, Phone number, Date, and Time."}), 400
 
     car = Car.query.get(int(car_id))
     if not car:
@@ -145,73 +142,49 @@ def book_viewing_api():
     except Exception as e:
         return jsonify({"success": False, "message": f"Invalid date or time format: {e}"}), 400
 
-    # Prevent double-booking for the exact same car, date, and time
-    existing = Booking.query.filter_by(
-        car_id=car.id,
-        booking_date=booking_date,
-        booking_time=booking_time,
-        status="Confirmed"
-    ).first()
-    if existing:
-        return jsonify({"success": False, "message": "This time slot is already reserved for this vehicle. Please choose another slot."}), 400
-
-    # Token payload for cryptographic 30-min verification
-    token_payload = {
-        "car_id": car.id,
-        "customer_name": customer_name,
-        "customer_phone": customer_phone,
-        "customer_email": customer_email,
-        "booking_date": booking_date,
-        "booking_time": booking_time,
-        "notes": notes,
-        "created_at": datetime.utcnow().isoformat()
-    }
-    token = generate_verification_token(token_payload)
-    token_expires_at = datetime.utcnow() + timedelta(minutes=30)
-
-    # Save as Pending_Verification to temporarily hold the slot
+    # Save directly as Confirmed (Frictionless for 5-6 man garage)
     booking = Booking(
         car_id=car.id,
         customer_name=customer_name,
         customer_phone=customer_phone,
-        customer_email=customer_email,
+        customer_email=customer_email or "Not provided",
         booking_date=booking_date,
         booking_time=booking_time,
         notes=notes,
-        status="Pending_Verification",
-        verification_token=token,
-        token_expires_at=token_expires_at
+        status="Confirmed"
     )
     db.session.add(booking)
     db.session.commit()
 
-    # Generate 1-click verification URL
-    verification_url = url_for('verify_booking', token=token, _external=True)
-
-    # Send 1-click verification email
-    send_verification_email(
-        customer_email=customer_email,
-        customer_name=customer_name,
-        car=car,
-        booking_date=booking_date,
-        booking_time=booking_time,
-        verification_url=verification_url
+    # Generate 1-tap Google Calendar link
+    gcal_url = create_google_calendar_url(
+        car.make_model, booking_date, booking_time, customer_name, customer_phone
     )
 
-    # WhatsApp backup URL in case customer is on mobile or prefers instant messaging
-    whatsapp_backup_url = generate_customer_whatsapp_url(
+    # WhatsApp direct chat link
+    whatsapp_url = generate_customer_whatsapp_url(
         car_name=f"{car.year} {car.make_model}",
         message_type="viewing"
     )
 
+    # Multi-channel alerts (Buyer email if provided, Luca alert email/telegram)
+    try:
+        dispatch_confirmed_booking_notifications(booking, car)
+    except Exception as e:
+        app.logger.warning(f"Notification alert notice: {e}")
+
     return jsonify({
         "success": True,
-        "requires_verification": True,
-        "customer_email": customer_email,
+        "booking_id": booking.id,
+        "booking_ref": f"#LG-{booking.id}",
+        "customer_name": customer_name,
+        "customer_phone": customer_phone,
         "booking_date": booking_date,
         "booking_time": booking_time,
-        "whatsapp_backup_url": whatsapp_backup_url,
-        "message": f"Confirmation link sent! Please check your email ({customer_email}) to confirm your viewing appointment."
+        "car_name": f"{car.year} {car.make_model}",
+        "gcal_url": gcal_url,
+        "whatsapp_url": whatsapp_url,
+        "message": f"Viewing confirmed for {booking_date} at {booking_time}!"
     })
 
 
