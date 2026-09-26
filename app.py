@@ -211,8 +211,7 @@ def book_viewing_api():
         "booking_date": booking_date,
         "booking_time": booking_time,
         "whatsapp_backup_url": whatsapp_backup_url,
-        "verification_url": verification_url, # Provided for local testing ease
-        "message": f"Slot temporarily held for 30 minutes! Please check your email ({customer_email}) to confirm your viewing."
+        "message": f"Confirmation link sent! Please check your email ({customer_email}) to confirm your viewing appointment."
     })
 
 

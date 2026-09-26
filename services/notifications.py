@@ -65,42 +65,77 @@ def send_telegram_alert(booking, car):
 def send_email(recipient_email, subject, html_body, ics_content=None):
     """
     Sends an email with optional embedded RFC 5545 .ics calendar attachment.
-    Falls back gracefully to logging if SMTP credentials are not yet set.
+    Supports Resend API (RESEND_API_KEY) or standard SMTP (Gmail/Custom).
+    Falls back gracefully to logging if credentials are not yet set.
     """
-    if not SMTP_USER or not SMTP_PASS:
-        print(f"\n[DEV NOTICE] SMTP credentials not set in .env. Email to {recipient_email} simulated:")
-        print(f"Subject: {subject}")
-        if ics_content:
-            print("Includes .ics calendar invite.")
-        print("-" * 50)
-        return True
+    # 1. Option A: Resend API (re_...)
+    resend_api_key = os.getenv("RESEND_API_KEY")
+    if resend_api_key:
+        try:
+            from_header = os.getenv("FROM_EMAIL") or "Luca's Garage <onboarding@resend.dev>"
+            payload = {
+                "from": from_header,
+                "to": [recipient_email],
+                "subject": subject,
+                "html": html_body
+            }
+            if ics_content:
+                import base64
+                payload["attachments"] = [{
+                    "filename": "viewing_invite.ics",
+                    "content": base64.b64encode(ics_content.encode("utf-8")).decode("utf-8")
+                }]
+            resp = requests.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {resend_api_key}",
+                    "Content-Type": "application/json"
+                },
+                json=payload,
+                timeout=10
+            )
+            if resp.status_code in [200, 201]:
+                return True
+            else:
+                print(f"[RESEND NOTICE] Resend returned status {resp.status_code}: {resp.text}")
+        except Exception as e:
+            print(f"[RESEND ERROR] Failed to send via Resend: {e}")
 
-    try:
-        msg = MIMEMultipart("mixed")
-        msg["Subject"] = subject
-        msg["From"] = f"Luca's Garage <{FROM_EMAIL}>"
-        msg["To"] = recipient_email
+    # 2. Option B: SMTP (e.g. Gmail with App Password)
+    if SMTP_USER and SMTP_PASS:
+        try:
+            from_address = os.getenv("FROM_EMAIL") or SMTP_USER
+            msg = MIMEMultipart("mixed")
+            msg["Subject"] = subject
+            msg["From"] = f"Luca's Garage <{from_address}>"
+            msg["To"] = recipient_email
 
-        alt_part = MIMEMultipart("alternative")
-        alt_part.attach(MIMEText(html_body, "html"))
-        msg.attach(alt_part)
+            alt_part = MIMEMultipart("alternative")
+            alt_part.attach(MIMEText(html_body, "html"))
+            msg.attach(alt_part)
 
-        if ics_content:
-            ics_part = MIMEBase("text", "calendar", method="REQUEST", name="viewing_invite.ics")
-            ics_part.set_payload(ics_content.encode("utf-8"))
-            encoders.encode_base64(ics_part)
-            ics_part.add_header("Content-Disposition", "attachment; filename=\"viewing_invite.ics\"")
-            ics_part.add_header("Content-Class", "urn:content-classes:calendarmessage")
-            msg.attach(ics_part)
+            if ics_content:
+                ics_part = MIMEBase("text", "calendar", method="REQUEST", name="viewing_invite.ics")
+                ics_part.set_payload(ics_content.encode("utf-8"))
+                encoders.encode_base64(ics_part)
+                ics_part.add_header("Content-Disposition", "attachment; filename=\"viewing_invite.ics\"")
+                ics_part.add_header("Content-Class", "urn:content-classes:calendarmessage")
+                msg.attach(ics_part)
 
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=12) as server:
-            server.starttls()
-            server.login(SMTP_USER, SMTP_PASS)
-            server.sendmail(FROM_EMAIL, [recipient_email], msg.as_string())
-        return True
-    except Exception as e:
-        print(f"SMTP dispatch warning for {recipient_email}: {e}")
-        return False
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=12) as server:
+                server.starttls()
+                server.login(SMTP_USER, SMTP_PASS)
+                server.sendmail(from_address, [recipient_email], msg.as_string())
+            return True
+        except Exception as e:
+            print(f"[SMTP ERROR] SMTP dispatch warning for {recipient_email}: {e}")
+            return False
+
+    # 3. Fallback: Log for developer inspection
+    print(f"\n[DEV NOTICE] Mail credentials not set in .env. Email to {recipient_email} simulated:")
+    print(f"Subject: {subject}")
+    print("-" * 50)
+    return True
 
 def send_verification_email(customer_email, customer_name, car, booking_date, booking_time, verification_url):
     """
@@ -111,39 +146,38 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
     <!DOCTYPE html>
     <html>
     <head><meta charset="utf-8"></head>
-    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px;">
-        <div style="max-width: 580px; margin: auto; background-color: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden;">
-            <div style="background-color: #0f172a; padding: 24px 32px; color: #ffffff;">
-                <h2 style="margin: 0; font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">LUCA'S <span style="color: #3b82f6;">GARAGE</span></h2>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0b1117; margin: 0; padding: 24px; color: #f1f5f9;">
+        <div style="max-width: 580px; margin: auto; background-color: #141e28; border-radius: 16px; border: 1px solid #243344; overflow: hidden;">
+            <div style="background-color: #070c11; padding: 24px 32px; border-bottom: 1px solid #243344;">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCA'S <span style="color: #f59e0b;">GARAGE</span></h2>
                 <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">40 Penrose Street, Walworth, London SE17 3DW</p>
             </div>
-            <div style="padding: 32px; color: #334155; line-height: 1.6;">
-                <h1 style="color: #0f172a; font-size: 22px; font-weight: 800; margin: 0 0 12px;">Confirm your viewing appointment</h1>
+            <div style="padding: 32px; color: #cbd5e1; line-height: 1.6;">
+                <h1 style="color: #f8fafc; font-size: 22px; font-weight: 800; margin: 0 0 12px;">Confirm Your Viewing Appointment</h1>
                 <p style="font-size: 14px; margin: 0 0 18px;">Hi {customer_name},</p>
                 <p style="font-size: 14px; margin: 0 0 24px;">
-                    We have temporarily held your requested ramp slot to view the <strong>{car.year} {car.make_model}</strong>. 
-                    Please tap the button below within <strong>30 minutes</strong> to confirm:
+                    We have received your viewing request for the <strong>{car.year} {car.make_model}</strong>. 
+                    Please tap the button below to confirm your appointment:
                 </p>
                 
                 <div style="text-align: center; margin: 28px 0;">
-                    <a href="{verification_url}" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: bold; font-size: 15px; display: inline-block;">
+                    <a href="{verification_url}" style="background-color: #f59e0b; color: #0b1117; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: 800; font-size: 15px; display: inline-block;">
                         &check; Confirm My Viewing Slot
                     </a>
                 </div>
 
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 24px 0; font-size: 13px;">
-                    <div style="font-weight: bold; color: #0f172a; font-size: 15px; margin-bottom: 8px;">{car.year} {car.make_model} - £{car.price:,}</div>
+                <div style="background-color: #0b1117; border: 1px solid #243344; border-radius: 12px; padding: 18px; margin: 24px 0; font-size: 13px; color: #cbd5e1;">
+                    <div style="font-weight: bold; color: #f8fafc; font-size: 15px; margin-bottom: 8px;">{car.year} {car.make_model} - £{car.price:,}</div>
                     <div>&bull; <strong>Date:</strong> {booking_date}</div>
                     <div>&bull; <strong>Time:</strong> {booking_time}</div>
                     <div>&bull; <strong>Location:</strong> 40 Penrose Street, London SE17 3DW</div>
-                    <div>&bull; <strong>ULEZ Status:</strong> {'Exempt (Euro 6)' if car.ulez_compliant else 'Non-ULEZ'}</div>
                 </div>
 
-                <p style="font-size: 12px; color: #64748b; margin-top: 24px;">
-                    If you cannot make this time, you can safely ignore this email and the slot will be released automatically.
+                <p style="font-size: 12px; color: #94a3b8; margin-top: 24px;">
+                    If you cannot make this time, you can safely ignore this email and the slot will be released.
                 </p>
             </div>
-            <div style="background-color: #f8fafc; border-top: 1px solid #e2e8f0; padding: 16px 32px; font-size: 12px; color: #64748b; text-align: center;">
+            <div style="background-color: #070c11; border-top: 1px solid #243344; padding: 16px 32px; font-size: 12px; color: #64748b; text-align: center;">
                 Luca's Garage &bull; Workshop Direct Mobile: 07535 321145
             </div>
         </div>
@@ -173,20 +207,21 @@ def dispatch_confirmed_booking_notifications(booking, car):
     <!DOCTYPE html>
     <html>
     <head><meta charset="utf-8"></head>
-    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #f8fafc; padding: 24px;">
-        <div style="max-width: 580px; margin: auto; background-color: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; overflow: hidden;">
-            <div style="background-color: #0f172a; padding: 24px 32px; color: #ffffff;">
-                <h2 style="margin: 0; font-size: 20px; font-weight: 800;">LUCA'S <span style="color: #3b82f6;">GARAGE</span></h2>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0b1117; padding: 24px; color: #f1f5f9;">
+        <div style="max-width: 580px; margin: auto; background-color: #141e28; border-radius: 16px; border: 1px solid #243344; overflow: hidden;">
+            <div style="background-color: #070c11; padding: 24px 32px; border-bottom: 1px solid #243344;">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCA'S <span style="color: #f59e0b;">GARAGE</span></h2>
                 <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">40 Penrose Street, Walworth, London SE17 3DW</p>
             </div>
-            <div style="padding: 32px; color: #334155; line-height: 1.6;">
-                <div style="display: inline-block; background-color: #dcfce7; color: #166534; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 12px;">
+            <div style="padding: 32px; color: #cbd5e1; line-height: 1.6;">
+                <div style="display: inline-block; background-color: #064e3b; color: #34d399; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 12px; border: 1px solid #059669;">
                     &check; BOOKING CONFIRMED
                 </div>
-                <h1 style="color: #0f172a; font-size: 22px; font-weight: 800; margin: 0 0 12px;">We'll see you at the workshop!</h1>
+                <h1 style="color: #f8fafc; font-size: 22px; font-weight: 800; margin: 0 0 12px;">We'll see you at the workshop!</h1>
                 <p style="font-size: 14px;">Hi {booking.customer_name}, Luca has your viewing appointment locked in for the <strong>{car.year} {car.make_model}</strong>.</p>
                 
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 20px 0; font-size: 13px;">
+                <div style="background-color: #0b1117; border: 1px solid #243344; border-radius: 12px; padding: 18px; margin: 20px 0; font-size: 13px; color: #cbd5e1;">
+                    <div>&bull; <strong>Booking Ref:</strong> <span style="color: #f59e0b; font-weight: bold;">#LG-{booking.id}</span></div>
                     <div>&bull; <strong>Date:</strong> {booking.booking_date}</div>
                     <div>&bull; <strong>Time:</strong> {booking.booking_time} (Vehicle viewing)</div>
                     <div>&bull; <strong>Address:</strong> 40 Penrose Street, Walworth, SE17 3DW</div>
@@ -195,12 +230,12 @@ def dispatch_confirmed_booking_notifications(booking, car):
 
                 <p style="font-size: 14px; margin-bottom: 14px;">The calendar invite is attached to this email. You can also add it to your calendar in 1 tap:</p>
                 <div style="margin-bottom: 24px;">
-                    <a href="{gcal_url}" style="background-color: #2563eb; color: #ffffff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 13px; display: inline-block;">
+                    <a href="{gcal_url}" style="background-color: #f59e0b; color: #0b1117; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 800; font-size: 13px; display: inline-block;">
                         Add to Google Calendar
                     </a>
                 </div>
 
-                <div style="border-left: 3px solid #2563eb; padding-left: 12px; font-size: 12px; color: #475569;">
+                <div style="border-left: 3px solid #f59e0b; padding-left: 12px; font-size: 12px; color: #94a3b8;">
                     <strong>Location note:</strong> Customer parking is available directly outside the workshop on Penrose Street.
                 </div>
             </div>

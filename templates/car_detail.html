@@ -168,15 +168,21 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
-                        <div>
-                            <label class="block font-bold text-slate-300 mb-1">Select Date *</label>
-                            <input type="date" name="booking_date" id="bookingDateInput" required
-                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                        <div class="relative">
+                            <label for="bookingDateInput" class="block font-bold text-slate-300 mb-1">Select Date *</label>
+                            <div class="relative cursor-pointer" onclick="try{document.getElementById('bookingDateInput').showPicker()}catch(e){}">
+                                <input type="date" name="booking_date" id="bookingDateInput" required
+                                    onclick="try{this.showPicker()}catch(e){}"
+                                    class="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition cursor-pointer [color-scheme:dark]">
+                                <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-amber-400">
+                                    <i class="fa-solid fa-calendar-days text-sm"></i>
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <label class="block font-bold text-slate-300 mb-1">Time Slot *</label>
                             <select name="booking_time" required
-                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition cursor-pointer">
                                 <option value="09:30">09:30 AM (Mon-Fri)</option>
                                 <option value="10:30">10:30 AM (Mon-Fri)</option>
                                 <option value="11:30">11:30 AM (Mon-Fri)</option>
@@ -232,12 +238,20 @@
 </div>
 
 <script>
-    // Set minimum date to today
+    // Set minimum date to today & handle calendar popup
     const today = new Date().toISOString().split('T')[0];
     const dateInput = document.getElementById('bookingDateInput');
     if (dateInput) {
         dateInput.min = today;
         dateInput.value = today;
+
+        const openCalendar = () => {
+            if (typeof dateInput.showPicker === 'function') {
+                try { dateInput.showPicker(); } catch (err) {}
+            }
+        };
+        dateInput.addEventListener('click', openCalendar);
+        dateInput.addEventListener('focus', openCalendar);
     }
 
     async function handleBookingSubmit(e) {
@@ -269,27 +283,22 @@
                 resultArea.innerHTML = `
                     <div class="p-5 rounded-2xl bg-[#0B1117] border border-[#243344] text-slate-200 space-y-3 text-left">
                         <div class="flex items-center space-x-2">
-                            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/25">
-                                <i class="fa-solid fa-clock"></i> Held for 30 Mins
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/25">
+                                <i class="fa-solid fa-envelope"></i> Confirmation Email Sent
                             </span>
                         </div>
                         <h4 class="font-extrabold text-sm text-slate-50">Check your email to confirm viewing</h4>
                         <p class="text-xs text-slate-300 leading-relaxed">
                             We've sent a 1-click confirmation link to <strong class="text-amber-400">${data.customer_email}</strong>. 
-                            Please tap the link to lock in your slot for <strong class="text-slate-50">${data.booking_date} at ${data.booking_time}</strong>.
+                            Please tap the link in your email to confirm your slot for <strong class="text-slate-50">${data.booking_date} at ${data.booking_time}</strong>.
                         </p>
                         
-                        <div class="pt-2 border-t border-[#243344] space-y-2">
+                        <div class="pt-2 border-t border-[#243344]">
                             <a href="${data.whatsapp_backup_url}" target="_blank"
                                 class="inline-flex items-center justify-center space-x-1.5 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 px-3 rounded-xl text-xs transition">
                                 <i class="fa-brands fa-whatsapp text-sm"></i>
                                 <span>Prefer WhatsApp? Tap here to confirm directly</span>
                             </a>
-                            ${data.verification_url ? `
-                            <p class="text-[10px] text-center text-zinc-400">
-                                <a href="${data.verification_url}" class="underline hover:text-amber-400">Click here to verify directly (Dev link)</a>
-                            </p>
-                            ` : ''}
                         </div>
                     </div>
                 `;
