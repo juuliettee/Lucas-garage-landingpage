@@ -39,7 +39,7 @@ GARAGE_INFO = {
         "saturday": "1:00 PM – 6:00 PM",
         "sunday": "Closed"
     },
-    "services": "Mechanical repairs, servicing, diagnostics, MOT prep, and certified used vehicle sales."
+    "services": "Mechanical repairs, servicing, diagnostics, MOT prep, and quality used car sales."
 }
 
 load_dotenv()
