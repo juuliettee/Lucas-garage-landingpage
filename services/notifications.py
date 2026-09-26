@@ -72,7 +72,7 @@ def send_email(recipient_email, subject, html_body, ics_content=None):
     resend_api_key = os.getenv("RESEND_API_KEY")
     if resend_api_key:
         try:
-            from_header = os.getenv("FROM_EMAIL") or "Luca's Garage <onboarding@resend.dev>"
+            from_header = os.getenv("FROM_EMAIL") or "Lucas Garage <onboarding@resend.dev>"
             payload = {
                 "from": from_header,
                 "to": [recipient_email],
@@ -107,7 +107,7 @@ def send_email(recipient_email, subject, html_body, ics_content=None):
             from_address = os.getenv("FROM_EMAIL") or SMTP_USER
             msg = MIMEMultipart("mixed")
             msg["Subject"] = subject
-            msg["From"] = f"Luca's Garage <{from_address}>"
+            msg["From"] = f"Lucas Garage <{from_address}>"
             msg["To"] = recipient_email
 
             alt_part = MIMEMultipart("alternative")
@@ -141,7 +141,7 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
     """
     Sends the 1-click verification email to the customer to eliminate no-shows.
     """
-    subject = f"Confirm your viewing: {car.year} {car.make_model} at Luca's Garage"
+    subject = f"Confirm your viewing: {car.year} {car.make_model} at Lucas Garage"
     html_body = f"""
     <!DOCTYPE html>
     <html>
@@ -149,7 +149,7 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0b1117; margin: 0; padding: 24px; color: #f1f5f9;">
         <div style="max-width: 580px; margin: auto; background-color: #141e28; border-radius: 16px; border: 1px solid #243344; overflow: hidden;">
             <div style="background-color: #070c11; padding: 24px 32px; border-bottom: 1px solid #243344;">
-                <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCA'S <span style="color: #f59e0b;">GARAGE</span></h2>
+                <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCAS <span style="color: #f59e0b;">GARAGE</span></h2>
                 <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">40 Penrose Street, Walworth, London SE17 3DW</p>
             </div>
             <div style="padding: 32px; color: #cbd5e1; line-height: 1.6;">
@@ -178,7 +178,7 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
                 </p>
             </div>
             <div style="background-color: #070c11; border-top: 1px solid #243344; padding: 16px 32px; font-size: 12px; color: #64748b; text-align: center;">
-                Luca's Garage &bull; Workshop Direct Mobile: 07535 321145
+                Lucas Garage &bull; Workshop Direct Mobile: 07535 321145
             </div>
         </div>
     </body>
@@ -245,7 +245,7 @@ def dispatch_confirmed_booking_notifications(booking, car):
     """
     send_email(
         booking.customer_email,
-        f"Confirmed: Viewing for {car.make_model} at Luca's Garage",
+        f"Confirmed: Viewing for {car.make_model} at Lucas Garage",
         customer_html,
         ics_content=ics_text
     )

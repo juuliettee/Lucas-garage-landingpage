@@ -4,7 +4,7 @@ import requests
 from models import Car
 
 GARAGE_INFO = {
-    "name": "Luca's Garage",
+    "name": "Lucas Garage",
     "address": "40 Penrose Street, Walworth, London SE17 3DW",
     "phone": "07535 321145",
     "hours": {
@@ -132,10 +132,10 @@ def generate_ai_response(user_message, conversation_history=None):
     if cars:
         car_titles = [f"{c.year} {c.make_model} (£{c.price:,})" for c in cars[:3]]
         return (
-            f"Hello! At Luca's Garage (40 Penrose St, SE17), our current stock includes: {', '.join(car_titles)}. "
+            f"Hello! At Lucas Garage (40 Penrose St, SE17), our current stock includes: {', '.join(car_titles)}. "
             f"All cars are inspected and road-tested by our mechanics. You can ask me about ULEZ, mileage, repairs, or book a viewing slot anytime!"
         )
 
     return (
-        f"Hello from Luca's Garage (40 Penrose St, London SE17 3DW). How can I help you with our vehicles or workshop services today?"
+        f"Hello from Lucas Garage (40 Penrose St, London SE17 3DW). How can I help you with our vehicles or workshop services today?"
     )

@@ -14,7 +14,7 @@ def generate_customer_whatsapp_url(car_name=None, message_type="inquiry"):
     elif message_type == "viewing" and car_name:
         text = f"Hi Luca, I'd like to arrange a viewing for the {car_name} at 40 Penrose Street."
     else:
-        text = "Hi Luca, I have an inquiry about vehicle servicing / cars for sale at Luca's Garage."
+        text = "Hi Luca, I have an inquiry about vehicle servicing / cars for sale at Lucas Garage."
 
     encoded_text = urllib.parse.quote(text)
     return f"https://wa.me/{GARAGE_MOBILE}?text={encoded_text}"
@@ -29,7 +29,7 @@ def generate_luca_reply_whatsapp_url(customer_phone, car_name, booking_date, boo
         clean_phone = "44" + clean_phone[1:]
     
     text = (
-        f"Hi! Luca here from Luca's Garage (40 Penrose St). "
+        f"Hi! Luca here from Lucas Garage (40 Penrose St). "
         f"Confirming your viewing for the {car_name} on {booking_date} at {booking_time}. "
         f"See you then! Let me know if you need any directions."
     )

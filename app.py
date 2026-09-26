@@ -31,7 +31,7 @@ from services.notifications import send_verification_email, dispatch_confirmed_b
 from services.calendar_service import create_google_calendar_url
 
 GARAGE_INFO = {
-    "name": "Luca's Garage",
+    "name": "Lucas Garage",
     "address": "40 Penrose Street, Walworth, London SE17 3DW",
     "phone": "07535 321145",
     "hours": {
@@ -355,7 +355,7 @@ def marketplace_text(id):
     miles_str = f"{car.mileage:,}" if car.mileage else "Low"
     text = (
         f"{car.year} {car.make_model} - £{car.price:,}\n\n"
-        f"📍 Location: Luca's Garage, 40 Penrose Street, Walworth, London SE17 3DW\n"
+        f"📍 Location: Lucas Garage, 40 Penrose Street, Walworth, London SE17 3DW\n"
         f"📞 Contact/WhatsApp: {GARAGE_INFO['phone']}\n\n"
         f"KEY DETAILS:\n"
         f"• Mileage: {miles_str} miles\n"
@@ -368,7 +368,7 @@ def marketplace_text(id):
         f"{car.repair_notes or 'Fully inspected, serviced, and road-tested by our mechanics.'}\n\n"
         f"FEATURES:\n"
         f"{car.features or 'Standard features, electric windows, central locking'}\n\n"
-        f"Comes with a 30-day mechanical warranty from Luca's Garage. "
+        f"Comes with a 30-day mechanical warranty from Lucas Garage. "
         f"Viewings welcome during opening hours (Mon-Sat). Please message or book to arrange."
     )
     return jsonify({"text": text})

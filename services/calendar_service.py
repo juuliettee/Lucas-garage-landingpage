@@ -1,7 +1,7 @@
 import urllib.parse
 from datetime import datetime, timedelta
 
-GARAGE_NAME = "Luca's Garage"
+GARAGE_NAME = "Lucas Garage"
 GARAGE_ADDRESS = "40 Penrose Street, Walworth, London SE17 3DW"
 GARAGE_PHONE = "07535 321145"
 
@@ -17,7 +17,7 @@ def create_google_calendar_url(car_name, booking_date, booking_time, customer_na
     end_dt = start_dt + timedelta(minutes=45)
     
     dates_param = f"{start_dt.strftime('%Y%m%dT%H%M00')}/{end_dt.strftime('%Y%m%dT%H%M00')}"
-    title = f"Viewing: {car_name} - Luca's Garage"
+    title = f"Viewing: {car_name} - Lucas Garage"
     details = (
         f"Vehicle Viewing Appointment\n\n"
         f"Vehicle: {car_name}\n"
@@ -73,17 +73,17 @@ def generate_ics_content(booking_id, car_name, booking_date, booking_time, custo
         f"DTSTAMP:{dtstamp}",
         f"DTSTART:{dtstart}",
         f"DTEND:{dtend}",
-        f"SUMMARY:Viewing: {car_name} at Luca's Garage",
+        f"SUMMARY:Viewing: {car_name} at Lucas Garage",
         f"DESCRIPTION:{description}",
         f"LOCATION:{GARAGE_ADDRESS}",
-        f"ORGANIZER;CN=\"Luca's Garage\":mailto:{garage_email}",
+        f"ORGANIZER;CN=\"Lucas Garage\":mailto:{garage_email}",
         f"ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;CN={customer_name}:mailto:{customer_email}",
         "STATUS:CONFIRMED",
         "SEQUENCE:0",
         "BEGIN:VALARM",
         "TRIGGER:-PT2H",
         "ACTION:DISPLAY",
-        "DESCRIPTION:Reminder: Vehicle viewing appointment at Luca's Garage in 2 hours",
+        "DESCRIPTION:Reminder: Vehicle viewing appointment at Lucas Garage in 2 hours",
         "END:VALARM",
         "END:VEVENT",
         "END:VCALENDAR"
