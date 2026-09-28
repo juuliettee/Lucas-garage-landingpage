@@ -13,9 +13,10 @@ GARAGE_INFO = {
         "sunday": "Closed"
     },
     "services": "Mechanical repairs, servicing, diagnostics, MOT prep, and quality used car sales.",
+    "pricing": "Diagnostics: £30 fixed. Mini Service: £130 fixed (includes oil & filter). Full Service: £250–£300 depending on car. Brakes fitting: £60–£70. Bring your own parts welcome (labour only).",
     "copart_policy": (
         "All our salvage/Copart sourced vehicles are personally inspected, mechanically repaired to OEM standard, "
-        "thoroughly serviced, road-tested, and sold with a 30-day mechanical warranty."
+        "thoroughly serviced, road-tested, and sold with a 3-month workshop labour guarantee."
     )
 }
 
