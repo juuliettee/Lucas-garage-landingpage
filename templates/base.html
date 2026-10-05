@@ -363,28 +363,54 @@
             });
         }
 
-        // Lightweight, debounced safety check for brand name
+        // Automotive Bilingual Quality Guard & Safety Check for Lucas Garage
         function observeAndRevertTranslations() {
-            const forbiddenTranslations = [
-                /\bTaller\s+de\s+Lucas\b/gi,
-                /\bTaller\s+Lucas\b/gi,
-                /\bGaraje\s+de\s+Lucas\b/gi,
-                /\bGaraje\s+Lucas\b/gi,
-                /\bTaller\s+de\s+Luca\b/gi,
-                /\bGaraje\s+de\s+Luca\b/gi,
-                /\bGaraje\s+Luca\b/gi
+            const automotiveReplacements = [
+                // Brand name protection
+                { pattern: /\b(Taller\s+de\s+Lucas|Taller\s+Lucas|Garaje\s+de\s+Lucas|Garaje\s+Lucas|Taller\s+de\s+Luca|Garaje\s+de\s+Luca|Garaje\s+Luca)\b/gi, replacement: 'Lucas Garage' },
+                // Eliminate embarrassing "compresas" (sanitary pads) mistranslation
+                { pattern: /\bcompresas\b/gi, replacement: 'pastillas de freno' },
+                { pattern: /\bcompresa\b/gi, replacement: 'pastilla de freno' },
+                // Stop currency expansion from blowing out pill badges
+                { pattern: /\bentre\s+60\s+y\s+70\s+libras\s+esterlinas\b/gi, replacement: '£60–£70' },
+                { pattern: /\bentre\s+250\s+y\s+300\s+libras\s+esterlinas\b/gi, replacement: '£250–£300' },
+                { pattern: /\blibras\s+esterlinas\b/gi, replacement: '£' },
+                // Automotive mechanical terms (false friends)
+                { pattern: /\bhuesos\s+de\s+(los\s+)?deseos\b/gi, replacement: 'brazos de suspensión' },
+                { pattern: /\barbustos(\s+de\s+suspensi[oó]n)?\b/gi, replacement: 'silentblocks' },
+                { pattern: /\benlaces\s+de\s+ca[ií]da\b/gi, replacement: 'bieletas de suspensión' },
+                { pattern: /\bmonturas\s+superiores\b/gi, replacement: 'copelas de amortiguador' },
+                { pattern: /\brueda\s+volante\s+de\s+doble\s+masa\b/gi, replacement: 'volante bimasa' },
+                { pattern: /\bcojinete\s+de\s+liberaci[oó]n\b/gi, replacement: 'collarín de embrague' },
+                // Labour vs childbirth / general labour
+                { pattern: /\bgarant[ií]a\s+de\s+(parto|trabajo)\b/gi, replacement: 'garantía de mano de obra' },
+                { pattern: /\b(solo\s+cobramos\s+(el\s+)?)parto\b/gi, replacement: 'solo cobramos la mano de obra' },
+                { pattern: /\bcobro\s+de\s+parto\b/gi, replacement: 'cobro de mano de obra' },
+                // Workshop service tiers
+                { pattern: /\bservicio\s+interino\b/gi, replacement: 'mantenimiento básico (Mini Service)' },
+                { pattern: /\b(trae\s+tus\s+propias\s+)partes\b/gi, replacement: '$1repuestos' },
+                { pattern: /\bpartes\s+propias\b/gi, replacement: 'repuestos propios' },
+                { pattern: /\b(en\s+la\s+|en\s+)rampa\b/gi, replacement: 'en el elevador hidráulico' },
+                { pattern: /\binspecci[oó]n\s+en\s+rampa\b/gi, replacement: 'inspección en elevador' },
+                { pattern: /\bc[oó]digos\s+de\s+error\s+en\s+vivo\b/gi, replacement: 'códigos de avería en tiempo real' },
+                { pattern: /\bhoja\s+de\s+falla\b/gi, replacement: 'hoja de rechazo del MOT (fail sheet)' },
+                { pattern: /\bCita\s+por\s+Reg\b/gi, replacement: 'Presupuesto con matrícula' }
             ];
 
             let checkTimeout = null;
             const fixElements = () => {
-                document.querySelectorAll('span:not(.notranslate), p, h1, h2, h3, a, font').forEach(el => {
+                document.querySelectorAll('span:not(.notranslate), p, h1, h2, h3, h4, li, a, font, div').forEach(el => {
                     if (el.children.length === 0 && el.textContent) {
-                        for (let regex of forbiddenTranslations) {
-                            if (regex.test(el.textContent)) {
-                                el.textContent = el.textContent.replace(regex, 'Lucas Garage');
-                                el.classList.add('notranslate');
-                                el.setAttribute('translate', 'no');
+                        let text = el.textContent;
+                        let changed = false;
+                        for (let item of automotiveReplacements) {
+                            if (item.pattern.test(text)) {
+                                text = text.replace(item.pattern, item.replacement);
+                                changed = true;
                             }
+                        }
+                        if (changed) {
+                            el.textContent = text;
                         }
                     }
                 });
@@ -395,7 +421,7 @@
                 checkTimeout = setTimeout(() => {
                     fixElements();
                     checkTimeout = null;
-                }, 80);
+                }, 60);
             });
             observer.observe(document.body, { childList: true, subtree: true });
         }
@@ -421,74 +447,55 @@
 
             if (lang === 'en') {
                 // Delete googtrans cookie across all paths & domain scopes
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-                if (host) document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
-                if (rootDomain) document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + rootDomain + ';';
-
-                // Try clicking restore button in Google Translate banner iframe if available
-                const iframe = document.querySelector('.goog-te-banner-frame');
-                if (iframe) {
-                    try {
-                        const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                        if (innerDoc) {
-                            const btns = innerDoc.querySelectorAll('button');
-                            for (let b of btns) {
-                                if ((b.id && b.id.includes('restore')) || (b.innerText && (b.innerText.includes('Show original') || b.innerText.includes('Restaurar')))) {
-                                    b.click();
-                                    break;
-                                }
-                            }
-                        }
-                    } catch (e) {}
+                const clearCookies = [
+                    'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;',
+                    'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';',
+                    'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + host + ';'
+                ];
+                if (rootDomain) {
+                    clearCookies.push('googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + rootDomain + ';');
+                    clearCookies.push('googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.' + rootDomain.replace(/^\./, '') + ';');
                 }
+                clearCookies.forEach(c => { document.cookie = c; });
 
-                // Reset combo selector to empty with bubbling events
+                // Instant reload to restore pristine server English HTML
+                window.location.reload();
+                return;
+            }
+
+            // Switching to Spanish ('es')
+            const cookieVal = '/en/' + lang;
+            document.cookie = 'googtrans=' + cookieVal + '; path=/;';
+            if (host) document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + host + ';';
+            if (rootDomain) document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + rootDomain + ';';
+
+            const triggerGoogleCombo = () => {
                 const select = document.querySelector('.goog-te-combo');
                 if (select) {
-                    select.value = '';
+                    select.value = lang;
                     select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
                     select.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+                    return true;
                 }
-            } else {
-                // Set googtrans cookie for Spanish
-                const cookieVal = '/en/' + lang;
-                document.cookie = 'googtrans=' + cookieVal + '; path=/;';
-                if (host) document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + host + ';';
-                if (rootDomain) document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + rootDomain + ';';
+                return false;
+            };
 
-                const triggerGoogleCombo = (targetLang) => {
-                    const select = document.querySelector('.goog-te-combo');
-                    if (select) {
-                        // Reset first if already set to target so change event always fires
-                        if (select.value === targetLang) {
-                            select.value = '';
-                            select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-                        }
-                        select.value = targetLang;
-                        select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
-                        select.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
-                        return true;
-                    }
-                    return false;
-                };
-
-                // Instant in-page translation if Google Translate is ready
-                if (triggerGoogleCombo(lang)) {
-                    return;
-                }
-
-                // Quick retry poll if combo is still mounting
-                let attempts = 0;
-                const interval = setInterval(() => {
-                    attempts++;
-                    if (triggerGoogleCombo(lang)) {
-                        clearInterval(interval);
-                    } else if (attempts > 20) {
-                        clearInterval(interval);
-                        location.reload();
-                    }
-                }, 30);
+            // Instant translation if combo is ready
+            if (triggerGoogleCombo()) {
+                return;
             }
+
+            // Quick retry poll if combo is still mounting, then reload with cookie
+            let attempts = 0;
+            const interval = setInterval(() => {
+                attempts++;
+                if (triggerGoogleCombo()) {
+                    clearInterval(interval);
+                } else if (attempts > 10) {
+                    clearInterval(interval);
+                    window.location.reload();
+                }
+            }, 50);
         }
 
         function updateLangButtons(lang) {
@@ -513,6 +520,9 @@
             const cookieMatch = document.cookie.match(/googtrans=\/en\/([a-z]+)/);
             const savedLang = cookieMatch ? cookieMatch[1] : (localStorage.getItem('luca_garage_lang') || 'en');
             updateLangButtons(savedLang);
+            if (savedLang === 'es' && !cookieMatch) {
+                changeLanguage('es');
+            }
         });
     </script>
     <script defer type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
