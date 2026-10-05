@@ -7,6 +7,10 @@
     <title>Lucas Garage | 40 Penrose St, London SE17 | Repairs & Used Cars</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://translate.google.com" crossorigin>
+    <link rel="preconnect" href="https://translate.googleapis.com" crossorigin>
+    <link rel="dns-prefetch" href="https://translate.google.com">
+    <link rel="dns-prefetch" href="https://translate.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -58,7 +62,14 @@
             box-shadow: none !important;
         }
         #google_translate_element {
-            display: none !important;
+            position: absolute !important;
+            left: -9999px !important;
+            top: -9999px !important;
+            width: 1px !important;
+            height: 1px !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            overflow: hidden !important;
         }
         .notranslate {
             translate: no !important;
@@ -227,8 +238,8 @@
         </div>
     </footer>
 
-    <!-- Google Translate Container (Hidden) -->
-    <div id="google_translate_element" class="hidden"></div>
+    <!-- Google Translate Container (Offscreen layout for instant mount) -->
+    <div id="google_translate_element" aria-hidden="true"></div>
 
     <!-- Language Translation Switcher JavaScript -->
     <script type="text/javascript">
@@ -265,7 +276,7 @@
             });
         }
 
-        // Live observer: if Google Translate injects a Spanish translation for the brand name, revert it immediately
+        // Lightweight, debounced safety check for brand name
         function observeAndRevertTranslations() {
             const forbiddenTranslations = [
                 /\bTaller\s+de\s+Lucas\b/gi,
@@ -277,8 +288,9 @@
                 /\bGaraje\s+Luca\b/gi
             ];
 
+            let checkTimeout = null;
             const fixElements = () => {
-                document.querySelectorAll('span, p, h1, h2, h3, h4, h5, a, font').forEach(el => {
+                document.querySelectorAll('span:not(.notranslate), p, h1, h2, h3, a, font').forEach(el => {
                     if (el.children.length === 0 && el.textContent) {
                         for (let regex of forbiddenTranslations) {
                             if (regex.test(el.textContent)) {
@@ -292,9 +304,13 @@
             };
 
             const observer = new MutationObserver(() => {
-                fixElements();
+                if (checkTimeout) return;
+                checkTimeout = setTimeout(() => {
+                    fixElements();
+                    checkTimeout = null;
+                }, 80);
             });
-            observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+            observer.observe(document.body, { childList: true, subtree: true });
         }
 
         function googleTranslateElementInit() {
@@ -308,6 +324,10 @@
         }
 
         function changeLanguage(lang) {
+            // Instant 0ms visual button feedback
+            updateLangButtons(lang);
+            localStorage.setItem('luca_garage_lang', lang);
+
             const host = window.location.hostname;
             const cookieVal = '/en/' + lang;
 
@@ -315,18 +335,44 @@
             document.cookie = 'googtrans=' + cookieVal + '; path=/;';
             if (host) {
                 document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + host + ';';
+                const domainParts = host.split('.');
+                if (domainParts.length > 2) {
+                    const rootDomain = domainParts.slice(-2).join('.');
+                    document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=.' + rootDomain + ';';
+                }
             }
-            localStorage.setItem('luca_garage_lang', lang);
 
-            // Attempt on-page switch if widget is rendered
-            const select = document.querySelector('.goog-te-combo');
-            if (select) {
-                select.value = lang;
-                select.dispatchEvent(new Event('change'));
-                updateLangButtons(lang);
-            } else {
-                location.reload();
+            const triggerGoogleCombo = (targetLang) => {
+                const select = document.querySelector('.goog-te-combo');
+                if (select) {
+                    if (targetLang === 'en') {
+                        let hasEn = Array.from(select.options).some(o => o.value === 'en');
+                        select.value = hasEn ? 'en' : '';
+                    } else {
+                        select.value = targetLang;
+                    }
+                    select.dispatchEvent(new Event('change'));
+                    return true;
+                }
+                return false;
+            };
+
+            // Instant in-page translation if Google Translate is ready (no reload)
+            if (triggerGoogleCombo(lang)) {
+                return;
             }
+
+            // Quick retry poll (every 30ms up to 600ms) before falling back to reload
+            let attempts = 0;
+            const interval = setInterval(() => {
+                attempts++;
+                if (triggerGoogleCombo(lang)) {
+                    clearInterval(interval);
+                } else if (attempts > 20) {
+                    clearInterval(interval);
+                    location.reload();
+                }
+            }, 30);
         }
 
         function updateLangButtons(lang) {
@@ -353,7 +399,7 @@
             updateLangButtons(savedLang);
         });
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script defer type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 
 </html>
