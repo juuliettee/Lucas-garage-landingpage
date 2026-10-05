@@ -80,16 +80,16 @@
 <body class="bg-[#0B1117] text-slate-100 flex flex-col min-h-screen font-sans antialiased selection:bg-amber-500/30 selection:text-amber-200">
 
     <!-- Top Notice Bar -->
-    <div class="bg-[#070C11] text-slate-400 text-xs py-2 px-4 border-b border-[#243344]">
-        <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2">
-            <div class="flex items-center space-x-4">
-                <span><i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 40 Penrose Street, Walworth, London SE17 3DW</span>
-                <span class="hidden sm:inline text-slate-700">|</span>
-                <span class="hidden sm:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm</span>
+    <div class="bg-[#070C11] text-slate-400 text-xs py-2 px-3 sm:px-4 border-b border-[#243344]">
+        <div class="max-w-6xl mx-auto flex justify-between items-center gap-2">
+            <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
+                <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">40 Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">40 Penrose St, SE17 3DW</span></span>
+                <span class="hidden md:inline text-slate-700">|</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm</span>
             </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition">
-                    <i class="fa-brands fa-whatsapp text-sm mr-1"></i> WhatsApp: 07535 321145
+            <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+                <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs">
+                    <i class="fa-brands fa-whatsapp text-sm mr-1"></i> <span class="hidden sm:inline">WhatsApp:</span> 07535 321145
                 </a>
                 
                 <span class="text-slate-700">|</span>
@@ -111,17 +111,18 @@
 
     <!-- Main Navigation -->
     <nav class="bg-[#0B1117]/95 backdrop-blur-md border-b border-[#243344] sticky top-0 z-40 shadow-md">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a href="{{ url_for('home') }}" class="flex items-center space-x-3 group">
+        <div class="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 flex justify-between items-center">
+            <a href="{{ url_for('home') }}" class="flex items-center space-x-2.5 sm:space-x-3 group min-w-0">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Lucas Garage Logo"
-                    class="w-11 h-11 rounded-xl object-cover shadow-sm border border-[#243344] group-hover:scale-105 transition">
-                <div>
-                    <span class="notranslate text-xl font-black tracking-tight text-slate-50 block leading-tight" translate="no">Lucas Garage</span>
-                    <span class="text-[11px] text-amber-400 font-bold tracking-wider uppercase">Mechanic Workshop</span>
+                    class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover shadow-sm border border-[#243344] group-hover:scale-105 transition flex-shrink-0">
+                <div class="min-w-0">
+                    <span class="notranslate text-lg sm:text-xl font-black tracking-tight text-slate-50 block leading-tight truncate" translate="no">Lucas Garage</span>
+                    <span class="text-[10px] sm:text-[11px] text-amber-400 font-bold tracking-wider uppercase block">Mechanic Workshop</span>
                 </div>
             </a>
 
-            <div class="space-x-5 text-sm font-semibold flex items-center">
+            <!-- Desktop Nav Links -->
+            <div class="hidden md:flex space-x-5 text-sm font-semibold items-center">
                 <a href="{{ url_for('home') }}" class="text-slate-300 hover:text-amber-400 transition">Home</a>
                 <a href="{{ url_for('home') }}#services" class="text-slate-300 hover:text-amber-400 transition">Services</a>
                 <a href="{{ url_for('pricing') }}" class="text-slate-300 hover:text-amber-400 transition">Pricing</a>
@@ -143,6 +144,55 @@
                 </a>
                 {% endif %}
             </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button id="mobileMenuBtn" type="button" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu"
+                class="md:hidden w-10 h-10 rounded-xl bg-[#141E28] border border-[#243344] text-slate-200 flex items-center justify-center hover:text-amber-400 hover:border-amber-500/40 transition active:scale-95 flex-shrink-0">
+                <i id="mobileMenuIcon" class="fa-solid fa-bars text-lg"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer / Menu Dropdown -->
+        <div id="mobileMenuDropdown" class="hidden md:hidden border-t border-[#243344] bg-[#0B1117] px-4 pt-3 pb-5 space-y-1.5 shadow-2xl">
+            <a href="{{ url_for('home') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-house text-amber-400 mr-3 w-4 text-center"></i> Home
+            </a>
+            <a href="{{ url_for('home') }}#services" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-wrench text-amber-400 mr-3 w-4 text-center"></i> Services & Repairs
+            </a>
+            <a href="{{ url_for('pricing') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-tags text-amber-400 mr-3 w-4 text-center"></i> Workshop Pricing
+            </a>
+            <a href="{{ url_for('cars') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-car text-amber-400 mr-3 w-4 text-center"></i> Cars For Sale
+            </a>
+            <a href="{{ url_for('about') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-circle-info text-amber-400 mr-3 w-4 text-center"></i> About Us
+            </a>
+
+            <div class="pt-3 border-t border-[#243344] space-y-2">
+                <a href="{{ default_whatsapp_url }}" target="_blank"
+                    class="flex items-center justify-center space-x-2 w-full py-3 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white shadow-md transition">
+                    <i class="fa-brands fa-whatsapp text-base"></i>
+                    <span>Message Luca on WhatsApp</span>
+                </a>
+                <a href="tel:07535321145"
+                    class="flex items-center justify-center space-x-2 w-full py-2.5 rounded-xl text-xs font-bold bg-[#141E28] hover:bg-[#1B2735] text-slate-200 border border-[#243344] transition">
+                    <i class="fa-solid fa-phone text-amber-400"></i>
+                    <span>Call Workshop: 07535 321145</span>
+                </a>
+            </div>
+
+            {% if current_user.is_authenticated %}
+            <div class="pt-2.5 border-t border-[#243344] flex items-center justify-between">
+                <a href="{{ url_for('admin_dashboard') }}" class="text-xs font-bold text-amber-400 flex items-center">
+                    <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
+                </a>
+                <a href="{{ url_for('logout') }}" class="text-xs font-bold text-rose-400 bg-rose-500/10 px-3 py-1 rounded-lg border border-rose-500/20">
+                    Log Out
+                </a>
+            </div>
+            {% endif %}
         </div>
     </nav>
 
@@ -164,16 +214,16 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Floating Workshop Hotline (Replaces Goofy AI Bot) -->
-    <div id="workshopHotlineWidget" class="fixed bottom-5 right-5 z-40 print:hidden">
+    <!-- Floating Workshop Hotline (Mobile Responsive) -->
+    <div id="workshopHotlineWidget" class="fixed bottom-4 right-4 z-40 print:hidden">
         <a href="{{ default_whatsapp_url }}" target="_blank" rel="noopener"
-           class="group flex items-center bg-[#141E28] hover:bg-[#1B2735] text-slate-100 pl-3.5 pr-5 py-3 rounded-full shadow-2xl border border-[#243344] transition-all duration-200 transform hover:-translate-y-0.5">
-            <div class="relative mr-3 flex-shrink-0">
+           class="group relative flex items-center bg-[#141E28] hover:bg-[#1B2735] text-slate-100 p-2 sm:pl-3.5 sm:pr-5 sm:py-3 rounded-full shadow-2xl border border-[#243344] transition-all duration-200 transform hover:-translate-y-0.5">
+            <div class="relative flex-shrink-0">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Lucas Garage"
                     class="w-10 h-10 rounded-full object-cover shadow-inner border border-[#35485E]">
                 <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-[#141E28] rounded-full"></span>
             </div>
-            <div class="text-left">
+            <div class="hidden sm:block text-left ml-3">
                 <div class="text-[10px] text-slate-400 font-medium leading-none mb-1">
                     Direct Mechanic Line
                 </div>
@@ -181,6 +231,9 @@
                     <i class="fa-brands fa-whatsapp text-emerald-400 text-sm"></i>
                     <span>Message Luca on WhatsApp &rarr;</span>
                 </div>
+            </div>
+            <div class="sm:hidden absolute -top-1 -right-1 w-5 h-5 bg-[#25D366] text-white rounded-full flex items-center justify-center text-[10px] shadow">
+                <i class="fa-brands fa-whatsapp"></i>
             </div>
         </a>
     </div>
@@ -241,8 +294,42 @@
     <!-- Google Translate Container (Offscreen layout for instant mount) -->
     <div id="google_translate_element" aria-hidden="true"></div>
 
-    <!-- Language Translation Switcher JavaScript -->
     <script type="text/javascript">
+        // Mobile Navigation Drawer Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenuDropdown');
+            const icon = document.getElementById('mobileMenuIcon');
+            if (!menu) return;
+            const isHidden = menu.classList.contains('hidden');
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                if (icon) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-xmark');
+                }
+            } else {
+                menu.classList.add('hidden');
+                if (icon) {
+                    icon.classList.remove('fa-xmark');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                const menu = document.getElementById('mobileMenuDropdown');
+                const icon = document.getElementById('mobileMenuIcon');
+                if (menu && !menu.classList.contains('hidden')) {
+                    menu.classList.add('hidden');
+                    if (icon) {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        });
+
         // Proactively wrap brand name "Lucas Garage" so Google Translate never translates it
         function enforceLucasGarageNotranslate() {
             const pattern = /\b(Lucas\s*Garage|Luca's\s*Garage)\b/gi;
