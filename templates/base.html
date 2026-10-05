@@ -400,19 +400,62 @@
                 { pattern: /\bGato\s+S\b/gi, replacement: 'Cat S (Categoría S)' },
                 // Vehicle sales status & admin portal translations
                 { pattern: /\b(Bajo\s+oferta|En\s+oferta)\b/gi, replacement: 'Reservado' },
+                { pattern: /\bBAJO\s+OFERTA\b/g, replacement: 'RESERVADO' },
                 { pattern: /\bMarca\s+vendida\b/gi, replacement: 'Marcar como vendido' },
                 { pattern: /\bMarcar\s+vendido\b/gi, replacement: 'Marcar como vendido' },
                 { pattern: /\bVolver\s+a\s+enumerar\b/gi, replacement: 'Volver a publicar' },
+                { pattern: /\bVolver\s+a\s+listar\b/gi, replacement: 'Volver a publicar' },
+                { pattern: /\bReenumerar\b/gi, replacement: 'Volver a publicar' },
                 { pattern: /\bInventario\s+en\s+vivo\b/gi, replacement: 'Stock en tiempo real' },
                 { pattern: /\bRanura\s+de\s+reserva\b/gi, replacement: 'Horario de cita' },
                 { pattern: /\branura\s+de\s+reserva\b/gi, replacement: 'horario de cita' },
                 { pattern: /\beje\s+lleno\b/gi, replacement: 'eje completo' },
-                { pattern: /\bconducci[oó]n\s+de\s+prueba\b/gi, replacement: 'prueba de conducción' }
+                { pattern: /\bconducci[oó]n\s+de\s+prueba\b/gi, replacement: 'prueba de conducción' },
+                // Viewings and appointments (prevent "visualización" screen mistranslation)
+                { pattern: /\b(ranuras?|espacios?)\s+de\s+visualizaci[oó]n\b/gi, replacement: 'citas para ver el vehículo' },
+                { pattern: /\b(ranura|espacio)\s+horari[ao]\b/gi, replacement: 'franja horaria' },
+                { pattern: /\bRanura:\b/gi, replacement: 'Cita:' },
+                { pattern: /\bvisualizaci[oó]n\s+en\s+persona\b/gi, replacement: 'cita para ver el coche' },
+                { pattern: /\bvisualizaciones\s+de\s+clientes(\s+reservadas)?\b/gi, replacement: 'citas concertadas para ver vehículos' },
+                { pattern: /\bcitas?\s+de\s+visualizaci[oó]n\b/gi, replacement: 'cita para ver el vehículo' },
+                { pattern: /\bhorario\s+de\s+visualizaci[oó]n\b/gi, replacement: 'horario de visitas' },
+                { pattern: /\bsolicitud\s+de\s+visualizaci[oó]n(\s+confirmada)?\b/gi, replacement: 'solicitud de cita confirmada' },
+                { pattern: /\bgarant[ií]a\s+de\s+visualizaci[oó]n\b/gi, replacement: 'garantía de visita e inspección' },
+                { pattern: /\b(un\s+)?paseo\s+(en\s+profundidad\s+)?(por\s+|alrededor\s+del\s+)veh[ií]culo\b/gi, replacement: 'revisión visual completa del vehículo' },
+                // Underbody inspection (eliminate "cuerpo inferior" human anatomy mistranslation)
+                { pattern: /\binspecci[oó]n\s+(del\s+)?cuerpo\s+inferior\b/gi, replacement: 'inspección de los bajos del vehículo' },
+                { pattern: /\b(del|el)\s+cuerpo\s+inferior\b/gi, replacement: '$1 chasis y los bajos del vehículo' },
+                { pattern: /\b[oó]xido\s+(en\s+el\s+|del\s+)cuerpo\s+inferior\b/gi, replacement: 'óxido en los bajos y chasis' },
+                // Quotes and registration
+                { pattern: /\b(Cita|Cotizaci[oó]n)\s+(por|con)\s+Reg\b/gi, replacement: 'Presupuesto con matrícula' },
+                { pattern: /\b(Cita|Cotizaci[oó]n)\s+(en|seg[uú]n)\s+(la\s+)?hoja(\s+de\s+mot)?\b/gi, replacement: 'Presupuesto según hoja de MOT' },
+                { pattern: /\bpresupuesto\s+en\s+hoja\b/gi, replacement: 'Presupuesto según hoja de MOT' },
+                { pattern: /\bpresupuesto\s+por\s+reg\b/gi, replacement: 'Presupuesto con matrícula' },
+                // Salvage / Copart / Provenance
+                { pattern: /\bhistorial\s+de\s+salvamento(\s+de\s+copart)?\b/gi, replacement: 'historial de siniestros / Copart' },
+                { pattern: /\b(limpio\s*\/\s*no\s+grabado)\b/gi, replacement: 'Sin siniestros registrados (Clean)' },
+                { pattern: /\bno\s+grabado\b/gi, replacement: 'sin siniestros registrados' },
+                // Labour vs childbirth additional protections
+                { pattern: /\b(presupuesto|cotizaci[oó]n)\s+de\s+(solo\s+|s[oó]lo\s+)?parto\b/gi, replacement: 'presupuesto solo de mano de obra' },
+                { pattern: /\b(ajuste\s+de\s+)?(solo\s+parto|s[oó]lo\s+parto)\b/gi, replacement: 'solo mano de obra' },
+                { pattern: /\btaller\s+de\s+parto\b/gi, replacement: 'mano de obra de taller' },
+                { pattern: /\btarifas?\s+de\s+parto\b/gi, replacement: 'tarifas de mano de obra' },
+                // Lift vs ramp additional protections
+                { pattern: /\brampa\s+(de\s+elevaci[oó]n|del\s+elevador)(\s+hidr[aá]ulico)?\b/gi, replacement: 'elevador hidráulico' },
+                { pattern: /\bacceso\s+completo\s+a\s+la\s+rampa\b/gi, replacement: 'acceso completo al elevador hidráulico' },
+                { pattern: /\binspecciones?\s+de\s+rampa\b/gi, replacement: 'inspecciones en elevador' },
+                // MOT fail sheet and advisories
+                { pattern: /\bhoja\s+de\s+fracaso\b/gi, replacement: 'hoja de rechazo del MOT (fail sheet)' },
+                { pattern: /\bresoluci[oó]n\s+de\s+asesor[ií]as\b/gi, replacement: 'reparación de advertencias (advisories del MOT)' },
+                { pattern: /\basesor[ií]as\s+del\s+mot\b/gi, replacement: 'advertencias (advisories) del MOT' },
+                // Admin button label
+                { pattern: /\bCliente\s+de\s+WhatsApp\b/gi, replacement: 'WhatsApp al cliente' },
+                { pattern: /\bcaja\s+de\s+engranajes\b/gi, replacement: 'caja de cambios' }
             ];
 
             let checkTimeout = null;
             const fixElements = () => {
-                document.querySelectorAll('span:not(.notranslate), p, h1, h2, h3, h4, li, a, font, div').forEach(el => {
+                document.querySelectorAll('span:not(.notranslate), p, h1, h2, h3, h4, li, a, font, div, button, label, option, strong, b, em, td, th').forEach(el => {
                     if (el.children.length === 0 && el.textContent) {
                         let text = el.textContent;
                         let changed = false;
