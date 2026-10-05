@@ -150,7 +150,7 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
         <div style="max-width: 580px; margin: auto; background-color: #141e28; border-radius: 16px; border: 1px solid #243344; overflow: hidden;">
             <div style="background-color: #070c11; padding: 24px 32px; border-bottom: 1px solid #243344;">
                 <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCAS <span style="color: #f59e0b;">GARAGE</span></h2>
-                <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">40 Penrose Street, Walworth, London SE17 3DW</p>
+                <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">38a Penrose Street, Walworth, London SE17 3DW</p>
             </div>
             <div style="padding: 32px; color: #cbd5e1; line-height: 1.6;">
                 <h1 style="color: #f8fafc; font-size: 22px; font-weight: 800; margin: 0 0 12px;">Confirm Your Viewing Appointment</h1>
@@ -170,7 +170,7 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
                     <div style="font-weight: bold; color: #f8fafc; font-size: 15px; margin-bottom: 8px;">{car.year} {car.make_model} - £{car.price:,}</div>
                     <div>&bull; <strong>Date:</strong> {booking_date}</div>
                     <div>&bull; <strong>Time:</strong> {booking_time}</div>
-                    <div>&bull; <strong>Location:</strong> 40 Penrose Street, London SE17 3DW</div>
+                    <div>&bull; <strong>Location:</strong> 38a Penrose Street, London SE17 3DW</div>
                 </div>
 
                 <p style="font-size: 12px; color: #94a3b8; margin-top: 24px;">
@@ -210,8 +210,8 @@ def dispatch_confirmed_booking_notifications(booking, car):
     <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0b1117; padding: 24px; color: #f1f5f9;">
         <div style="max-width: 580px; margin: auto; background-color: #141e28; border-radius: 16px; border: 1px solid #243344; overflow: hidden;">
             <div style="background-color: #070c11; padding: 24px 32px; border-bottom: 1px solid #243344;">
-                <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCA'S <span style="color: #f59e0b;">GARAGE</span></h2>
-                <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">40 Penrose Street, Walworth, London SE17 3DW</p>
+                <h2 style="margin: 0; font-size: 20px; font-weight: 800; color: #f8fafc;">LUCAS <span style="color: #f59e0b;">GARAGE</span></h2>
+                <p style="margin: 4px 0 0; font-size: 12px; color: #94a3b8;">38a Penrose Street, Walworth, London SE17 3DW</p>
             </div>
             <div style="padding: 32px; color: #cbd5e1; line-height: 1.6;">
                 <div style="display: inline-block; background-color: #064e3b; color: #34d399; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-bottom: 12px; border: 1px solid #059669;">
@@ -224,7 +224,7 @@ def dispatch_confirmed_booking_notifications(booking, car):
                     <div>&bull; <strong>Booking Ref:</strong> <span style="color: #f59e0b; font-weight: bold;">#LG-{booking.id}</span></div>
                     <div>&bull; <strong>Date:</strong> {booking.booking_date}</div>
                     <div>&bull; <strong>Time:</strong> {booking.booking_time} (Vehicle viewing)</div>
-                    <div>&bull; <strong>Address:</strong> 40 Penrose Street, Walworth, SE17 3DW</div>
+                    <div>&bull; <strong>Address:</strong> 38a Penrose Street, Walworth, SE17 3DW</div>
                     <div>&bull; <strong>Direct Contact:</strong> 07535 321145</div>
                 </div>
 

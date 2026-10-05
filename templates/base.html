@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lucas Garage | 40 Penrose St, London SE17 | Repairs & Used Cars</title>
+    <title>Lucas Garage | 38a Penrose St, London SE17 | Repairs & Used Cars</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://translate.google.com" crossorigin>
@@ -83,7 +83,7 @@
     <div class="bg-[#070C11] text-slate-400 text-xs py-2 px-3 sm:px-4 border-b border-[#243344]">
         <div class="max-w-6xl mx-auto flex justify-between items-center gap-2">
             <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
-                <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">40 Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">40 Penrose St, SE17 3DW</span></span>
+                <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">38a Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">38a Penrose St, SE17 3DW</span></span>
                 <span class="hidden md:inline text-slate-700">|</span>
                 <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm</span>
             </div>
@@ -250,7 +250,7 @@
                     Independent mechanical workshop and quality used vehicle sales. Every car is thoroughly inspected, serviced, MOT-checked, and workshop-prepared in Walworth, London.
                 </p>
                 <div class="text-xs text-slate-300">
-                    <i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 40 Penrose Street, Walworth, SE17 3DW
+                    <i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 38a Penrose Street, Walworth, SE17 3DW
                 </div>
             </div>
 
@@ -279,7 +279,7 @@
         </div>
 
         <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-[#243344] text-center text-xs text-slate-500 flex flex-wrap justify-between items-center">
-            <p class="notranslate" translate="no">&copy; 2026 Lucas Garage. All rights reserved. 40 Penrose St, London SE17 3DW.</p>
+            <p class="notranslate" translate="no">&copy; 2026 Lucas Garage. All rights reserved. 38a Penrose St, London SE17 3DW.</p>
             <div class="space-x-4 mt-2 sm:mt-0">
                 <a href="{{ url_for('home') }}" class="hover:text-slate-300 transition">Home</a>
                 <a href="{{ url_for('home') }}#services" class="hover:text-slate-300 transition">Services</a>
@@ -416,50 +416,79 @@
             localStorage.setItem('luca_garage_lang', lang);
 
             const host = window.location.hostname;
-            const cookieVal = '/en/' + lang;
+            const domainParts = host ? host.split('.') : [];
+            const rootDomain = domainParts.length > 2 ? '.' + domainParts.slice(-2).join('.') : '';
 
-            // Set googtrans cookie for root and domain
-            document.cookie = 'googtrans=' + cookieVal + '; path=/;';
-            if (host) {
-                document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + host + ';';
-                const domainParts = host.split('.');
-                if (domainParts.length > 2) {
-                    const rootDomain = domainParts.slice(-2).join('.');
-                    document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=.' + rootDomain + ';';
+            if (lang === 'en') {
+                // Delete googtrans cookie across all paths & domain scopes
+                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                if (host) document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + host + ';';
+                if (rootDomain) document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + rootDomain + ';';
+
+                // Try clicking restore button in Google Translate banner iframe if available
+                const iframe = document.querySelector('.goog-te-banner-frame');
+                if (iframe) {
+                    try {
+                        const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                        if (innerDoc) {
+                            const btns = innerDoc.querySelectorAll('button');
+                            for (let b of btns) {
+                                if ((b.id && b.id.includes('restore')) || (b.innerText && (b.innerText.includes('Show original') || b.innerText.includes('Restaurar')))) {
+                                    b.click();
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (e) {}
                 }
-            }
 
-            const triggerGoogleCombo = (targetLang) => {
+                // Reset combo selector to empty with bubbling events
                 const select = document.querySelector('.goog-te-combo');
                 if (select) {
-                    if (targetLang === 'en') {
-                        let hasEn = Array.from(select.options).some(o => o.value === 'en');
-                        select.value = hasEn ? 'en' : '';
-                    } else {
+                    select.value = '';
+                    select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+                    select.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+                }
+            } else {
+                // Set googtrans cookie for Spanish
+                const cookieVal = '/en/' + lang;
+                document.cookie = 'googtrans=' + cookieVal + '; path=/;';
+                if (host) document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + host + ';';
+                if (rootDomain) document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + rootDomain + ';';
+
+                const triggerGoogleCombo = (targetLang) => {
+                    const select = document.querySelector('.goog-te-combo');
+                    if (select) {
+                        // Reset first if already set to target so change event always fires
+                        if (select.value === targetLang) {
+                            select.value = '';
+                            select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+                        }
                         select.value = targetLang;
+                        select.dispatchEvent(new Event('change', { bubbles: true, cancelable: true }));
+                        select.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
+                        return true;
                     }
-                    select.dispatchEvent(new Event('change'));
-                    return true;
-                }
-                return false;
-            };
+                    return false;
+                };
 
-            // Instant in-page translation if Google Translate is ready (no reload)
-            if (triggerGoogleCombo(lang)) {
-                return;
-            }
-
-            // Quick retry poll (every 30ms up to 600ms) before falling back to reload
-            let attempts = 0;
-            const interval = setInterval(() => {
-                attempts++;
+                // Instant in-page translation if Google Translate is ready
                 if (triggerGoogleCombo(lang)) {
-                    clearInterval(interval);
-                } else if (attempts > 20) {
-                    clearInterval(interval);
-                    location.reload();
+                    return;
                 }
-            }, 30);
+
+                // Quick retry poll if combo is still mounting
+                let attempts = 0;
+                const interval = setInterval(() => {
+                    attempts++;
+                    if (triggerGoogleCombo(lang)) {
+                        clearInterval(interval);
+                    } else if (attempts > 20) {
+                        clearInterval(interval);
+                        location.reload();
+                    }
+                }, 30);
+            }
         }
 
         function updateLangButtons(lang) {

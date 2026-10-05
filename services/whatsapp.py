@@ -12,7 +12,7 @@ def generate_customer_whatsapp_url(car_name=None, message_type="inquiry"):
     if message_type == "inquiry" and car_name:
         text = f"Hi Luca, I saw the {car_name} listed on your website and would like some more details."
     elif message_type == "viewing" and car_name:
-        text = f"Hi Luca, I'd like to arrange a viewing for the {car_name} at 40 Penrose Street."
+        text = f"Hi Luca, I'd like to arrange a viewing for the {car_name} at 38a Penrose Street."
     else:
         text = "Hi Luca, I have an inquiry about vehicle servicing / cars for sale at Lucas Garage."
 
@@ -29,7 +29,7 @@ def generate_luca_reply_whatsapp_url(customer_phone, car_name, booking_date, boo
         clean_phone = "44" + clean_phone[1:]
     
     text = (
-        f"Hi! Luca here from Lucas Garage (40 Penrose St). "
+        f"Hi! Luca here from Lucas Garage (38a Penrose St). "
         f"Confirming your viewing for the {car_name} on {booking_date} at {booking_time}. "
         f"See you then! Let me know if you need any directions."
     )
@@ -50,7 +50,7 @@ def send_whatsapp_booking_alert(booking, car):
         f"• *Phone:* {booking.customer_phone}\n"
         f"• *Date:* {booking.booking_date}\n"
         f"• *Time Slot:* {booking.booking_time}\n"
-        f"• *Location:* 40 Penrose St, SE17 3DW\n"
+        f"• *Location:* 38a Penrose St, SE17 3DW\n"
     )
     if booking.notes:
         alert_message += f"• *Notes:* {booking.notes}\n"

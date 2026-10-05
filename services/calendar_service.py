@@ -2,7 +2,7 @@ import urllib.parse
 from datetime import datetime, timedelta
 
 GARAGE_NAME = "Lucas Garage"
-GARAGE_ADDRESS = "40 Penrose Street, Walworth, London SE17 3DW"
+GARAGE_ADDRESS = "38a Penrose Street, Walworth, London SE17 3DW"
 GARAGE_PHONE = "07535 321145"
 
 def create_google_calendar_url(car_name, booking_date, booking_time, customer_name, customer_phone):

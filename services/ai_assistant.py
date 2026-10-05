@@ -5,7 +5,7 @@ from models import Car
 
 GARAGE_INFO = {
     "name": "Lucas Garage",
-    "address": "40 Penrose Street, Walworth, London SE17 3DW",
+    "address": "38a Penrose Street, Walworth, London SE17 3DW",
     "phone": "07535 321145",
     "hours": {
         "monday_to_friday": "9:00 AM – 6:00 PM",
@@ -91,12 +91,12 @@ def generate_ai_response(user_message, conversation_history=None):
         if matched:
             c = matched[0]
             status = "fully ULEZ compliant and exempt from charges" if c.ulez_compliant else "not ULEZ exempt"
-            return f"Yes, the {c.year} {c.make_model} is {status}. Would you like to book an in-person viewing at 40 Penrose Street?"
+            return f"Yes, the {c.year} {c.make_model} is {status}. Would you like to book an in-person viewing at 38a Penrose Street?"
         else:
             compliant_cars = [f"{c.year} {c.make_model}" for c in cars if c.ulez_compliant]
             if compliant_cars:
                 return f"Most of our stock is ULEZ compliant, including: {', '.join(compliant_cars[:3])}. Let me know which vehicle you'd like to view!"
-            return "Please check the vehicle listing details or click 'Book a Viewing' to see it in person at 40 Penrose Street."
+            return "Please check the vehicle listing details or click 'Book a Viewing' to see it in person at 38a Penrose Street."
 
     # Question about Copart / Damage / Repairs
     if any(k in msg_lower for k in ["copart", "damage", "accident", "cat s", "cat n", "category", "repaired", "salvage"]):
@@ -109,7 +109,7 @@ def generate_ai_response(user_message, conversation_history=None):
                 f"to strict safety standards and road-tests them thoroughly. You are welcome to test drive it!"
             )
         return (
-            f"Luca is a professional mechanic with his own workshop at 40 Penrose Street. "
+            f"Luca is a professional mechanic with his own workshop at 38a Penrose Street. "
             f"Any Copart-sourced vehicles are meticulously repaired, fully serviced, MOT-checked, and sold with warranty. "
             f"You are welcome to inspect and test drive any car before deciding!"
         )
@@ -133,10 +133,10 @@ def generate_ai_response(user_message, conversation_history=None):
     if cars:
         car_titles = [f"{c.year} {c.make_model} (£{c.price:,})" for c in cars[:3]]
         return (
-            f"Hello! At Lucas Garage (40 Penrose St, SE17), our current stock includes: {', '.join(car_titles)}. "
+            f"Hello! At Lucas Garage (38a Penrose St, SE17), our current stock includes: {', '.join(car_titles)}. "
             f"All cars are inspected and road-tested by our mechanics. You can ask me about ULEZ, mileage, repairs, or book a viewing slot anytime!"
         )
 
     return (
-        f"Hello from Lucas Garage (40 Penrose St, London SE17 3DW). How can I help you with our vehicles or workshop services today?"
+        f"Hello from Lucas Garage (38a Penrose St, London SE17 3DW). How can I help you with our vehicles or workshop services today?"
     )

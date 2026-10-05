@@ -12,10 +12,10 @@ def run_tests():
         # 1. Test Homepage
         resp = client.get('/')
         assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
-        assert b"40 Penrose Street" in resp.data, "Penrose Street address missing from homepage"
+        assert b"38a Penrose Street" in resp.data, "Penrose Street address missing from homepage"
         assert b"07535 321145" in resp.data, "WhatsApp mobile number missing from homepage"
         assert b"Lucas Garage" in resp.data, "Lucas Garage missing from homepage"
-        print("✅ Test 1 Passed: Homepage renders with 40 Penrose St, Lucas Garage & WhatsApp mobile.")
+        print("✅ Test 1 Passed: Homepage renders with 38a Penrose St, Lucas Garage & WhatsApp mobile.")
 
         # 2. Test Inventory Page
         resp = client.get('/cars')
@@ -102,7 +102,7 @@ def run_tests():
         ad_resp = client.get(f'/admin/marketplace-text/{car.id}')
         assert ad_resp.status_code == 200
         ad_data = ad_resp.get_json()
-        assert "40 Penrose Street" in ad_data['text']
+        assert "38a Penrose Street" in ad_data['text']
         assert "ULEZ" in ad_data['text']
         assert "30-day" in ad_data['text']
         print("✅ Test 7 Passed: 1-Click Facebook Marketplace / Gumtree copyable text generated.")

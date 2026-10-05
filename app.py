@@ -32,7 +32,7 @@ from services.calendar_service import create_google_calendar_url
 
 GARAGE_INFO = {
     "name": "Lucas Garage",
-    "address": "40 Penrose Street, Walworth, London SE17 3DW",
+    "address": "38a Penrose Street, Walworth, London SE17 3DW",
     "phone": "07535 321145",
     "hours": {
         "monday_to_friday": "9:00 AM – 6:00 PM",
@@ -382,7 +382,7 @@ def marketplace_text(id):
     miles_str = f"{car.mileage:,}" if car.mileage else "Low"
     text = (
         f"{car.year} {car.make_model} - £{car.price:,}\n\n"
-        f"📍 Location: Lucas Garage, 40 Penrose Street, Walworth, London SE17 3DW\n"
+        f"📍 Location: Lucas Garage, 38a Penrose Street, Walworth, London SE17 3DW\n"
         f"📞 Contact/WhatsApp: {GARAGE_INFO['phone']}\n\n"
         f"KEY DETAILS:\n"
         f"• Mileage: {miles_str} miles\n"

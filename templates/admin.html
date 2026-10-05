@@ -7,7 +7,7 @@
         <div>
             <span class="text-xs font-bold text-amber-400 uppercase tracking-wider notranslate" translate="no">Lucas Garage Management</span>
             <h1 class="text-2xl sm:text-3xl font-black text-slate-50">Workshop & Vehicle Portal</h1>
-            <p class="text-xs text-slate-400 mt-1">40 Penrose Street &bull; Viewings, Stock & 1-Click Ad Generator</p>
+            <p class="text-xs text-slate-400 mt-1">38a Penrose Street &bull; Viewings, Stock & 1-Click Ad Generator</p>
         </div>
         <div class="flex items-center space-x-3">
             <a href="{{ url_for('admin_test_email') }}" class="bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 border border-amber-500/25 text-xs font-bold px-3.5 py-2 rounded-xl transition flex items-center" title="Send a test booking alert to Luca's email">
@@ -51,7 +51,7 @@
                             <i class="fa-solid fa-car text-amber-400 mr-1"></i> Car: <strong>{{ b.car.year }} {{ b.car.make_model if b.car else 'Vehicle' }}</strong>
                         </p>
                         <p class="text-xs text-slate-400">
-                            <i class="fa-solid fa-clock text-slate-500 mr-1"></i> Slot: <strong class="text-slate-200">{{ b.booking_date }} at {{ b.booking_time }}</strong> (40 Penrose St)
+                            <i class="fa-solid fa-clock text-slate-500 mr-1"></i> Slot: <strong class="text-slate-200">{{ b.booking_date }} at {{ b.booking_time }}</strong> (38a Penrose St)
                         </p>
                         <p class="text-xs text-slate-400">
                             <i class="fa-solid fa-phone text-slate-500 mr-1"></i> Phone: <a href="tel:{{ b.customer_phone }}" class="text-amber-400 underline font-semibold">{{ b.customer_phone }}</a>
