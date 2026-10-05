@@ -395,7 +395,7 @@ def marketplace_text(id):
         f"{car.repair_notes or 'Fully inspected, serviced, and road-tested by our mechanics.'}\n\n"
         f"FEATURES:\n"
         f"{car.features or 'Standard features, electric windows, central locking'}\n\n"
-        f"Comes with a 30-day mechanical warranty from Lucas Garage. "
+        f"Comes with a 30-day mechanical warranty & 3-month workshop labour guarantee from Lucas Garage. "
         f"Viewings welcome during opening hours (Mon-Sat). Please message or book to arrange."
     )
     return jsonify({"text": text})

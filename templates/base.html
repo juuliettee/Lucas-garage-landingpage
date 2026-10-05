@@ -394,7 +394,20 @@
                 { pattern: /\binspecci[oó]n\s+en\s+rampa\b/gi, replacement: 'inspección en elevador' },
                 { pattern: /\bc[oó]digos\s+de\s+error\s+en\s+vivo\b/gi, replacement: 'códigos de avería en tiempo real' },
                 { pattern: /\bhoja\s+de\s+falla\b/gi, replacement: 'hoja de rechazo del MOT (fail sheet)' },
-                { pattern: /\bCita\s+por\s+Reg\b/gi, replacement: 'Presupuesto con matrícula' }
+                { pattern: /\bCita\s+por\s+Reg\b/gi, replacement: 'Presupuesto con matrícula' },
+                // Insurance categories (avoid Gato N / Gato S feline mistranslation)
+                { pattern: /\bGato\s+N\b/gi, replacement: 'Cat N (Categoría N)' },
+                { pattern: /\bGato\s+S\b/gi, replacement: 'Cat S (Categoría S)' },
+                // Vehicle sales status & admin portal translations
+                { pattern: /\b(Bajo\s+oferta|En\s+oferta)\b/gi, replacement: 'Reservado' },
+                { pattern: /\bMarca\s+vendida\b/gi, replacement: 'Marcar como vendido' },
+                { pattern: /\bMarcar\s+vendido\b/gi, replacement: 'Marcar como vendido' },
+                { pattern: /\bVolver\s+a\s+enumerar\b/gi, replacement: 'Volver a publicar' },
+                { pattern: /\bInventario\s+en\s+vivo\b/gi, replacement: 'Stock en tiempo real' },
+                { pattern: /\bRanura\s+de\s+reserva\b/gi, replacement: 'Horario de cita' },
+                { pattern: /\branura\s+de\s+reserva\b/gi, replacement: 'horario de cita' },
+                { pattern: /\beje\s+lleno\b/gi, replacement: 'eje completo' },
+                { pattern: /\bconducci[oó]n\s+de\s+prueba\b/gi, replacement: 'prueba de conducción' }
             ];
 
             let checkTimeout = null;
