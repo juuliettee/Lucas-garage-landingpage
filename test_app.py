@@ -74,29 +74,29 @@ def run_tests():
         assert created_booking.booking_time == "14:30"
         print("✅ Test 5a Passed: Valid viewing booked, saved to database, and WhatsApp alert triggered.")
 
-        # 5b. Sunday booking: out-of-hours (08:00) rejected; valid slot (11:30) accepted (Sunday 9am-6pm)
-        sunday_out_of_hours = {
-            "car_id": car.id,
-            "customer_name": "James Bond",
-            "customer_phone": "07007 007007",
-            "booking_date": "2026-09-27", # Sunday
-            "booking_time": "08:00"
-        }
-        resp = client.post('/api/book-viewing', data=sunday_out_of_hours)
-        assert resp.status_code == 400
-        assert "sunday opening hours are 9:00 am – 6:00 pm" in resp.get_json()['message'].lower()
-
-        sunday_valid = {
+        # 5b. Sunday booking rejected (closed); Saturday 10:30 accepted (Mon-Sat 9am-6pm)
+        sunday_payload = {
             "car_id": car.id,
             "customer_name": "James Bond",
             "customer_phone": "07007 007007",
             "booking_date": "2026-09-27", # Sunday
             "booking_time": "11:30"
         }
-        resp = client.post('/api/book-viewing', data=sunday_valid)
+        resp = client.post('/api/book-viewing', data=sunday_payload)
+        assert resp.status_code == 400
+        assert "closed on sundays" in resp.get_json()['message'].lower()
+
+        saturday_payload = {
+            "car_id": car.id,
+            "customer_name": "James Bond",
+            "customer_phone": "07007 007007",
+            "booking_date": "2026-09-26", # Saturday
+            "booking_time": "10:30"
+        }
+        resp = client.post('/api/book-viewing', data=saturday_payload)
         assert resp.status_code == 200
         assert resp.get_json()['success'] is True
-        print("✅ Test 5b Passed: Sunday opening hours verified (9am–6pm accepted, out-of-hours rejected).")
+        print("✅ Test 5b Passed: Opening hours verified (Sunday closed, Mon–Sat 9am–6pm accepted).")
 
         # 6. Test Admin Authentication & Dashboard
         import os

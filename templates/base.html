@@ -39,12 +39,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
     <style>
-        /* Clean Google Translate UI - hide unwanted banners, popups and toolbars */
+        /* Clean Google Translate UI - hide unwanted banners, popups, toolbars and tooltips */
         .goog-te-banner-frame.skiptranslate, 
         .goog-te-banner-frame,
         .goog-te-gadget-icon,
         iframe.skiptranslate,
         .VIpgJd-ZVi9od-ORHb-OEVmcd,
+        .VIpgJd-ZVi9od-ORHb-OEVmcd *,
         #goog-gt-tt,
         #goog-gt-tt *,
         .goog-te-balloon-frame,
@@ -52,19 +53,33 @@
         .goog-tooltip,
         .goog-tooltip *,
         .goog-tooltip:hover,
-        .goog-te-ft {
+        .goog-te-ft,
+        .VIpgJd-yAWneB-L7lbkb,
+        .VIpgJd-yAWneB-L7lbkb * {
             display: none !important;
             visibility: hidden !important;
             opacity: 0 !important;
             pointer-events: none !important;
             width: 0 !important;
             height: 0 !important;
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
         }
         body {
             top: 0px !important;
             position: static !important;
         }
-        /* Completely eliminate Google Translate hover highlight & blue flickering */
+        /* Completely eliminate Google Translate hover highlight, blue background & text flickering */
+        font,
+        font:hover,
+        font:focus,
+        font:active,
+        font *,
+        font *:hover,
         html body .goog-text-highlight,
         html body font.goog-text-highlight,
         html body span.goog-text-highlight,
@@ -72,7 +87,9 @@
         .goog-text-highlight,
         .goog-text-highlight:hover,
         .goog-text-highlight:focus,
-        .goog-text-highlight:active {
+        .goog-text-highlight:active,
+        [class*="goog-text-highlight"],
+        [class*="goog-text-highlight"]:hover {
             background: transparent !important;
             background-color: transparent !important;
             box-shadow: none !important;
@@ -80,6 +97,12 @@
             text-shadow: none !important;
             color: inherit !important;
             border: none !important;
+        }
+        /* Prevent browser scroll-to-text-fragment highlight */
+        ::target-text {
+            background: transparent !important;
+            background-color: transparent !important;
+            color: inherit !important;
         }
         #google_translate_element {
             position: absolute !important;
@@ -94,6 +117,16 @@
         .notranslate {
             translate: no !important;
         }
+        span.notranslate {
+            display: inline !important;
+        }
+        /* Guarantee proper spacing around notranslate spans so adjacent translated words never collide */
+        span.notranslate:not(:first-child) {
+            margin-left: 0.28em !important;
+        }
+        span.notranslate:not(:last-child) {
+            margin-right: 0.28em !important;
+        }
     </style>
 </head>
 
@@ -105,7 +138,7 @@
             <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
                 <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">38a Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">38a Penrose St, SE17 3DW</span></span>
                 <span class="hidden md:inline text-slate-700">|</span>
-                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm &bull; Sun 9am–6pm</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Sat 9am–6pm &bull; Sun Closed</span>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                 <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs">
@@ -277,9 +310,8 @@
             <div>
                 <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Opening Hours</h4>
                 <ul class="text-xs space-y-1.5 text-slate-300">
-                    <li class="flex justify-between"><span>Monday – Friday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
-                    <li class="flex justify-between"><span>Saturday:</span> <span class="font-semibold text-slate-100">1:00 PM – 6:00 PM</span></li>
-                    <li class="flex justify-between"><span>Sunday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Monday – Saturday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
+                    <li class="flex justify-between text-slate-500"><span>Sunday:</span> <span>Closed</span></li>
                 </ul>
             </div>
 
@@ -500,26 +532,44 @@
                 { pattern: /\baLucas\s+GarageLo\s+elevaremos\b/gi, replacement: 'a Lucas Garage. Lo subiremos' },
                 { pattern: /\bLo\s+elevaremos\s+en\s+nuestro\s+elevador\b/gi, replacement: 'Lo subiremos en nuestro elevador' },
                 { pattern: /\bVeredicto\s+del\s+mec[aá]nico\s+objetivo\b/gi, replacement: 'Veredicto objetivo del mecánico antes de comprar' },
-                { pattern: /\brevisi[oó]n\s+general\s+del\s+caro\s+antes\s+de\s+compre\s+el\s+cliente\b/gi, replacement: 'Revisión general del carro antes de que compre el cliente' }
+                // Smashed word spacing fixes in Spanish
+                { pattern: /\bdeLucas\b/gi, replacement: 'de Lucas' },
+                { pattern: /\baLucas\b/gi, replacement: 'a Lucas' },
+                { pattern: /\benLucas\b/gi, replacement: 'en Lucas' },
+                { pattern: /\bconLucas\b/gi, replacement: 'con Lucas' },
+                { pattern: /\bparaLucas\b/gi, replacement: 'para Lucas' },
+                { pattern: /\bsobreLucas\b/gi, replacement: 'sobre Lucas' },
+                { pattern: /\b([a-záéíóúñ])Lucas\b/gi, replacement: '$1 Lucas' },
+                { pattern: /\bGarage([a-záéíóúñ])/gi, replacement: 'Garage $1' },
+                { pattern: /\bDe£/gi, replacement: 'Desde £' },
+                { pattern: /\bDesde£/gi, replacement: 'Desde £' },
+                { pattern: /\bFijado£/gi, replacement: 'Tarifa fija: £' },
+                { pattern: /\b£\s*(\d+)([a-zA-Záéíóúñ])/gi, replacement: '£$1 $2' },
+                { pattern: /\b([a-zA-Záéíóúñ])£(\d+)/gi, replacement: '$1 £$2' },
+                { pattern: /:\s*£/g, replacement: ': £' }
             ];
 
             let checkTimeout = null;
             const fixElements = () => {
-                document.querySelectorAll('span:not(.notranslate), p, h1, h2, h3, h4, li, a, font, div, button, label, option, strong, b, em, td, th').forEach(el => {
-                    if (el.children.length === 0 && el.textContent) {
-                        let text = el.textContent;
-                        let changed = false;
-                        for (let item of automotiveReplacements) {
-                            if (item.pattern.test(text)) {
-                                text = text.replace(item.pattern, item.replacement);
-                                changed = true;
-                            }
-                        }
-                        if (changed) {
-                            el.textContent = text;
+                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                let textNode;
+                while ((textNode = walker.nextNode())) {
+                    const parent = textNode.parentElement;
+                    if (!parent) continue;
+                    if (['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA'].includes(parent.tagName)) continue;
+                    let text = textNode.nodeValue;
+                    if (!text || !text.trim()) continue;
+                    let changed = false;
+                    for (let item of automotiveReplacements) {
+                        if (item.pattern.test(text)) {
+                            text = text.replace(item.pattern, item.replacement);
+                            changed = true;
                         }
                     }
-                });
+                    if (changed) {
+                        textNode.nodeValue = text;
+                    }
+                }
             };
 
             const observer = new MutationObserver(() => {
@@ -631,14 +681,36 @@
             }
         });
 
-        // Suppress Google Translate hover highlight & flickering dynamically
-        document.addEventListener('mouseover', function (e) {
-            if (e.target && e.target.classList && e.target.classList.contains('goog-text-highlight')) {
-                e.target.classList.remove('goog-text-highlight');
+        // Completely kill Google Translate hover highlight, blue background & mouse flickering dynamically
+        function neutralizeGoogleHighlight(target) {
+            if (!target) return;
+            if (target.classList && target.classList.contains('goog-text-highlight')) {
+                target.classList.remove('goog-text-highlight');
+            }
+            const parentHighlight = target.closest && target.closest('.goog-text-highlight');
+            if (parentHighlight) {
+                parentHighlight.classList.remove('goog-text-highlight');
+            }
+            if (target.tagName === 'FONT') {
+                target.style.removeProperty('background');
+                target.style.removeProperty('background-color');
+                target.style.removeProperty('box-shadow');
             }
             const el = document.getElementById('goog-gt-tt');
             if (el) {
-                el.style.display = 'none';
+                el.style.setProperty('display', 'none', 'important');
+                el.style.setProperty('visibility', 'hidden', 'important');
+                el.style.setProperty('opacity', '0', 'important');
+                el.style.setProperty('pointer-events', 'none', 'important');
+            }
+        }
+
+        document.addEventListener('mouseover', function (e) {
+            neutralizeGoogleHighlight(e.target);
+        }, true);
+        document.addEventListener('mousemove', function (e) {
+            if (e.target && (e.target.tagName === 'FONT' || (e.target.classList && e.target.classList.contains('goog-text-highlight')))) {
+                neutralizeGoogleHighlight(e.target);
             }
         }, true);
     </script>
