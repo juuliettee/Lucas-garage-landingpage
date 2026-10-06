@@ -529,9 +529,8 @@
                 // Brakes only card translation
                 { pattern: /\bFrenos\s+y\s+suspensi[oó]n\b/gi, replacement: 'Reparación y cambio de frenos' },
                 // Pre-purchase inspection translations
-                { pattern: /\bComprobaciones\s+previas\s+a\s+la\s+compra(?:\s+de\s+elevadores\s+hidr[aá]ulicos)?\b/gi, replacement: 'Revisión general del carro antes de que compre el cliente' },
-                { pattern: /\baLucas\s+GarageLo\s+elevaremos\b/gi, replacement: 'a Lucas Garage. Lo subiremos' },
-                { pattern: /\bLo\s+elevaremos\s+en\s+nuestro\s+elevador\b/gi, replacement: 'Lo subiremos en nuestro elevador' },
+                { pattern: /\bComprobaciones\s+previas\s+a\s+la\s+compra(?:\s+de\s+elevadores\s+hidr[aá]ulicos)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
+                { pattern: /\bInspecci[oó]n\s+(?:del\s+carro\s+)?previa\s+a\s+la\s+compra(?:\s+del\s+carro)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
                 { pattern: /\bVeredicto\s+del\s+mec[aá]nico\s+objetivo\b/gi, replacement: 'Veredicto objetivo del mecánico antes de comprar' },
                 // Smashed word spacing fixes in Spanish
                 { pattern: /\bdeLucas\b/gi, replacement: 'de Lucas' },
