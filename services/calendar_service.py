@@ -43,7 +43,7 @@ def clean_ics_text(val):
     cleaned = str(val).replace("\r", "").replace("\n", " ").strip()
     return cleaned.replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,")
 
-def generate_ics_content(booking_id, car_name, booking_date, booking_time, customer_name, customer_phone, customer_email, garage_email="luca@lucasgarage.co.uk"):
+def generate_ics_content(booking_id, car_name, booking_date, booking_time, customer_name, customer_phone, customer_email, garage_email="lucasgarage@hotmail.co.uk"):
     """
     Generates standard RFC 5545 iCalendar content with METHOD:REQUEST.
     Both Apple Calendar and Google Calendar/Outlook automatically detect and display 1-tap accept prompts.

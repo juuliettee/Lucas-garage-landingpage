@@ -223,7 +223,7 @@ def run_tests():
         assert b"Privacy &amp; Legal Notice" in priv_resp.data or b"Privacy & Legal Notice" in priv_resp.data
         assert b"E-Commerce Regs 2002" in priv_resp.data
         assert b"Consumer Rights Act 2015" in priv_resp.data
-        assert b"bookings@lucasgarage.co.uk" in priv_resp.data
+        assert b"lucasgarage@hotmail.co.uk" in priv_resp.data
         assert b"PECR Regulation 6" in priv_resp.data
 
         priv_alias_resp = client.get('/privacy-policy')
@@ -231,7 +231,7 @@ def run_tests():
 
         # Verify footer on home page includes email and privacy notice link
         home_page = client.get('/')
-        assert b"bookings@lucasgarage.co.uk" in home_page.data
+        assert b"lucasgarage@hotmail.co.uk" in home_page.data
         assert b"/privacy" in home_page.data
         assert b"Consumer Rights Act 2015" in home_page.data
         print("✅ Test 14 Passed: UK Legal compliance notice, GDPR/PECR disclosures, and footer links verified.")
