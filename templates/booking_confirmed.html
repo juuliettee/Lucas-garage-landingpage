@@ -28,7 +28,7 @@
                 <i class="fa-solid fa-car text-amber-400 mr-2"></i><strong>Vehicle:</strong> {{ car.year }} {{ car.make_model }} (£{{ "{:,}".format(car.price) if car.price else '' }})
             </div>
             <div>
-                <i class="fa-solid fa-clock text-slate-400 mr-2"></i><strong>Date & Time:</strong> {{ booking.booking_date }} at {{ booking.booking_time }}
+                <i class="fa-solid fa-clock text-slate-400 mr-2"></i><strong>Date & Time:</strong> {{ booking.booking_date|format_date_dmy }} at {{ booking.booking_time }}
             </div>
             <div>
                 <i class="fa-solid fa-location-dot text-slate-400 mr-2"></i><strong>Address:</strong> 38a Penrose Street, Walworth, SE17 3DW

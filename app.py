@@ -145,6 +145,17 @@ def inject_garage_data():
         "default_whatsapp_url": generate_customer_whatsapp_url()
     }
 
+@app.template_filter('format_date_dmy')
+def format_date_dmy(date_val):
+    if not date_val:
+        return ""
+    date_str = str(date_val)
+    if "-" in date_str:
+        parts = date_str.split("-")
+        if len(parts) == 3 and len(parts[0]) == 4:
+            return f"{parts[2]}/{parts[1]}/{parts[0]}"
+    return date_str
+
 # ----------------- PUBLIC ROUTES ----------------- #
 
 @app.route('/')
@@ -229,9 +240,15 @@ def book_viewing_api():
 
     # 1-Tap WhatsApp direct confirmation URL with full booking details
     import urllib.parse
+    dmy_date = booking_date
+    if booking_date and "-" in booking_date:
+        parts = booking_date.split("-")
+        if len(parts) == 3 and len(parts[0]) == 4:
+            dmy_date = f"{parts[2]}/{parts[1]}/{parts[0]}"
+
     booking_msg = (
         f"Hi Luca, I just booked a viewing for the {car.year} {car.make_model} "
-        f"on {booking_date} at {booking_time}. My name is {customer_name} ({customer_phone}). "
+        f"on {dmy_date} at {booking_time}. My name is {customer_name} ({customer_phone}). "
         f"Booking Ref: #LG-{booking.id}"
     )
     whatsapp_url = f"https://wa.me/{GARAGE_MOBILE}?text={urllib.parse.quote(booking_msg)}"

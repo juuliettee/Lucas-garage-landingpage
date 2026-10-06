@@ -51,7 +51,7 @@
                             <i class="fa-solid fa-car text-amber-400 mr-1"></i> Car: <strong>{{ b.car.year }} {{ b.car.make_model if b.car else 'Vehicle' }}</strong>
                         </p>
                         <p class="text-xs text-slate-400">
-                            <i class="fa-solid fa-clock text-slate-500 mr-1"></i> Slot: <strong class="text-slate-200">{{ b.booking_date }} at {{ b.booking_time }}</strong> (38a Penrose St)
+                            <i class="fa-solid fa-clock text-slate-500 mr-1"></i> Slot: <strong class="text-slate-200">{{ b.booking_date|format_date_dmy }} at {{ b.booking_time }}</strong> (38a Penrose St)
                         </p>
                         <p class="text-xs text-slate-400">
                             <i class="fa-solid fa-phone text-slate-500 mr-1"></i> Phone: <a href="tel:{{ b.customer_phone }}" class="text-amber-400 underline font-semibold">{{ b.customer_phone }}</a>

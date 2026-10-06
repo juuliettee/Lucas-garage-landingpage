@@ -176,13 +176,18 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                             <label for="waBookingDate" class="block font-bold text-slate-300 mb-1">Pick a Date *</label>
-                            <div class="relative cursor-pointer" onclick="try{document.getElementById('waBookingDate').showPicker()}catch(e){}">
-                                <input type="date" id="waBookingDate" required
-                                    onclick="try{this.showPicker()}catch(e){}"
-                                    class="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition cursor-pointer [color-scheme:dark]">
-                                <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-amber-400">
-                                    <i class="fa-solid fa-calendar-days text-sm"></i>
+                            <div class="relative cursor-pointer group" onclick="try{document.getElementById('waBookingDate').showPicker()}catch(e){}">
+                                <div id="waDateDisplayBox" class="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 font-semibold text-xs flex items-center justify-between transition group-hover:border-amber-500/50">
+                                    <span id="waFormattedDateText" class="text-slate-100">DD/MM/YYYY</span>
+                                    <div class="text-amber-400 pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-calendar-days text-sm"></i>
+                                    </div>
                                 </div>
+                                <input type="date" id="waBookingDate" required
+                                    onchange="updateFormattedDate(this.value)"
+                                    oninput="updateFormattedDate(this.value)"
+                                    onclick="try{this.showPicker()}catch(e){}"
+                                    class="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 [color-scheme:dark]">
                             </div>
                         </div>
                         <div>
@@ -227,12 +232,29 @@
 </div>
 
 <script>
+    function formatToDMY(iso) {
+        if (!iso) return '';
+        const parts = iso.split('-');
+        if (parts.length === 3 && parts[0].length === 4) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`; // Date/Month/Year (DD/MM/YYYY)
+        }
+        return iso;
+    }
+
+    function updateFormattedDate(iso) {
+        const textEl = document.getElementById('waFormattedDateText');
+        if (textEl && iso) {
+            textEl.textContent = formatToDMY(iso);
+        }
+    }
+
     // Set minimum date to today & handle calendar popup
     const today = new Date().toISOString().split('T')[0];
     const dateInput = document.getElementById('waBookingDate');
     if (dateInput) {
         dateInput.min = today;
         dateInput.value = today;
+        updateFormattedDate(today);
 
         const openCalendar = () => {
             if (typeof dateInput.showPicker === 'function') {
@@ -244,8 +266,9 @@
     }
 
     function launchWhatsAppViewing() {
-        const dateVal = document.getElementById('waBookingDate') ? document.getElementById('waBookingDate').value : '';
+        const rawDate = document.getElementById('waBookingDate') ? document.getElementById('waBookingDate').value : '';
         const timeVal = document.getElementById('waBookingTime') ? document.getElementById('waBookingTime').value : '';
+        const dateVal = formatToDMY(rawDate);
 
         const carName = "{{ car.year }} {{ car.make_model }} (£{{ '{:,}'.format(car.price) }})";
         const greeting = `Hi Luca, I would like to book a viewing for the ${carName} at Lucas Garage (38a Penrose Street).`;

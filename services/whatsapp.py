@@ -26,7 +26,12 @@ def generate_viewing_request_whatsapp_url(car_name, booking_date=None, booking_t
     greeting = f"Hi Luca, I would like to book a viewing for the {car_name} at Lucas Garage (38a Penrose Street)."
     details = []
     if booking_date:
-        details.append(f"Date: {booking_date}")
+        clean_date = booking_date
+        if "-" in booking_date:
+            parts = booking_date.split("-")
+            if len(parts) == 3 and len(parts[0]) == 4:
+                clean_date = f"{parts[2]}/{parts[1]}/{parts[0]}"
+        details.append(f"Date: {clean_date}")
     if booking_time:
         details.append(f"Time: {booking_time}")
     if customer_name:
