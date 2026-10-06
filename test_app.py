@@ -199,6 +199,24 @@ def run_tests():
         assert b'data-name=' in admin_page.data
         print("✅ Test 12 Passed: Defensive security hardening verified (headers, cookies, traversal, XSS defense).")
 
+        # 13. Test Custom 404 Page & SEO Directives
+        not_found_resp = client.get('/nefwjnfwjnfjewnfn')
+        assert not_found_resp.status_code == 404
+        assert b"Looks like you took a wrong turn!" in not_found_resp.data
+        assert b"Error 404" in not_found_resp.data
+        assert b"View Available Cars" in not_found_resp.data
+
+        robots_resp = client.get('/robots.txt')
+        assert robots_resp.status_code == 200
+        assert b"Disallow: /admin/" in robots_resp.data
+        assert b"Sitemap: https://lucasgarage.uk/sitemap.xml" in robots_resp.data
+
+        sitemap_resp = client.get('/sitemap.xml')
+        assert sitemap_resp.status_code == 200
+        assert b"<urlset" in sitemap_resp.data
+        assert b"https://lucasgarage.uk/cars" in sitemap_resp.data
+        print("✅ Test 13 Passed: Custom 404 page, robots.txt, and sitemap.xml verified.")
+
         print("\n🎉 ALL TESTS PASSED SUCCESSFULLY!")
 
 if __name__ == '__main__':

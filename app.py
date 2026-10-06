@@ -15,7 +15,7 @@ if hasattr(sys.stderr, 'reconfigure'):
 
 from datetime import datetime, date, timedelta
 from io import BytesIO
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file, abort
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file, abort, Response
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
@@ -202,6 +202,60 @@ def about():
 @app.route('/pricing')
 def pricing():
     return render_template('pricing.html')
+
+@app.route('/robots.txt')
+def robots_txt():
+    """Serves SEO and crawler directives."""
+    return send_from_directory(os.path.join(app.root_path, 'static'), 'robots.txt', mimetype='text/plain')
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    """Generates dynamic sitemap.xml including all active vehicle listings for Google/Bing indexing."""
+    cars = Car.query.filter(Car.status != 'Sold').all()
+    base_url = "https://lucasgarage.uk"
+    today_str = datetime.now().strftime("%Y-%m-%d")
+
+    xml_lines = [
+        '<?xml version="1.0" encoding="UTF-8"?>',
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+    ]
+
+    static_pages = [
+        ('/', '1.0', 'daily'),
+        ('/cars', '0.9', 'daily'),
+        ('/pricing', '0.8', 'weekly'),
+        ('/about', '0.7', 'monthly'),
+    ]
+
+    for path, priority, freq in static_pages:
+        xml_lines.append('  <url>')
+        xml_lines.append(f'    <loc>{base_url}{path}</loc>')
+        xml_lines.append(f'    <lastmod>{today_str}</lastmod>')
+        xml_lines.append(f'    <changefreq>{freq}</changefreq>')
+        xml_lines.append(f'    <priority>{priority}</priority>')
+        xml_lines.append('  </url>')
+
+    for car in cars:
+        lastmod = car.created_at.strftime("%Y-%m-%d") if getattr(car, 'created_at', None) else today_str
+        xml_lines.append('  <url>')
+        xml_lines.append(f'    <loc>{base_url}/car/{car.id}</loc>')
+        xml_lines.append(f'    <lastmod>{lastmod}</lastmod>')
+        xml_lines.append('    <changefreq>weekly</changefreq>')
+        xml_lines.append('    <priority>0.8</priority>')
+        xml_lines.append('  </url>')
+
+    xml_lines.append('</urlset>')
+    return Response("\n".join(xml_lines), mimetype='application/xml')
+
+@app.errorhandler(404)
+def page_not_found(e):
+    """Renders custom automotive 404 page for missing URLs."""
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def server_error(e):
+    """Renders friendly 500 error page on unexpected exceptions."""
+    return render_template('500.html'), 500
 
 # ----------------- BOOKING & VERIFICATION ROUTES ----------------- #
 

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}500 - Server Error | Lucas Garage London{% endblock %}
+
+{% block content %}
+<section class="min-h-[70vh] flex items-center justify-center px-4 py-16">
+    <div class="max-w-xl w-full text-center">
+        <!-- Icon Badge -->
+        <div class="inline-flex items-center justify-center w-24 h-24 rounded-3xl bg-rose-500/10 border border-rose-500/25 text-rose-400 mb-6 shadow-lg shadow-rose-500/5">
+            <i class="fa-solid fa-wrench text-4xl"></i>
+        </div>
+
+        <!-- 500 Code Badge -->
+        <div class="mb-3">
+            <span class="inline-block text-xs font-mono font-bold uppercase tracking-wider text-rose-400 bg-rose-500/10 border border-rose-500/25 px-3 py-1 rounded-full">
+                Error 500 &bull; Server Issue
+            </span>
+        </div>
+
+        <!-- Main Title -->
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-100 mb-3 tracking-tight">
+            Unexpected Workshop Hiccup!
+        </h1>
+
+        <!-- Description -->
+        <p class="text-sm sm:text-base text-slate-400 mb-8 max-w-md mx-auto leading-relaxed">
+            Something went wrong while loading this page. Our mechanics are looking into it. Please try refreshing or reach out to Luca directly on WhatsApp.
+        </p>
+
+        <!-- Action CTAs -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href="{{ url_for('home') }}"
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-[#070C11] font-bold text-sm px-6 py-3.5 rounded-xl transition shadow-md shadow-amber-500/10">
+                <i class="fa-solid fa-house"></i>
+                <span>Return to Homepage</span>
+            </a>
+
+            <a href="{{ default_whatsapp_url }}" target="_blank" rel="noopener"
+               class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-sm px-6 py-3.5 rounded-xl transition shadow-sm">
+                <i class="fa-brands fa-whatsapp text-base"></i>
+                <span>Message Luca</span>
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

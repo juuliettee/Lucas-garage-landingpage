@@ -1,0 +1,11 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /login
+Disallow: /api/
+Allow: /
+Allow: /cars
+Allow: /car/
+Allow: /pricing
+Allow: /about
+
+Sitemap: https://lucasgarage.uk/sitemap.xml
