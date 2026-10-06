@@ -521,8 +521,9 @@
                 { pattern: /\bDesde£/gi, replacement: 'Desde £' },
                 { pattern: /\bFijado\s*£\s*30(?:\s*tarifa\s+de\s+diagn[oó]stico)?\b/gi, replacement: 'Tarifa fija de diagnóstico: £30' },
                 { pattern: /\b£\s*30\s*Escaneo\s+fijo\b/gi, replacement: 'Escaneo diagnóstico: £30' },
-                { pattern: /\bMini\s+Servicio:\s*£\s*130\s*Fijo(?:\s*\(Aceite\s+y\s+filtro\))?(?:\s*(?:—|-)?\s*(?:depende|dependiente)\s+del\s+(?:coche|carro))?\b/gi, replacement: 'Mini Servicio: £130 fijo (Aceite y filtro) — depende del carro' },
-                { pattern: /\bServicio\s+completo:\s*£\s*250\s*–\s*£\s*300\s*\((?:depende|dependiente)\s+del\s+(?:coche|carro)\)/gi, replacement: 'Servicio completo: £250 – £300 (depende del carro)' },
+                { pattern: /\bMini\s+[sS]ervicio(?:\s*\(aceite\s+y\s+filtro\))?:\s*(?:£\s*130|130\s*£)(?:\s*fijo)?(?:\s*\(aceite\s+y\s+filtro\))?(?:\s*(?:—|-)?\s*\(?(?:depende|dependiente)\s+del\s+(?:coche|carro)\)?)?/gi, replacement: 'Mini Servicio (aceite y filtro): £130 (depende del carro)' },
+                { pattern: /\bMini\s+[sS]ervicio:\s*\(aceite\s+y\s+filtro\)/gi, replacement: 'Mini Servicio (aceite y filtro):' },
+                { pattern: /\bServicio\s+[cC]ompleto:\s*(?:£\s*250\s*–\s*£?\s*300|250\s*–\s*300\s*£)\s*\(?(?:depende|dependiente)\s+del\s+(?:coche|carro)\)?/gi, replacement: 'Servicio completo: £250 – £300 (depende del carro)' },
                 // Traction control (control de tracción, NOT tracción de control)
                 { pattern: /\btracci[oó]n\s+de\s+control\b/gi, replacement: 'control de tracción' },
                 // Brakes only card translation
@@ -553,8 +554,9 @@
                 { pattern: /\bWhatsApp:(\d)/gi, replacement: 'WhatsApp: $1' },
                 { pattern: /\bWhatsApp:\s*07535/gi, replacement: 'WhatsApp: 07535' },
                 // Service Card 1 Spanish translations
-                { pattern: /\baceite\s+y\s+filtro\s*•\s*depende\s+del\s+(?:coche|carro)/gi, replacement: 'Aceite y filtro • depende del carro' },
-                { pattern: /\bcompleto\s*•\s*depende\s+del\s+(?:coche|carro)/gi, replacement: 'Completo • depende del carro' },
+                { pattern: /\baceite\s+y\s+filtro\b/gi, replacement: 'aceite y filtro' },
+                { pattern: /\b\(depende\s+del\s+(?:coche|carro)\)/gi, replacement: '(depende del carro)' },
+                { pattern: /\bdepende\s+del\s+coche\b/gi, replacement: 'depende del carro' },
                 { pattern: /\bServicio\s+[Cc]ompleto\s*\(depende\s+del\s+(?:coche|carro)\)/gi, replacement: 'Servicio Completo (depende del carro)' }
             ];
 

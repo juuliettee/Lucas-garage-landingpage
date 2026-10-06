@@ -220,23 +220,11 @@
                         </div>
                     </div>
 
-                    <div>
-                        <label for="waCustomerName" class="block font-bold text-slate-300 mb-1">Your Name <span class="text-slate-500 font-normal">(Optional)</span></label>
-                        <input type="text" id="waCustomerName" placeholder="e.g. David"
-                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
-                    </div>
-
-                    <div>
-                        <label for="waCustomerNotes" class="block font-bold text-slate-300 mb-1">Questions / Notes <span class="text-slate-500 font-normal">(Optional)</span></label>
-                        <textarea id="waCustomerNotes" rows="2" placeholder="e.g. Can we put the car on the hydraulic lift?"
-                            class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
-                    </div>
-
                     <!-- Direct WhatsApp Launch Button -->
                     <button type="button" id="launchWhatsAppBtn" onclick="launchWhatsAppViewing()"
                         class="w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-black py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer">
                         <i class="fa-brands fa-whatsapp text-xl"></i>
-                        <span>💬 Message Luca on WhatsApp to Book</span>
+                        <span>Message Luca on WhatsApp to Book</span>
                     </button>
 
                     <!-- Direct Phone Call Option -->
@@ -283,21 +271,17 @@
     function launchWhatsAppViewing() {
         const dateVal = document.getElementById('waBookingDate') ? document.getElementById('waBookingDate').value : '';
         const timeVal = document.getElementById('waBookingTime') ? document.getElementById('waBookingTime').value : '';
-        const nameVal = document.getElementById('waCustomerName') ? document.getElementById('waCustomerName').value.trim() : '';
-        const noteVal = document.getElementById('waCustomerNotes') ? document.getElementById('waCustomerNotes').value.trim() : '';
 
-        const carName = "{{ car.year }} {{ car.make }} {{ car.model }} (£{{ '{:,}'.format(car.price) }})";
-        let greeting = `Hi Luca, I'd like to book a viewing for the ${carName} at Lucas Garage (38a Penrose Street).`;
+        const carName = "{{ car.year }} {{ car.make_model }} (£{{ '{:,}'.format(car.price) }})";
+        const greeting = `Hi Luca, I would like to book a viewing for the ${carName} at Lucas Garage (38a Penrose Street).`;
         
         let details = [];
-        if (dateVal) details.push(`📅 Date: ${dateVal}`);
-        if (timeVal) details.push(`⏰ Time: ${timeVal}`);
-        if (nameVal) details.push(`👤 Name: ${nameVal}`);
-        if (noteVal) details.push(`📝 Note: ${noteVal}`);
+        if (dateVal) details.push(`Date: ${dateVal}`);
+        if (timeVal) details.push(`Time: ${timeVal}`);
 
         let fullText = "";
         if (details.length > 0) {
-            fullText = `${greeting}\n\n${details.join(' • ')}.\n\nIs this viewing slot available?`;
+            fullText = `${greeting}\n\n${details.join('\n')}\n\nIs this viewing slot available?`;
         } else {
             fullText = `${greeting}\n\nIs this car available for a viewing?`;
         }

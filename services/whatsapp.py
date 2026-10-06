@@ -23,21 +23,22 @@ def generate_viewing_request_whatsapp_url(car_name, booking_date=None, booking_t
     """
     Generates a direct WhatsApp link to Luca with the user's preferred date and time pre-filled.
     """
-    greeting = f"Hi Luca, I'd like to book a viewing for the {car_name} at Lucas Garage (38a Penrose Street)."
+    greeting = f"Hi Luca, I would like to book a viewing for the {car_name} at Lucas Garage (38a Penrose Street)."
     details = []
     if booking_date:
         details.append(f"Date: {booking_date}")
     if booking_time:
         details.append(f"Time: {booking_time}")
     if customer_name:
-        details.append(f"My name is {customer_name}")
+        details.append(f"Name: {customer_name}")
     if customer_note:
         details.append(f"Note: {customer_note}")
 
     if details:
-        text = f"{greeting}\n" + " • ".join(details) + ".\nIs this viewing slot available?"
+        details_str = "\n".join(details)
+        text = f"{greeting}\n\n{details_str}\n\nIs this viewing slot available?"
     else:
-        text = f"{greeting}\nIs this car available for a viewing?"
+        text = f"{greeting}\n\nIs this car available for a viewing?"
 
     encoded_text = urllib.parse.quote(text)
     return f"https://wa.me/{GARAGE_MOBILE}?text={encoded_text}"
@@ -66,17 +67,17 @@ def send_whatsapp_booking_alert(booking, car):
     or logs the dispatch cleanly for audit.
     """
     alert_message = (
-        f"🚗 *NEW CAR VIEWING BOOKED!* 🚗\n\n"
-        f"• *Vehicle:* {car.make_model} ({car.year})\n"
-        f"• *Price:* £{car.price:,}\n"
-        f"• *Customer:* {booking.customer_name}\n"
-        f"• *Phone:* {booking.customer_phone}\n"
-        f"• *Date:* {booking.booking_date}\n"
-        f"• *Time Slot:* {booking.booking_time}\n"
-        f"• *Location:* 38a Penrose St, SE17 3DW\n"
+        f"*NEW CAR VIEWING BOOKED!*\n\n"
+        f"- *Vehicle:* {car.make_model} ({car.year})\n"
+        f"- *Price:* £{car.price:,}\n"
+        f"- *Customer:* {booking.customer_name}\n"
+        f"- *Phone:* {booking.customer_phone}\n"
+        f"- *Date:* {booking.booking_date}\n"
+        f"- *Time Slot:* {booking.booking_time}\n"
+        f"- *Location:* 38a Penrose St, SE17 3DW\n"
     )
     if booking.notes:
-        alert_message += f"• *Notes:* {booking.notes}\n"
+        alert_message += f"- *Notes:* {booking.notes}\n"
 
     try:
         print("\n" + "="*50)
