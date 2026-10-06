@@ -317,29 +317,39 @@
 
             <div>
                 <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Direct Contact</h4>
-                <p class="text-xs text-slate-300 mb-2">
-                    <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Workshop Mobile: <strong class="text-slate-100">07535 321145</strong>
+                <p class="text-xs text-slate-300 mb-1.5">
+                    <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Workshop: <strong class="text-slate-100">07535 321145</strong>
+                </p>
+                <p class="text-xs text-slate-300 mb-3">
+                    <i class="fa-solid fa-envelope text-amber-400 mr-1.5"></i> Email: <a href="mailto:bookings@lucasgarage.co.uk" class="text-slate-200 hover:text-amber-400 underline">bookings@lucasgarage.co.uk</a>
                 </p>
                 <a href="{{ default_whatsapp_url }}" target="_blank"
-                    class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white transition shadow-sm mb-3">
+                    class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white transition shadow-sm mb-2.5">
                     <i class="fa-brands fa-whatsapp text-sm mr-1.5"></i> Open WhatsApp Chat
                 </a>
                 <p class="text-[11px] text-slate-500">
                     London Borough of Southwark &bull; Expanded ULEZ Zone
                 </p>
+                <p class="text-[10px] text-slate-500 mt-1">
+                    Independent Motor Trader &bull; Not VAT registered (prices total payable)
+                </p>
             </div>
         </div>
 
-        <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-[#243344] text-center text-xs text-slate-500 flex flex-wrap justify-between items-center">
+        <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-[#243344] text-center text-xs text-slate-500 flex flex-wrap justify-between items-center gap-y-2">
             <p class="notranslate" translate="no">&copy; 2026 Lucas Garage. All rights reserved. 38a Penrose St, London SE17 3DW.</p>
-            <div class="space-x-4 mt-2 sm:mt-0">
+            <div class="space-x-4">
                 <a href="{{ url_for('home') }}" class="hover:text-slate-300 transition">Home</a>
                 <a href="{{ url_for('home') }}#services" class="hover:text-slate-300 transition">Services</a>
                 <a href="{{ url_for('pricing') }}" class="hover:text-slate-300 transition">Pricing</a>
                 <a href="{{ url_for('about') }}" class="hover:text-slate-300 transition">About Us</a>
                 <a href="{{ url_for('cars') }}" class="hover:text-slate-300 transition">View Stock</a>
+                <a href="{{ url_for('privacy_policy') }}" class="hover:text-amber-400 text-slate-300 font-semibold transition">Privacy & Legal</a>
                 <a href="{{ url_for('login') }}" class="hover:text-slate-300 transition">Mechanic Login</a>
             </div>
+            <p class="text-[11px] text-slate-500 w-full mt-2 text-left sm:text-center">
+                Lucas Garage is an independent automotive repairer & motor trader. All vehicles and services supplied subject to the Consumer Rights Act 2015.
+            </p>
         </div>
     </footer>
 

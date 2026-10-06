@@ -128,14 +128,21 @@
                                 </span>
                             </div>
                             <div class="flex justify-between py-2 border-b border-[#243344]">
+                                <span class="text-slate-400">History / Category:</span>
+                                <span class="font-bold text-slate-50">{{ car.copart_category or 'Clean / Unrecorded' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-[#243344]">
                                 <span class="text-slate-400">Location:</span>
                                 <span class="font-bold text-slate-50">38a Penrose St, SE17 3DW</span>
                             </div>
-                            <div class="flex justify-between py-2 border-b border-[#243344]">
+                            <div class="flex justify-between py-2 border-b border-[#243344] sm:col-span-2">
                                 <span class="text-slate-400">Features:</span>
                                 <span class="font-bold text-slate-50">{{ car.features or 'Standard features' }}</span>
                             </div>
                         </div>
+                        <p class="text-[11px] text-slate-400 mt-3 italic">
+                            *Workshop inspections & labour guarantees are provided in addition to, and do not affect, your statutory rights under the Consumer Rights Act 2015.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -221,6 +228,10 @@
                         <i class="fa-solid fa-phone text-amber-400"></i>
                         <span>Or Call Luca Directly: 07535 321145</span>
                     </a>
+
+                    <p class="text-[10px] text-slate-400 text-center pt-1 leading-relaxed">
+                        When you contact us, your details are used solely to arrange your vehicle viewing. See our <a href="{{ url_for('privacy_policy') }}" class="text-amber-400 hover:text-amber-300 underline font-medium">Privacy Notice</a>.
+                    </p>
                 </div>
 
 
