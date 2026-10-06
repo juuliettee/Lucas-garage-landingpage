@@ -105,7 +105,7 @@
             <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
                 <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">38a Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">38a Penrose St, SE17 3DW</span></span>
                 <span class="hidden md:inline text-slate-700">|</span>
-                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm &bull; Sun 9am–6pm</span>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                 <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs">
@@ -279,7 +279,7 @@
                 <ul class="text-xs space-y-1.5 text-slate-300">
                     <li class="flex justify-between"><span>Monday – Friday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
                     <li class="flex justify-between"><span>Saturday:</span> <span class="font-semibold text-slate-100">1:00 PM – 6:00 PM</span></li>
-                    <li class="flex justify-between text-slate-500"><span>Sunday:</span> <span>Closed</span></li>
+                    <li class="flex justify-between"><span>Sunday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
                 </ul>
             </div>
 
@@ -473,7 +473,34 @@
                 { pattern: /\bcaja\s+de\s+engranajes\b/gi, replacement: 'caja de cambios' },
                 // Homepage subtitle SPAG fix
                 { pattern: /\bmantenimiento\s+y\s+diagn[oó]sticos\b/gi, replacement: 'mantenimiento, diagnósticos' },
-                { pattern: /\s+en\s+38a\s+Penrose\s+Street[,\s]+Walworth\.?/gi, replacement: '.' }
+                { pattern: /\s+en\s+38a\s+Penrose\s+Street[,\s]+Walworth\.?/gi, replacement: '.' },
+                // Homepage hero headline translation
+                { pattern: /\b(Reparaciones\s+en\s+taller\s+independiente\s+y\s+(venta\s+de\s+)?(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+de\s+calidad)?|Mec[aá]nica\s+general\s+y\s+venta\s+de\s+(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+en\s+perfectas\s+condiciones)?)\b/gi, replacement: 'Mecánica general y venta de carros de segunda mano en perfectas condiciones' },
+                // Global terminology shift: coche -> carro
+                { pattern: /\bcoches\b/gi, replacement: 'carros' },
+                { pattern: /\bcoche\b/gi, replacement: 'carro' },
+                { pattern: /\bdel\s+coche\b/gi, replacement: 'del carro' },
+                { pattern: /\bal\s+coche\b/gi, replacement: 'al carro' },
+                { pattern: /\bel\s+coche\b/gi, replacement: 'el carro' },
+                { pattern: /\bun\s+coche\b/gi, replacement: 'un carro' },
+                { pattern: /\blos\s+coches\b/gi, replacement: 'los carros' },
+                // Whitespace & price formatting
+                { pattern: /\bDe\s*£/gi, replacement: 'Desde £' },
+                { pattern: /\bDesde£/gi, replacement: 'Desde £' },
+                { pattern: /\bFijado\s*£\s*30(?:\s*tarifa\s+de\s+diagn[oó]stico)?\b/gi, replacement: 'Tarifa fija de diagnóstico: £30' },
+                { pattern: /\b£\s*30\s*Escaneo\s+fijo\b/gi, replacement: 'Escaneo diagnóstico: £30' },
+                { pattern: /\bMini\s+Servicio:\s*£\s*130\s*Fijo(?:\s*\(Aceite\s+y\s+filtro\))?(?:\s*(?:—|-)?\s*(?:depende|dependiente)\s+del\s+(?:coche|carro))?\b/gi, replacement: 'Mini Servicio: £130 fijo (Aceite y filtro) — depende del carro' },
+                { pattern: /\bServicio\s+completo:\s*£\s*250\s*–\s*£\s*300\s*\((?:depende|dependiente)\s+del\s+(?:coche|carro)\)/gi, replacement: 'Servicio completo: £250 – £300 (depende del carro)' },
+                // Traction control (control de tracción, NOT tracción de control)
+                { pattern: /\btracci[oó]n\s+de\s+control\b/gi, replacement: 'control de tracción' },
+                // Brakes only card translation
+                { pattern: /\bFrenos\s+y\s+suspensi[oó]n\b/gi, replacement: 'Reparación y cambio de frenos' },
+                // Pre-purchase inspection translations
+                { pattern: /\bComprobaciones\s+previas\s+a\s+la\s+compra(?:\s+de\s+elevadores\s+hidr[aá]ulicos)?\b/gi, replacement: 'Revisión general del carro antes de que compre el cliente' },
+                { pattern: /\baLucas\s+GarageLo\s+elevaremos\b/gi, replacement: 'a Lucas Garage. Lo subiremos' },
+                { pattern: /\bLo\s+elevaremos\s+en\s+nuestro\s+elevador\b/gi, replacement: 'Lo subiremos en nuestro elevador' },
+                { pattern: /\bVeredicto\s+del\s+mec[aá]nico\s+objetivo\b/gi, replacement: 'Veredicto objetivo del mecánico antes de comprar' },
+                { pattern: /\brevisi[oó]n\s+general\s+del\s+caro\s+antes\s+de\s+compre\s+el\s+cliente\b/gi, replacement: 'Revisión general del carro antes de que compre el cliente' }
             ];
 
             let checkTimeout = null;

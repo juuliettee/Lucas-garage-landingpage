@@ -74,18 +74,29 @@ def run_tests():
         assert created_booking.booking_time == "14:30"
         print("✅ Test 5a Passed: Valid viewing booked, saved to database, and WhatsApp alert triggered.")
 
-        # 5b. Sunday booking should be rejected (garage closed)
-        sunday_payload = {
+        # 5b. Sunday booking: out-of-hours (08:00) rejected; valid slot (11:30) accepted (Sunday 9am-6pm)
+        sunday_out_of_hours = {
             "car_id": car.id,
             "customer_name": "James Bond",
             "customer_phone": "07007 007007",
             "booking_date": "2026-09-27", # Sunday
-            "booking_time": "14:30"
+            "booking_time": "08:00"
         }
-        resp = client.post('/api/book-viewing', data=sunday_payload)
+        resp = client.post('/api/book-viewing', data=sunday_out_of_hours)
         assert resp.status_code == 400
-        assert "closed on sundays" in resp.get_json()['message'].lower()
-        print("✅ Test 5b Passed: Sunday booking correctly rejected with garage closed notice.")
+        assert "sunday opening hours are 9:00 am – 6:00 pm" in resp.get_json()['message'].lower()
+
+        sunday_valid = {
+            "car_id": car.id,
+            "customer_name": "James Bond",
+            "customer_phone": "07007 007007",
+            "booking_date": "2026-09-27", # Sunday
+            "booking_time": "11:30"
+        }
+        resp = client.post('/api/book-viewing', data=sunday_valid)
+        assert resp.status_code == 200
+        assert resp.get_json()['success'] is True
+        print("✅ Test 5b Passed: Sunday opening hours verified (9am–6pm accepted, out-of-hours rejected).")
 
         # 6. Test Admin Authentication & Dashboard
         import os

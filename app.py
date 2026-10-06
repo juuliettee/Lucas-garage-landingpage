@@ -38,7 +38,7 @@ GARAGE_INFO = {
     "hours": {
         "monday_to_friday": "9:00 AM – 6:00 PM",
         "saturday": "1:00 PM – 6:00 PM",
-        "sunday": "Closed"
+        "sunday": "9:00 AM – 6:00 PM"
     },
     "services": "Mechanical repairs, servicing, diagnostics, MOT prep, and quality used car sales."
 }
@@ -202,8 +202,8 @@ def book_viewing_api():
         minute = int(booking_time.split(":")[1])
         time_decimal = hour + (minute / 60.0)
 
-        if weekday == 6:
-            return jsonify({"success": False, "message": "The garage is closed on Sundays. Please choose Monday through Saturday."}), 400
+        if weekday == 6 and (time_decimal < 9.0 or time_decimal > 17.5):
+            return jsonify({"success": False, "message": "Sunday opening hours are 9:00 AM – 6:00 PM. Please choose a slot between 09:00 and 17:30."}), 400
         elif weekday == 5 and (time_decimal < 13.0 or time_decimal > 17.5):
             return jsonify({"success": False, "message": "Saturday opening hours are 1:00 PM – 6:00 PM. Please choose a slot between 13:00 and 17:30."}), 400
         elif weekday < 5 and (time_decimal < 9.0 or time_decimal > 17.5):

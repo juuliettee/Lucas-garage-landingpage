@@ -19,6 +19,29 @@ def generate_customer_whatsapp_url(car_name=None, message_type="inquiry"):
     encoded_text = urllib.parse.quote(text)
     return f"https://wa.me/{GARAGE_MOBILE}?text={encoded_text}"
 
+def generate_viewing_request_whatsapp_url(car_name, booking_date=None, booking_time=None, customer_name=None, customer_note=None):
+    """
+    Generates a direct WhatsApp link to Luca with the user's preferred date and time pre-filled.
+    """
+    greeting = f"Hi Luca, I'd like to book a viewing for the {car_name} at Lucas Garage (38a Penrose Street)."
+    details = []
+    if booking_date:
+        details.append(f"Date: {booking_date}")
+    if booking_time:
+        details.append(f"Time: {booking_time}")
+    if customer_name:
+        details.append(f"My name is {customer_name}")
+    if customer_note:
+        details.append(f"Note: {customer_note}")
+
+    if details:
+        text = f"{greeting}\n" + " • ".join(details) + ".\nIs this viewing slot available?"
+    else:
+        text = f"{greeting}\nIs this car available for a viewing?"
+
+    encoded_text = urllib.parse.quote(text)
+    return f"https://wa.me/{GARAGE_MOBILE}?text={encoded_text}"
+
 def generate_luca_reply_whatsapp_url(customer_phone, car_name, booking_date, booking_time):
     """
     Generates a 1-tap WhatsApp reply URL for Luca to confirm or message the customer.

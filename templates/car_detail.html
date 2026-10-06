@@ -161,61 +161,40 @@
         <!-- Right: In-Person Viewing Booking & WhatsApp Actions (5 cols) -->
         <div class="lg:col-span-5 space-y-6">
             
-            <!-- Booking Card -->
+            <!-- WhatsApp Viewing Scheduler Card -->
             <div class="bg-[#141E28] rounded-3xl p-6 sm:p-8 border border-[#243344] shadow-xl lg:sticky lg:top-20 text-slate-100">
                 <div class="flex items-center space-x-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-[#0B1117] text-amber-400 border border-[#243344] flex items-center justify-center text-base">
-                        <i class="fa-solid fa-calendar-check"></i>
+                    <div class="w-10 h-10 rounded-xl bg-[#0B1117] text-[#25D366] border border-[#243344] flex items-center justify-center text-xl">
+                        <i class="fa-brands fa-whatsapp"></i>
                     </div>
                     <div>
-                        <h2 class="text-lg font-black text-slate-50">Book In-Person Viewing</h2>
-                        <p class="text-xs text-slate-400">Luca will get an instant alert</p>
+                        <h2 class="text-lg font-black text-slate-50">Book Viewing with Luca</h2>
+                        <p class="text-xs text-slate-400">Direct WhatsApp message with your selected date & time</p>
                     </div>
                 </div>
 
-                <div class="bg-[#0B1117] p-3 rounded-xl border border-[#243344] text-[11px] text-slate-300 mb-6 space-y-2">
+                <div class="bg-[#0B1117] p-3.5 rounded-xl border border-[#243344] text-[11px] text-slate-300 mb-5 space-y-2">
                     <div class="flex items-start space-x-2">
                         <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
                         <div>
-                            <strong class="text-slate-100">Still Available?</strong> Yes — if this vehicle is displayed on our website, it is currently in stock. Listings are taken down the moment a deposit is accepted.
+                            <strong class="text-slate-100">Still in Stock?</strong> Yes — if this vehicle is displayed on our website, it is currently available at 38a Penrose Street.
                         </div>
                     </div>
                     <div class="flex items-start space-x-2 pt-1.5 border-t border-[#243344]/60">
                         <i class="fa-solid fa-clock text-amber-400 text-xs mt-0.5"></i>
                         <div>
-                            <strong class="text-slate-100">Viewing Hours:</strong> Mon–Fri 9am–6pm, Sat 1pm–6pm (Closed Sun). Viewings arranged by appointment so Luca can walk you through the vehicle.
+                            <strong class="text-slate-100">Viewing Hours:</strong> Mon–Fri 9am–6pm &bull; Sat 1pm–6pm &bull; Sun 9am–6pm. Luca will personally walk you through the vehicle.
                         </div>
                     </div>
                 </div>
 
-                <!-- Booking Form -->
-                <form id="viewingBookingForm" onsubmit="handleBookingSubmit(event); return false;" class="space-y-4 text-xs">
-                    <input type="hidden" name="car_id" value="{{ car.id }}">
-
-                    <div>
-                        <label class="block font-bold text-slate-300 mb-1">Your Full Name *</label>
-                        <input type="text" name="customer_name" required placeholder="e.g. David Smith"
-                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-300 mb-1">Mobile Phone (WhatsApp) *</label>
-                        <input type="tel" name="customer_phone" required placeholder="e.g. 07123 456789"
-                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
-                        <span class="text-[10px] text-slate-500">Used solely to confirm your viewing appointment.</span>
-                    </div>
-
-                    <div>
-                        <label class="block font-bold text-slate-300 mb-1">Email Address <span class="text-slate-500 font-normal">(Optional)</span></label>
-                        <input type="email" name="customer_email" placeholder="e.g. david@example.com (optional)"
-                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3">
-                        <div class="relative">
-                            <label for="bookingDateInput" class="block font-bold text-slate-300 mb-1">Select Date *</label>
-                            <div class="relative cursor-pointer" onclick="try{document.getElementById('bookingDateInput').showPicker()}catch(e){}">
-                                <input type="date" name="booking_date" id="bookingDateInput" required
+                <!-- Interactive Date & Time Picker for WhatsApp -->
+                <div class="space-y-4 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label for="waBookingDate" class="block font-bold text-slate-300 mb-1">Pick a Date *</label>
+                            <div class="relative cursor-pointer" onclick="try{document.getElementById('waBookingDate').showPicker()}catch(e){}">
+                                <input type="date" id="waBookingDate" required
                                     onclick="try{this.showPicker()}catch(e){}"
                                     class="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition cursor-pointer [color-scheme:dark]">
                                 <div class="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-amber-400">
@@ -224,36 +203,49 @@
                             </div>
                         </div>
                         <div>
-                            <label class="block font-bold text-slate-300 mb-1">Time Slot *</label>
-                            <select name="booking_time" required
+                            <label for="waBookingTime" class="block font-bold text-slate-300 mb-1">Select Time Slot *</label>
+                            <select id="waBookingTime" required
                                 class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition cursor-pointer">
-                                <option value="09:30">09:30 AM (Mon-Fri)</option>
-                                <option value="10:30">10:30 AM (Mon-Fri)</option>
-                                <option value="11:30">11:30 AM (Mon-Fri)</option>
-                                <option value="13:30" selected>01:30 PM (Mon-Sat)</option>
-                                <option value="14:30">02:30 PM (Mon-Sat)</option>
-                                <option value="15:30">03:30 PM (Mon-Sat)</option>
-                                <option value="16:30">04:30 PM (Mon-Sat)</option>
-                                <option value="17:00">05:00 PM (Mon-Sat)</option>
+                                <option value="09:30 AM">09:30 AM</option>
+                                <option value="10:30 AM">10:30 AM</option>
+                                <option value="11:30 AM">11:30 AM</option>
+                                <option value="12:30 PM">12:30 PM</option>
+                                <option value="01:30 PM" selected>01:30 PM</option>
+                                <option value="02:30 PM">02:30 PM</option>
+                                <option value="03:30 PM">03:30 PM</option>
+                                <option value="04:30 PM">04:30 PM</option>
+                                <option value="05:00 PM">05:00 PM</option>
+                                <option value="05:30 PM">05:30 PM</option>
                             </select>
                         </div>
                     </div>
 
                     <div>
-                        <label class="block font-bold text-slate-300 mb-1">Notes / Questions (Optional)</label>
-                        <textarea name="notes" rows="2" placeholder="e.g. Interested in seeing underbody on the ramp"
+                        <label for="waCustomerName" class="block font-bold text-slate-300 mb-1">Your Name <span class="text-slate-500 font-normal">(Optional)</span></label>
+                        <input type="text" id="waCustomerName" placeholder="e.g. David"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition">
+                    </div>
+
+                    <div>
+                        <label for="waCustomerNotes" class="block font-bold text-slate-300 mb-1">Questions / Notes <span class="text-slate-500 font-normal">(Optional)</span></label>
+                        <textarea id="waCustomerNotes" rows="2" placeholder="e.g. Can we put the car on the hydraulic lift?"
                             class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
                     </div>
 
-                    <button type="submit" id="submitBookingBtn"
-                        class="w-full bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-black py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-calendar-check text-[#0B1117]"></i>
-                        <span>Book Viewing Slot</span>
+                    <!-- Direct WhatsApp Launch Button -->
+                    <button type="button" id="launchWhatsAppBtn" onclick="launchWhatsAppViewing()"
+                        class="w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-black py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                        <span>💬 Message Luca on WhatsApp to Book</span>
                     </button>
-                </form>
 
-                <!-- Dynamic Booking Result Banner -->
-                <div id="bookingResultArea" class="hidden mt-4"></div>
+                    <!-- Direct Phone Call Option -->
+                    <a href="tel:07535321145"
+                        class="w-full inline-flex items-center justify-center space-x-2 bg-[#0B1117] hover:bg-[#182330] text-slate-300 border border-[#243344] font-bold text-xs py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-phone text-amber-400"></i>
+                        <span>Or Call Luca Directly: 07535 321145</span>
+                    </a>
+                </div>
 
                 <!-- Workshop Trust Reassurance -->
                 <div class="mt-6 pt-5 border-t border-[#243344] text-left text-[11px] text-slate-400 space-y-2">
@@ -263,16 +255,6 @@
                     <p>&bull; Full access to hydraulic lift for vehicle underbody inspection.</p>
                     <p>&bull; Bring your own mechanic or OBD diagnostic scanner — 100% transparency.</p>
                     <p>&bull; Comprehensive vehicle walkaround inspection and repair history review directly with Luca.</p>
-                </div>
-
-                <!-- Direct WhatsApp Alternative -->
-                <div class="mt-4 pt-4 border-t border-[#243344] text-center">
-                    <p class="text-xs text-slate-400 mb-2">Prefer to skip the form and book right now?</p>
-                    <a href="{{ whatsapp_url }}" target="_blank"
-                        class="w-full inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-black text-xs py-3 rounded-xl transition shadow-lg shadow-emerald-500/10">
-                        <i class="fa-brands fa-whatsapp text-base"></i>
-                        <span>⚡ Quick 1-Tap: WhatsApp Luca Directly</span>
-                    </a>
                 </div>
             </div>
 
@@ -284,7 +266,7 @@
 <script>
     // Set minimum date to today & handle calendar popup
     const today = new Date().toISOString().split('T')[0];
-    const dateInput = document.getElementById('bookingDateInput');
+    const dateInput = document.getElementById('waBookingDate');
     if (dateInput) {
         dateInput.min = today;
         dateInput.value = today;
@@ -298,88 +280,30 @@
         dateInput.addEventListener('focus', openCalendar);
     }
 
-    async function handleBookingSubmit(e) {
-        if (e && e.preventDefault) e.preventDefault();
-        const form = document.getElementById('viewingBookingForm');
-        if (!form.reportValidity()) {
-            return false;
+    function launchWhatsAppViewing() {
+        const dateVal = document.getElementById('waBookingDate') ? document.getElementById('waBookingDate').value : '';
+        const timeVal = document.getElementById('waBookingTime') ? document.getElementById('waBookingTime').value : '';
+        const nameVal = document.getElementById('waCustomerName') ? document.getElementById('waCustomerName').value.trim() : '';
+        const noteVal = document.getElementById('waCustomerNotes') ? document.getElementById('waCustomerNotes').value.trim() : '';
+
+        const carName = "{{ car.year }} {{ car.make }} {{ car.model }} (£{{ '{:,}'.format(car.price) }})";
+        let greeting = `Hi Luca, I'd like to book a viewing for the ${carName} at Lucas Garage (38a Penrose Street).`;
+        
+        let details = [];
+        if (dateVal) details.push(`📅 Date: ${dateVal}`);
+        if (timeVal) details.push(`⏰ Time: ${timeVal}`);
+        if (nameVal) details.push(`👤 Name: ${nameVal}`);
+        if (noteVal) details.push(`📝 Note: ${noteVal}`);
+
+        let fullText = "";
+        if (details.length > 0) {
+            fullText = `${greeting}\n\n${details.join(' • ')}.\n\nIs this viewing slot available?`;
+        } else {
+            fullText = `${greeting}\n\nIs this car available for a viewing?`;
         }
-        const btn = document.getElementById('submitBookingBtn');
-        const resultArea = document.getElementById('bookingResultArea');
 
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Booking slot...</span>`;
-
-        const formData = new FormData(form);
-
-        try {
-            const response = await fetch('/api/book-viewing', {
-                method: 'POST',
-                body: formData
-            });
-            let data;
-            try {
-                data = await response.json();
-            } catch (parseErr) {
-                data = { success: false, message: "Server error. Please message Luca directly on WhatsApp." };
-            }
-
-            resultArea.classList.remove('hidden');
-
-            if (data.success) {
-                resultArea.innerHTML = `
-                    <div class="p-5 rounded-2xl bg-[#0B1117] border border-emerald-500/30 text-slate-200 space-y-3 text-left">
-                        <div class="flex items-center space-x-2">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
-                                <i class="fa-solid fa-circle-check text-emerald-400"></i> Viewing Request Confirmed
-                            </span>
-                        </div>
-                        <h4 class="font-extrabold text-base text-slate-50">We'll see you at the workshop!</h4>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Thanks <strong class="text-amber-400">${data.customer_name}</strong>! Your viewing appointment for the <strong class="text-slate-100">${data.car_name}</strong> is booked for <strong class="text-slate-50">${data.booking_date} at ${data.booking_time}</strong>.
-                        </p>
-                        
-                        <div class="text-[11px] text-slate-400 bg-[#141E28] p-3 rounded-xl border border-[#243344] space-y-1">
-                            <div><i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 38a Penrose Street, Walworth, SE17 3DW</div>
-                            <div><i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> <span class="notranslate" translate="no">Lucas Garage</span>: 07535 321145</div>
-                        </div>
-
-                        <div class="pt-3 border-t border-[#243344] space-y-2">
-                            <a href="${data.whatsapp_url}" target="_blank"
-                                class="inline-flex items-center justify-center space-x-2 w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-black py-3 px-4 rounded-xl text-xs sm:text-sm transition shadow-lg shadow-emerald-500/20">
-                                <i class="fa-brands fa-whatsapp text-lg"></i>
-                                <span>💬 1-Tap WhatsApp Luca to Confirm Now</span>
-                            </a>
-                            ${data.gcal_url ? `
-                            <a href="${data.gcal_url}" target="_blank"
-                                class="inline-flex items-center justify-center space-x-1.5 w-full bg-[#1E2B3A] hover:bg-[#28394D] text-slate-200 border border-[#243344] font-bold py-2.5 px-3 rounded-xl text-xs transition">
-                                <i class="fa-brands fa-google text-xs text-amber-400"></i>
-                                <span>Add to Google Calendar</span>
-                            </a>
-                            ` : ''}
-                        </div>
-                    </div>
-                `;
-                form.reset();
-            } else {
-                resultArea.innerHTML = `
-                    <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs font-medium flex items-center space-x-2">
-                        <i class="fa-solid fa-triangle-exclamation text-rose-400 text-base"></i>
-                        <span>${data.message || "Failed to book slot."}</span>
-                    </div>
-                `;
-            }
-        } catch (err) {
-            resultArea.classList.remove('hidden');
-            resultArea.innerHTML = `
-                <div class="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs">
-                    Network error. Please message Luca on WhatsApp: <strong>07535 321145</strong>.
-                </div>
-            `;
-        } finally {
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fa-solid fa-calendar-check text-[#0B1117]"></i><span>Book Viewing Slot</span>`;
-        }
+        const url = `https://wa.me/447535321145?text=${encodeURIComponent(fullText)}`;
+        window.open(url, '_blank');
     }
 
     // Photo Gallery Carousel Controller
