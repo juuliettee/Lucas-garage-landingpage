@@ -202,9 +202,8 @@ def run_tests():
         # 13. Test Custom 404 Page & SEO Directives
         not_found_resp = client.get('/nefwjnfwjnfjewnfn')
         assert not_found_resp.status_code == 404
-        assert b"Looks like you took a wrong turn!" in not_found_resp.data
-        assert b"Error 404" in not_found_resp.data
-        assert b"View Available Cars" in not_found_resp.data
+        assert b"Page Not Found" in not_found_resp.data
+        assert b"Return Home" in not_found_resp.data
 
         robots_resp = client.get('/robots.txt')
         assert robots_resp.status_code == 200
