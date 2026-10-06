@@ -15,17 +15,17 @@
         <!-- CTA Buttons -->
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#services"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-bold text-sm px-7 py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition duration-150">
                 <i class="fa-solid fa-wrench"></i>
                 <span>Services</span>
             </a>
             <a href="{{ url_for('cars') }}"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#141E28] hover:bg-[#1B2735] text-slate-100 border border-[#243344] font-bold text-sm px-7 py-3.5 rounded-xl shadow-sm transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#141E28] hover:bg-[#1B2735] text-slate-100 border border-[#243344] hover:border-slate-500 font-bold text-sm px-7 py-3.5 rounded-xl shadow-sm transition duration-150">
                 <i class="fa-solid fa-car text-amber-400"></i>
                 <span>Browse Cars For Sale</span>
             </a>
             <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'd%20like%20a%20quote%20for%20a%20repair%20/%20service%20on%20my%20car" target="_blank"
-                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition transform hover:-translate-y-0.5">
+                class="w-full sm:w-auto inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-sm px-7 py-3.5 rounded-xl shadow-md transition duration-150">
                 <i class="fa-brands fa-whatsapp text-lg"></i>
                 <span>Get a Repair Quote</span>
             </a>
@@ -42,7 +42,7 @@
                 Services
             </h2>
             <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-                Hands-on, transparent mechanic repairs, servicing, and diagnostics for all makes and models at 38a Penrose Street, Walworth.
+                Hands-on, transparent mechanic repairs, servicing, diagnostics for all makes and models.
             </p>
         </div>
 
@@ -176,7 +176,7 @@
             </div>
             <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                 <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'd%20like%20a%20repair%20quote%20for%20my%20car.%20Reg:%20" target="_blank"
-                    class="inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-md transition transform hover:-translate-y-0.5">
+                    class="inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs sm:text-sm px-6 py-3.5 rounded-xl shadow-md transition duration-150">
                     <i class="fa-brands fa-whatsapp text-lg"></i>
                     <span>WhatsApp Luca for Quote</span>
                 </a>

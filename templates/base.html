@@ -39,27 +39,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo.png') }}">
     <style>
-        /* Clean Google Translate UI - hide unwanted banners and toolbars */
+        /* Clean Google Translate UI - hide unwanted banners, popups and toolbars */
         .goog-te-banner-frame.skiptranslate, 
         .goog-te-banner-frame,
         .goog-te-gadget-icon,
         iframe.skiptranslate,
         .VIpgJd-ZVi9od-ORHb-OEVmcd,
-        #goog-gt-tt {
+        #goog-gt-tt,
+        #goog-gt-tt *,
+        .goog-te-balloon-frame,
+        .goog-te-balloon-frame *,
+        .goog-tooltip,
+        .goog-tooltip *,
+        .goog-tooltip:hover,
+        .goog-te-ft {
             display: none !important;
             visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
         body {
             top: 0px !important;
             position: static !important;
         }
-        .goog-tooltip, .goog-tooltip:hover {
-            display: none !important;
-        }
-        .goog-text-highlight {
+        /* Completely eliminate Google Translate hover highlight & blue flickering */
+        html body .goog-text-highlight,
+        html body font.goog-text-highlight,
+        html body span.goog-text-highlight,
+        html body [class*="goog-text-highlight"],
+        .goog-text-highlight,
+        .goog-text-highlight:hover,
+        .goog-text-highlight:focus,
+        .goog-text-highlight:active {
+            background: transparent !important;
             background-color: transparent !important;
-            border: none !important;
             box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            text-shadow: none !important;
+            color: inherit !important;
+            border: none !important;
         }
         #google_translate_element {
             position: absolute !important;
@@ -217,7 +237,7 @@
     <!-- Floating Workshop Hotline (Mobile Responsive) -->
     <div id="workshopHotlineWidget" class="fixed bottom-4 right-4 z-40 print:hidden">
         <a href="{{ default_whatsapp_url }}" target="_blank" rel="noopener"
-           class="group relative flex items-center bg-[#141E28] hover:bg-[#1B2735] text-slate-100 p-2 sm:pl-3.5 sm:pr-5 sm:py-3 rounded-full shadow-2xl border border-[#243344] transition-all duration-200 transform hover:-translate-y-0.5">
+           class="group relative flex items-center bg-[#141E28] hover:bg-[#1B2735] text-slate-100 p-2 sm:pl-3.5 sm:pr-5 sm:py-3 rounded-full shadow-2xl border border-[#243344] hover:border-amber-500/50 transition duration-150">
             <div class="relative flex-shrink-0">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Lucas Garage"
                     class="w-10 h-10 rounded-full object-cover shadow-inner border border-[#35485E]">
@@ -450,7 +470,10 @@
                 { pattern: /\basesor[ií]as\s+del\s+mot\b/gi, replacement: 'advertencias (advisories) del MOT' },
                 // Admin button label
                 { pattern: /\bCliente\s+de\s+WhatsApp\b/gi, replacement: 'WhatsApp al cliente' },
-                { pattern: /\bcaja\s+de\s+engranajes\b/gi, replacement: 'caja de cambios' }
+                { pattern: /\bcaja\s+de\s+engranajes\b/gi, replacement: 'caja de cambios' },
+                // Homepage subtitle SPAG fix
+                { pattern: /\bmantenimiento\s+y\s+diagn[oó]sticos\b/gi, replacement: 'mantenimiento, diagnósticos' },
+                { pattern: /\s+en\s+38a\s+Penrose\s+Street[,\s]+Walworth\.?/gi, replacement: '.' }
             ];
 
             let checkTimeout = null;
@@ -580,6 +603,17 @@
                 changeLanguage('es');
             }
         });
+
+        // Suppress Google Translate hover highlight & flickering dynamically
+        document.addEventListener('mouseover', function (e) {
+            if (e.target && e.target.classList && e.target.classList.contains('goog-text-highlight')) {
+                e.target.classList.remove('goog-text-highlight');
+            }
+            const el = document.getElementById('goog-gt-tt');
+            if (el) {
+                el.style.display = 'none';
+            }
+        }, true);
     </script>
     <script defer type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
