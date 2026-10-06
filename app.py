@@ -15,7 +15,7 @@ if hasattr(sys.stderr, 'reconfigure'):
 
 from datetime import datetime, date, timedelta
 from io import BytesIO
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file, abort
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
@@ -46,12 +46,29 @@ load_dotenv()
 
 app = Flask(__name__)
 
+# Security configuration & session hardening
 app.secret_key = os.getenv('SECRET_KEY', 'default-fallback-dev-key-lucas-garage')
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max payload limit
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = bool(os.getenv('RENDER') or os.getenv('FLASK_ENV') == 'production')
+
 raw_db_url = os.getenv('DATABASE_URL', 'sqlite:///garage.db')
 if raw_db_url.startswith("postgres://"):
     raw_db_url = raw_db_url.replace("postgres://", "postgresql://", 1)
 app.config['SQLALCHEMY_DATABASE_URI'] = raw_db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+@app.after_request
+def apply_security_headers(response):
+    """Enforces essential defensive HTTP response headers."""
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+    response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+    response.headers['X-XSS-Protection'] = '1; mode=block'
+    if os.getenv('RENDER') or not app.debug:
+        response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    return response
 
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -79,7 +96,7 @@ def save_uploaded_image(file_storage, prefix="car_"):
     timestamp = datetime.now().strftime("%Y%m%d%H%M%S_")
     saved_filename = f"{prefix}{timestamp}{filename}"
     file_bytes = file_storage.read()
-    if not file_bytes:
+    if not file_bytes or len(file_bytes) > 10 * 1024 * 1024:
         return None
 
     # 1. Save to disk cache in UPLOAD_FOLDER
@@ -107,16 +124,20 @@ def save_uploaded_image(file_storage, prefix="car_"):
 
     return saved_filename
 
-@app.route('/static/uploads/<path:filename>')
+@app.route('/static/uploads/<filename>')
 def serve_uploaded_file(filename):
     """Serves uploaded vehicle photos from disk, with instant auto-recovery from DB if container was recreated."""
-    disk_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    if os.path.exists(disk_path):
-        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    clean_filename = secure_filename(filename)
+    if not clean_filename or clean_filename != filename:
+        abort(404)
+
+    disk_path = os.path.join(app.config['UPLOAD_FOLDER'], clean_filename)
+    if os.path.exists(disk_path) and os.path.isfile(disk_path):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], clean_filename)
 
     # Rehydrate from database if missing on ephemeral filesystem
     try:
-        stored = StoredImage.query.filter_by(filename=filename).first()
+        stored = StoredImage.query.filter_by(filename=clean_filename).first()
         if stored and stored.data:
             try:
                 with open(disk_path, 'wb') as f:
@@ -125,7 +146,7 @@ def serve_uploaded_file(filename):
                 pass
             return send_file(BytesIO(stored.data), mimetype=stored.mimetype or 'image/jpeg')
     except Exception as e:
-        app.logger.error(f"Error retrieving image {filename} from DB: {e}")
+        app.logger.error(f"Error retrieving image {clean_filename} from DB: {e}")
 
     # Fallback to Hyundai i10 or default logo so prelisted cars NEVER show broken 404 image icons
     fallback_i10 = os.path.join(app.config['UPLOAD_FOLDER'], '20261006185331_i10.webp')
@@ -189,17 +210,22 @@ def book_viewing_api():
     data = request.get_json() if request.is_json else request.form.to_dict()
 
     car_id = data.get('car_id')
-    customer_name = data.get('customer_name', '').strip()
-    customer_phone = data.get('customer_phone', '').strip()
-    customer_email = data.get('customer_email', '').strip()
-    booking_date = data.get('booking_date', '').strip() # YYYY-MM-DD
-    booking_time = data.get('booking_time', '').strip() # HH:MM
-    notes = data.get('notes', '').strip()
+    customer_name = str(data.get('customer_name', '')).strip()[:100]
+    customer_phone = str(data.get('customer_phone', '')).strip()[:30]
+    customer_email = str(data.get('customer_email', '')).strip()[:120]
+    booking_date = str(data.get('booking_date', '')).strip()[:10] # YYYY-MM-DD
+    booking_time = str(data.get('booking_time', '')).strip()[:5] # HH:MM
+    notes = str(data.get('notes', '')).strip()[:500]
 
     if not (car_id and customer_name and customer_phone and booking_date and booking_time):
         return jsonify({"success": False, "message": "Please fill in your Name, Phone number, Date, and Time."}), 400
 
-    car = Car.query.get(int(car_id))
+    try:
+        car_id_int = int(car_id)
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Invalid vehicle reference."}), 400
+
+    car = Car.query.get(car_id_int)
     if not car:
         return jsonify({"success": False, "message": "Vehicle not found."}), 404
 
@@ -207,6 +233,8 @@ def book_viewing_api():
     # Mon-Fri: 9:00 - 18:00; Sat: 13:00 - 18:00; Sun: Closed
     try:
         dt = datetime.strptime(booking_date, "%Y-%m-%d")
+        if dt.year < 2024 or dt.year > 2030:
+            return jsonify({"success": False, "message": "Invalid booking date."}), 400
         weekday = dt.weekday() # 0 = Monday, 5 = Saturday, 6 = Sunday
         hour = int(booking_time.split(":")[0])
         minute = int(booking_time.split(":")[1])
@@ -490,34 +518,40 @@ def edit_car(id):
 
     return render_template('edit_car.html', car=car)
 
-@app.route('/admin/car/<int:id>/set-cover/<path:filename>', methods=['POST'])
+@app.route('/admin/car/<int:id>/set-cover/<filename>', methods=['POST'])
 @login_required
 def set_car_cover_image(id, filename):
+    clean_filename = secure_filename(filename)
+    if not clean_filename or clean_filename != filename:
+        abort(400)
     car = Car.query.get_or_404(id)
-    if car.image_filename != filename:
+    if car.image_filename != clean_filename:
         old_cover = car.image_filename
-        target_img = CarImage.query.filter_by(car_id=car.id, image_filename=filename).first()
+        target_img = CarImage.query.filter_by(car_id=car.id, image_filename=clean_filename).first()
         if target_img:
             db.session.delete(target_img)
         if old_cover:
             existing_old = CarImage.query.filter_by(car_id=car.id, image_filename=old_cover).first()
             if not existing_old:
                 db.session.add(CarImage(car_id=car.id, image_filename=old_cover))
-        car.image_filename = filename
+        car.image_filename = clean_filename
         db.session.commit()
         flash('Primary cover photo updated!', 'success')
     return redirect(url_for('edit_car', id=car.id))
 
-@app.route('/admin/car/<int:id>/delete-image/<path:filename>', methods=['POST'])
+@app.route('/admin/car/<int:id>/delete-image/<filename>', methods=['POST'])
 @login_required
 def delete_car_image(id, filename):
+    clean_filename = secure_filename(filename)
+    if not clean_filename or clean_filename != filename:
+        abort(400)
     car = Car.query.get_or_404(id)
-    target_img = CarImage.query.filter_by(car_id=car.id, image_filename=filename).first()
+    target_img = CarImage.query.filter_by(car_id=car.id, image_filename=clean_filename).first()
     if target_img:
         db.session.delete(target_img)
         db.session.commit()
         flash('Photo removed from vehicle listing.', 'info')
-    elif car.image_filename == filename:
+    elif car.image_filename == clean_filename:
         next_img = CarImage.query.filter_by(car_id=car.id).first()
         if next_img:
             car.image_filename = next_img.image_filename
@@ -605,9 +639,12 @@ def marketplace_text(id):
 def delete_car(id):
     car_to_delete = Car.query.get_or_404(id)
     try:
-        img_path = os.path.join(app.config['UPLOAD_FOLDER'], car_to_delete.image_filename)
-        if os.path.exists(img_path):
-            os.remove(img_path)
+        if car_to_delete.image_filename:
+            clean_filename = secure_filename(car_to_delete.image_filename)
+            if clean_filename:
+                img_path = os.path.join(app.config['UPLOAD_FOLDER'], clean_filename)
+                if os.path.exists(img_path) and os.path.isfile(img_path):
+                    os.remove(img_path)
     except Exception:
         pass
     db.session.delete(car_to_delete)
@@ -615,7 +652,7 @@ def delete_car(id):
     flash('Car removed successfully.', 'success')
     return redirect(url_for('admin_dashboard'))
 
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
     logout_user()
@@ -637,4 +674,5 @@ with app.app_context():
         print(f"Database initialized with admin account: '{env_admin_username}'")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    is_debug = os.getenv('FLASK_DEBUG', 'False').lower() in ('1', 'true', 'yes')
+    app.run(host='0.0.0.0', port=5000, debug=is_debug)

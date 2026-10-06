@@ -57,7 +57,16 @@
                         </a>
 
                         <!-- Edit / Reschedule Appointment -->
-                        <button type="button" onclick="openEditBookingModal({{ b.id }}, '{{ b.customer_name|replace("'", "\\'") }}', '{{ b.booking_date }}', '{{ b.booking_time }}', '{{ b.customer_phone }}', '{{ b.customer_email or '' }}', '{{ b.status }}', '{{ (b.notes or '')|replace("'", "\\'") }}')"
+                        <button type="button"
+                            onclick="openEditBookingModalFromBtn(this)"
+                            data-id="{{ b.id }}"
+                            data-name="{{ b.customer_name }}"
+                            data-date="{{ b.booking_date }}"
+                            data-time="{{ b.booking_time }}"
+                            data-phone="{{ b.customer_phone }}"
+                            data-email="{{ b.customer_email or '' }}"
+                            data-status="{{ b.status }}"
+                            data-notes="{{ b.notes or '' }}"
                             class="text-xs font-semibold text-slate-200 hover:text-amber-400 bg-[#1E2B3A] hover:bg-[#28394D] border border-[#243344] px-3 py-2 rounded-xl transition flex items-center gap-1.5">
                             <i class="fa-regular fa-clock text-amber-400"></i>
                             <span>Edit Slot</span>
@@ -360,15 +369,20 @@
 </div>
 
 <script>
+    function openEditBookingModalFromBtn(btn) {
+        const d = btn.dataset;
+        openEditBookingModal(d.id, d.name, d.date, d.time, d.phone, d.email, d.status, d.notes);
+    }
+
     function openEditBookingModal(id, name, date, time, phone, email, status, notes) {
         document.getElementById('editBookingForm').action = `/admin/booking/edit/${id}`;
-        document.getElementById('modalCustomerName').value = name;
-        document.getElementById('modalBookingDate').value = date;
-        document.getElementById('modalBookingTime').value = time;
-        document.getElementById('modalCustomerPhone').value = phone;
-        document.getElementById('modalCustomerEmail').value = email;
-        document.getElementById('modalBookingStatus').value = status;
-        document.getElementById('modalBookingNotes').value = notes;
+        document.getElementById('modalCustomerName').value = name || '';
+        document.getElementById('modalBookingDate').value = date || '';
+        document.getElementById('modalBookingTime').value = time || '';
+        document.getElementById('modalCustomerPhone').value = phone || '';
+        document.getElementById('modalCustomerEmail').value = email || '';
+        document.getElementById('modalBookingStatus').value = status || '';
+        document.getElementById('modalBookingNotes').value = notes || '';
         document.getElementById('editBookingModal').classList.remove('hidden');
     }
 

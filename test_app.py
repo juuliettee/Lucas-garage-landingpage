@@ -180,6 +180,25 @@ def run_tests():
         assert img_resp.status_code == 200
         print("✅ Test 11 Passed: Static uploads route safely serves vehicle photos.")
 
+        # 12. Test Defensive Security Hardening
+        home_resp = client.get('/')
+        assert home_resp.headers.get('X-Content-Type-Options') == 'nosniff'
+        assert home_resp.headers.get('X-Frame-Options') == 'SAMEORIGIN'
+        assert home_resp.headers.get('Referrer-Policy') == 'strict-origin-when-cross-origin'
+        assert app.config['MAX_CONTENT_LENGTH'] == 16 * 1024 * 1024
+        assert app.config['SESSION_COOKIE_HTTPONLY'] is True
+        assert app.config['SESSION_COOKIE_SAMESITE'] == 'Lax'
+
+        # Directory traversal prevention
+        traversal_resp = client.get('/static/uploads/..%2fapp.py')
+        assert traversal_resp.status_code in [400, 404]
+
+        # Admin template Stored XSS defense verification
+        admin_page = client.get('/admin')
+        assert b'openEditBookingModalFromBtn(this)' in admin_page.data
+        assert b'data-name=' in admin_page.data
+        print("✅ Test 12 Passed: Defensive security hardening verified (headers, cookies, traversal, XSS defense).")
+
         print("\n🎉 ALL TESTS PASSED SUCCESSFULLY!")
 
 if __name__ == '__main__':

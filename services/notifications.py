@@ -1,6 +1,7 @@
 import os
 import smtplib
 import requests
+import html
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
@@ -26,18 +27,26 @@ def send_telegram_alert(booking, car):
     if not TELEGRAM_BOT_TOKEN or not TELEGRAM_LUCA_CHAT_ID:
         return False
     
-    clean_phone = booking.customer_phone.replace(" ", "").replace("-", "")
+    clean_phone = (booking.customer_phone or "").replace(" ", "").replace("-", "")
     if clean_phone.startswith("0"):
         clean_phone = "44" + clean_phone[1:]
-    
+
+    def escape_md(text):
+        if not text:
+            return ""
+        for ch in ['\\', '_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']:
+            text = str(text).replace(ch, f"\\{ch}")
+        return text
+
+    vehicle_info = f"{car.year} {car.make_model} (£{car.price:,})"
     text = (
         f"🚗 *NEW VERIFIED VIEWING!*\n\n"
-        f"• *Vehicle:* {car.year} {car.make_model} (£{car.price:,})\n"
-        f"• *Customer:* {booking.customer_name}\n"
-        f"• *Phone:* `{booking.customer_phone}`\n"
-        f"• *Email:* {booking.customer_email}\n"
-        f"• *Slot:* *{booking.booking_date}* at *{booking.booking_time}*\n"
-        f"• *Notes:* {booking.notes or 'None'}\n"
+        f"• *Vehicle:* {escape_md(vehicle_info)}\n"
+        f"• *Customer:* {escape_md(booking.customer_name)}\n"
+        f"• *Phone:* `{escape_md(booking.customer_phone)}`\n"
+        f"• *Email:* {escape_md(booking.customer_email)}\n"
+        f"• *Slot:* *{escape_md(booking.booking_date)}* at *{escape_md(booking.booking_time)}*\n"
+        f"• *Notes:* {escape_md(booking.notes or 'None')}\n"
     )
     
     payload = {
@@ -141,6 +150,12 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
     """
     Sends the 1-click verification email to the customer to eliminate no-shows.
     """
+    safe_name = html.escape(customer_name or "")
+    safe_car_model = html.escape(f"{car.year} {car.make_model}")
+    safe_date = html.escape(str(booking_date))
+    safe_time = html.escape(str(booking_time))
+    safe_verify_url = html.escape(verification_url, quote=True)
+
     subject = f"Confirm your viewing: {car.year} {car.make_model} at Lucas Garage"
     html_body = f"""
     <!DOCTYPE html>
@@ -154,22 +169,22 @@ def send_verification_email(customer_email, customer_name, car, booking_date, bo
             </div>
             <div style="padding: 32px; color: #cbd5e1; line-height: 1.6;">
                 <h1 style="color: #f8fafc; font-size: 22px; font-weight: 800; margin: 0 0 12px;">Confirm Your Viewing Appointment</h1>
-                <p style="font-size: 14px; margin: 0 0 18px;">Hi {customer_name},</p>
+                <p style="font-size: 14px; margin: 0 0 18px;">Hi {safe_name},</p>
                 <p style="font-size: 14px; margin: 0 0 24px;">
-                    We have received your viewing request for the <strong>{car.year} {car.make_model}</strong>. 
+                    We have received your viewing request for the <strong>{safe_car_model}</strong>. 
                     Please tap the button below to confirm your appointment:
                 </p>
                 
                 <div style="text-align: center; margin: 28px 0;">
-                    <a href="{verification_url}" style="background-color: #f59e0b; color: #0b1117; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: 800; font-size: 15px; display: inline-block;">
+                    <a href="{safe_verify_url}" style="background-color: #f59e0b; color: #0b1117; text-decoration: none; padding: 14px 28px; border-radius: 10px; font-weight: 800; font-size: 15px; display: inline-block;">
                         &check; Confirm My Viewing Slot
                     </a>
                 </div>
 
                 <div style="background-color: #0b1117; border: 1px solid #243344; border-radius: 12px; padding: 18px; margin: 24px 0; font-size: 13px; color: #cbd5e1;">
-                    <div style="font-weight: bold; color: #f8fafc; font-size: 15px; margin-bottom: 8px;">{car.year} {car.make_model} - £{car.price:,}</div>
-                    <div>&bull; <strong>Date:</strong> {booking_date}</div>
-                    <div>&bull; <strong>Time:</strong> {booking_time}</div>
+                    <div style="font-weight: bold; color: #f8fafc; font-size: 15px; margin-bottom: 8px;">{safe_car_model} - £{car.price:,}</div>
+                    <div>&bull; <strong>Date:</strong> {safe_date}</div>
+                    <div>&bull; <strong>Time:</strong> {safe_time}</div>
                     <div>&bull; <strong>Location:</strong> 38a Penrose Street, London SE17 3DW</div>
                 </div>
 
@@ -202,6 +217,15 @@ def dispatch_confirmed_booking_notifications(booking, car):
         booking.customer_name, booking.customer_phone, booking.customer_email
     )
 
+    safe_name = html.escape(booking.customer_name or "")
+    safe_phone = html.escape(booking.customer_phone or "")
+    safe_email = html.escape(booking.customer_email or "")
+    safe_notes = html.escape(booking.notes or "None")
+    safe_car_model = html.escape(f"{car.year} {car.make_model}")
+    safe_date = html.escape(str(booking.booking_date))
+    safe_time = html.escape(str(booking.booking_time))
+    safe_gcal_url = html.escape(gcal_url, quote=True)
+
     # 1. Customer Confirmation Email with Calendar Attachment
     customer_html = f"""
     <!DOCTYPE html>
@@ -218,19 +242,19 @@ def dispatch_confirmed_booking_notifications(booking, car):
                     &check; BOOKING CONFIRMED
                 </div>
                 <h1 style="color: #f8fafc; font-size: 22px; font-weight: 800; margin: 0 0 12px;">We'll see you at the workshop!</h1>
-                <p style="font-size: 14px;">Hi {booking.customer_name}, Luca has your viewing appointment locked in for the <strong>{car.year} {car.make_model}</strong>.</p>
+                <p style="font-size: 14px;">Hi {safe_name}, Luca has your viewing appointment locked in for the <strong>{safe_car_model}</strong>.</p>
                 
                 <div style="background-color: #0b1117; border: 1px solid #243344; border-radius: 12px; padding: 18px; margin: 20px 0; font-size: 13px; color: #cbd5e1;">
                     <div>&bull; <strong>Booking Ref:</strong> <span style="color: #f59e0b; font-weight: bold;">#LG-{booking.id}</span></div>
-                    <div>&bull; <strong>Date:</strong> {booking.booking_date}</div>
-                    <div>&bull; <strong>Time:</strong> {booking.booking_time} (Vehicle viewing)</div>
+                    <div>&bull; <strong>Date:</strong> {safe_date}</div>
+                    <div>&bull; <strong>Time:</strong> {safe_time} (Vehicle viewing)</div>
                     <div>&bull; <strong>Address:</strong> 38a Penrose Street, Walworth, SE17 3DW</div>
                     <div>&bull; <strong>Direct Contact:</strong> 07535 321145</div>
                 </div>
 
                 <p style="font-size: 14px; margin-bottom: 14px;">The calendar invite is attached to this email. You can also add it to your calendar in 1 tap:</p>
                 <div style="margin-bottom: 24px;">
-                    <a href="{gcal_url}" style="background-color: #f59e0b; color: #0b1117; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 800; font-size: 13px; display: inline-block;">
+                    <a href="{safe_gcal_url}" style="background-color: #f59e0b; color: #0b1117; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: 800; font-size: 13px; display: inline-block;">
                         Add to Google Calendar
                     </a>
                 </div>
@@ -256,19 +280,19 @@ def dispatch_confirmed_booking_notifications(booking, car):
         <h2 style="color: #0f172a;">New Verified Customer Viewing!</h2>
         <p>A buyer has verified their email and locked in an appointment.</p>
         <div style="background: #f1f5f9; padding: 16px; border-radius: 8px; margin: 16px 0;">
-            <p><strong>Vehicle:</strong> {car.year} {car.make_model} (£{car.price:,})</p>
-            <p><strong>Date & Time:</strong> {booking.booking_date} at {booking.booking_time}</p>
-            <p><strong>Customer Name:</strong> {booking.customer_name}</p>
-            <p><strong>Phone:</strong> {booking.customer_phone}</p>
-            <p><strong>Email:</strong> {booking.customer_email}</p>
-            <p><strong>Customer Notes:</strong> {booking.notes or 'None'}</p>
+            <p><strong>Vehicle:</strong> {safe_car_model} (£{car.price:,})</p>
+            <p><strong>Date & Time:</strong> {safe_date} at {safe_time}</p>
+            <p><strong>Customer Name:</strong> {safe_name}</p>
+            <p><strong>Phone:</strong> {safe_phone}</p>
+            <p><strong>Email:</strong> {safe_email}</p>
+            <p><strong>Customer Notes:</strong> {safe_notes}</p>
         </div>
-        <p><a href="{gcal_url}" style="background: #0284c7; color: white; padding: 10px 16px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Add to Luca's Calendar</a></p>
+        <p><a href="{safe_gcal_url}" style="background: #0284c7; color: white; padding: 10px 16px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Add to Luca's Calendar</a></p>
     </div>
     """
     send_email(
         LUCA_EMAIL,
-        f"New Viewing Confirmed: {car.make_model} - {booking.booking_date} {booking.booking_time}",
+        f"New Viewing Confirmed: {car.make_model} - {safe_date} {safe_time}",
         luca_html,
         ics_content=ics_text
     )
