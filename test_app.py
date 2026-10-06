@@ -107,6 +107,68 @@ def run_tests():
         assert "30-day" in ad_data['text']
         print("✅ Test 7 Passed: 1-Click Facebook Marketplace / Gumtree copyable text generated.")
 
+        # 8. Test Vehicle Listing Edit & Multi-Photo Support
+        from io import BytesIO
+        edit_get = client.get(f'/admin/car/edit/{car.id}')
+        assert edit_get.status_code == 200
+        assert b"Vehicle Editor" in edit_get.data
+
+        # Post edit with updated description & simulated second photo
+        fake_photo = (BytesIO(b"fake_image_bytes_png"), "test_extra.png")
+        edit_post = client.post(f'/admin/car/edit/{car.id}', data={
+            "make_model": car.make_model,
+            "year": car.year,
+            "price": car.price + 50,
+            "TransmissionType": car.TransmissionType,
+            "fuel_type": car.fuel_type,
+            "mileage": car.mileage,
+            "ulez_compliant": "on",
+            "mot_expiry": "March 2027",
+            "copart_category": "Clean / Unrecorded",
+            "repair_notes": "Updated repair notes: Fresh brake service completed.",
+            "features": "Air Con, 2 Keys, Bluetooth",
+            "status": "Available",
+            "new_images": [fake_photo]
+        }, follow_redirects=True)
+        assert edit_post.status_code == 200
+        assert b"Fresh brake service completed" in edit_post.data
+
+        # Verify Car has multiple images in all_images
+        updated_car = Car.query.get(car.id)
+        assert len(updated_car.all_images) >= 2
+        print(f"✅ Test 8 Passed: Car editing works and multi-photo attached ({len(updated_car.all_images)} photos).")
+
+        # 9. Test Detail Page Renders Multi-Photo Carousel
+        detail_resp = client.get(f'/car/{car.id}')
+        assert detail_resp.status_code == 200
+        assert b"mainGalleryImage" in detail_resp.data
+        assert b"galleryCounter" in detail_resp.data
+        assert b"prevCarImage" in detail_resp.data
+        print("✅ Test 9 Passed: Interactive photo carousel and thumbnail gallery rendered on vehicle detail page.")
+
+        # 10. Test Edit / Reschedule Booking
+        booking_to_edit = Booking.query.filter_by(customer_name="Sarah Connor").first()
+        assert booking_to_edit is not None
+        resched_resp = client.post(f'/admin/booking/edit/{booking_to_edit.id}', data={
+            "booking_date": "2026-09-30",
+            "booking_time": "15:00",
+            "customer_phone": "07987 000111",
+            "customer_email": "sarah_new@example.com",
+            "status": "Confirmed",
+            "notes": "Customer requested 3:00 PM instead."
+        }, follow_redirects=True)
+        assert resched_resp.status_code == 200
+        reloaded_b = Booking.query.get(booking_to_edit.id)
+        assert reloaded_b.booking_time == "15:00"
+        assert reloaded_b.booking_date == "2026-09-30"
+        assert reloaded_b.customer_phone == "07987 000111"
+        print("✅ Test 10 Passed: Appointment rescheduling and details edit successful.")
+
+        # 11. Test Resilient Image Serving Route
+        img_resp = client.get(f'/static/uploads/{car.image_filename}')
+        assert img_resp.status_code == 200
+        print("✅ Test 11 Passed: Static uploads route safely serves vehicle photos.")
+
         print("\n🎉 ALL TESTS PASSED SUCCESSFULLY!")
 
 if __name__ == '__main__':

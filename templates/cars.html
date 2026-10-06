@@ -52,6 +52,12 @@
                 <div class="absolute bottom-3 right-3 bg-[#0B1117]/95 backdrop-blur-sm text-amber-400 font-mono font-black text-lg px-3.5 py-1 rounded-xl shadow-md border border-[#243344]">
                     £{{ "{:,}".format(car.price) }}
                 </div>
+
+                {% if car.all_images|length > 1 %}
+                <div class="absolute bottom-3 left-3 bg-[#0B1117]/85 backdrop-blur-sm text-slate-200 border border-[#243344] text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-camera text-amber-400 text-[9px]"></i> {{ car.all_images|length }}
+                </div>
+                {% endif %}
             </div>
 
             <div class="p-6 flex flex-col flex-grow">

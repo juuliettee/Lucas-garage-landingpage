@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-10 text-slate-100">
+
+    <!-- Top Navigation / Breadcrumb -->
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-400">
+        <a href="{{ url_for('admin_dashboard') }}" class="hover:text-amber-400 font-bold flex items-center transition">
+            <i class="fa-solid fa-arrow-left mr-1.5 text-amber-400"></i> Back to Workshop Portal
+        </a>
+        <div class="flex items-center space-x-3">
+            <a href="{{ url_for('car_detail', id=car.id) }}" target="_blank"
+                class="inline-flex items-center space-x-1.5 bg-[#141E28] hover:bg-[#1B2735] text-amber-400 border border-[#243344] font-bold text-xs px-3.5 py-1.5 rounded-xl transition">
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+                <span>View on Website &rarr;</span>
+            </a>
+            <span class="text-slate-600">|</span>
+            <span class="text-slate-400">Car ID #{{ car.id }}</span>
+        </div>
+    </div>
+
+    <!-- Header Banner -->
+    <div class="bg-[#141E28] rounded-3xl border border-[#243344] p-6 sm:p-8 mb-8 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+                <div class="flex items-center space-x-2 mb-2">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Vehicle Editor</span>
+                    <span class="text-slate-600">&bull;</span>
+                    <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full {% if car.status == 'Sold' %}bg-rose-500/10 text-rose-400 border border-rose-500/25{% elif car.status == 'Reserved' %}bg-amber-500/10 text-amber-400 border border-amber-500/25{% else %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/25{% endif %}">
+                        {{ car.status }}
+                    </span>
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-50">{{ car.year }} {{ car.make_model }}</h1>
+                <p class="text-xs text-slate-400 mt-1">Update specifications, edit description, upload more photos, or change status.</p>
+            </div>
+            <div class="text-2xl sm:text-3xl font-black text-amber-400 font-mono">
+                £{{ "{:,}".format(car.price) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo Management Section -->
+    <div class="bg-[#141E28] rounded-3xl border border-[#243344] p-6 sm:p-8 mb-8 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-[#243344] gap-2">
+            <div>
+                <h2 class="text-lg font-black text-slate-50 flex items-center">
+                    <i class="fa-solid fa-images text-amber-400 mr-2"></i> Vehicle Photos ({{ car.all_images|length }})
+                </h2>
+                <p class="text-xs text-slate-400 mt-0.5">Manage photo gallery. Buyers will be able to swipe & browse all uploaded pictures.</p>
+            </div>
+            <span class="text-xs font-bold text-slate-300 bg-[#0B1117] px-3 py-1 rounded-xl border border-[#243344] self-start sm:self-auto">
+                {{ car.all_images|length }} Photo(s) Active
+            </span>
+        </div>
+
+        <!-- Current Photos Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for img_name in car.all_images %}
+            <div class="bg-[#0B1117] rounded-2xl border {% if img_name == car.image_filename %}border-amber-500 shadow-md shadow-amber-500/10{% else %}border-[#243344]{% endif %} overflow-hidden flex flex-col group">
+                <div class="relative aspect-video bg-[#070C11] overflow-hidden">
+                    <img src="{{ url_for('static', filename='uploads/' + img_name) }}" alt="Car photo"
+                        class="w-full h-full object-cover">
+                    {% if img_name == car.image_filename %}
+                    <div class="absolute top-2 left-2 bg-amber-500 text-[#0B1117] text-[10px] font-black px-2 py-0.5 rounded-full shadow flex items-center gap-1">
+                        <i class="fa-solid fa-star"></i> Primary Cover
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="p-3 bg-[#111A24] flex items-center justify-between gap-1.5 border-t border-[#243344]">
+                    {% if img_name != car.image_filename %}
+                    <form action="{{ url_for('set_car_cover_image', id=car.id, filename=img_name) }}" method="POST" class="inline">
+                        <button type="submit" class="text-[11px] font-bold text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
+                            <i class="fa-regular fa-star"></i> Set as Cover
+                        </button>
+                    </form>
+                    {% else %}
+                    <span class="text-[11px] font-bold text-slate-400 px-2 py-1">Cover Photo</span>
+                    {% endif %}
+
+                    {% if car.all_images|length > 1 %}
+                    <form action="{{ url_for('delete_car_image', id=car.id, filename=img_name) }}" method="POST"
+                          onsubmit="return confirm('Remove this photo from the vehicle listing?');" class="inline">
+                        <button type="submit" class="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg transition text-xs" title="Delete Photo">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Main Edit Form (Details & New Photos) -->
+    <div class="bg-[#141E28] rounded-3xl border border-[#243344] p-6 sm:p-8 shadow-sm">
+        <div class="flex items-center space-x-3 pb-6 border-b border-[#243344] mb-6">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/25 flex items-center justify-center text-base">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-black text-slate-50">Edit Vehicle Information & Add Photos</h2>
+                <p class="text-xs text-slate-400">Save changes below to immediately update the live website listing</p>
+            </div>
+        </div>
+
+        <form action="{{ url_for('edit_car', id=car.id) }}" method="POST" enctype="multipart/form-data" class="space-y-6 text-xs">
+            
+            <!-- Upload Additional Photos -->
+            <div class="bg-[#0B1117] p-5 rounded-2xl border border-[#243344] space-y-3">
+                <div class="flex items-center justify-between">
+                    <label class="block font-bold text-slate-200 text-sm">
+                        <i class="fa-solid fa-cloud-arrow-up text-amber-400 mr-1.5"></i> Add More Photos
+                    </label>
+                    <span class="text-[11px] text-slate-400">JPG, PNG, WebP &bull; Select one or multiple</span>
+                </div>
+                <input type="file" name="new_images" id="new_images_input" accept="image/*" multiple
+                    class="w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#1E2B3A] file:text-slate-200 hover:file:bg-[#28394D] cursor-pointer">
+                <div id="new_images_preview" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5 pt-2 hidden"></div>
+                <p class="text-[11px] text-slate-500">Newly added pictures will be saved permanently to your gallery and displayed in the buyer's carousel.</p>
+            </div>
+
+            <!-- Title & Basic Specs -->
+            <div>
+                <label class="block font-bold text-slate-300 mb-1">Make & Model *</label>
+                <input type="text" name="make_model" value="{{ car.make_model }}" required
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none text-sm">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Year *</label>
+                    <input type="number" name="year" value="{{ car.year }}" required
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Price (£) *</label>
+                    <input type="number" name="price" value="{{ car.price }}" required
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Mileage *</label>
+                    <input type="number" name="mileage" value="{{ car.mileage or 0 }}"
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Gearbox</label>
+                    <select name="TransmissionType" class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                        <option value="Manual" {% if car.TransmissionType == 'Manual' %}selected{% endif %}>Manual</option>
+                        <option value="Automatic" {% if car.TransmissionType == 'Automatic' %}selected{% endif %}>Automatic</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Fuel Type</label>
+                    <select name="fuel_type" class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                        <option value="Petrol" {% if car.fuel_type == 'Petrol' %}selected{% endif %}>Petrol</option>
+                        <option value="Diesel" {% if car.fuel_type == 'Diesel' %}selected{% endif %}>Diesel</option>
+                        <option value="Hybrid" {% if car.fuel_type == 'Hybrid' %}selected{% endif %}>Hybrid</option>
+                        <option value="Electric" {% if car.fuel_type == 'Electric' %}selected{% endif %}>Electric</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">MOT Status</label>
+                    <input type="text" name="mot_expiry" value="{{ car.mot_expiry or '12 Months MOT' }}"
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                </div>
+            </div>
+
+            <!-- Provenance, ULEZ & Status -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-[#0F1720] p-4 rounded-2xl border border-[#243344]">
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Copart / Salvage History</label>
+                    <select name="copart_category" class="w-full px-3 py-2 rounded-xl border border-[#243344] bg-[#0B1117] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                        <option value="Clean / Unrecorded" {% if car.copart_category == 'Clean / Unrecorded' %}selected{% endif %}>Clean / Unrecorded</option>
+                        <option value="Cat N (Non-structural Repair)" {% if 'Cat N' in (car.copart_category or '') %}selected{% endif %}>Cat N (Non-structural Repair)</option>
+                        <option value="Cat S (Structural Repair)" {% if 'Cat S' in (car.copart_category or '') %}selected{% endif %}>Cat S (Structural Repair)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block font-bold text-slate-300 mb-1">Listing Status</label>
+                    <select name="status" class="w-full px-3 py-2 rounded-xl border border-[#243344] bg-[#0B1117] text-slate-100 focus:ring-2 focus:ring-amber-500 outline-none">
+                        <option value="Available" {% if car.status == 'Available' %}selected{% endif %}>Available (In Stock)</option>
+                        <option value="Reserved" {% if car.status == 'Reserved' %}selected{% endif %}>Reserved (Under Offer)</option>
+                        <option value="Sold" {% if car.status == 'Sold' %}selected{% endif %}>Sold</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center pt-5">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="ulez_compliant" {% if car.ulez_compliant %}checked{% endif %} class="sr-only peer">
+                        <div class="w-11 h-6 bg-[#243344] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[#243344] after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                        <span class="ml-3 text-xs font-bold text-slate-300">ULEZ Compliant</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Description / Repair Notes -->
+            <div>
+                <label class="block font-bold text-slate-300 mb-1">Mechanic Repair Notes & Description</label>
+                <textarea name="repair_notes" rows="4" placeholder="Detail any workshop repairs, servicing, new parts fitted, road test notes, etc."
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-amber-500 outline-none leading-relaxed">{{ car.repair_notes or '' }}</textarea>
+                <span class="text-[10px] text-slate-500">Displayed prominently on the vehicle listing page to build buyer trust.</span>
+            </div>
+
+            <!-- Key Features -->
+            <div>
+                <label class="block font-bold text-slate-300 mb-1">Key Features (comma separated)</label>
+                <input type="text" name="features" value="{{ car.features or '' }}" placeholder="Air Con, Bluetooth, Parking Sensors, Alloy Wheels, 2 Keys"
+                    class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 placeholder-slate-500 focus:ring-2 focus:ring-amber-500 outline-none">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[#243344]">
+                <a href="{{ url_for('admin_dashboard') }}" class="w-full sm:w-auto text-center px-6 py-3 rounded-xl border border-[#243344] text-slate-300 hover:text-slate-100 hover:bg-[#1B2735] font-bold transition">
+                    Cancel & Back
+                </a>
+                <button type="submit"
+                    class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-bold px-8 py-3.5 rounded-xl shadow-lg shadow-amber-500/10 transition flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-check text-[#0B1117]"></i>
+                    <span>Save Changes & Update Listing</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<script>
+    // Live thumbnail preview when selecting new files
+    const input = document.getElementById('new_images_input');
+    const previewContainer = document.getElementById('new_images_preview');
+    if (input && previewContainer) {
+        input.addEventListener('change', function () {
+            previewContainer.innerHTML = '';
+            if (this.files && this.files.length > 0) {
+                previewContainer.classList.remove('hidden');
+                Array.from(this.files).forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement('div');
+                        div.className = 'aspect-video rounded-lg overflow-hidden border border-[#243344] bg-[#070C11]';
+                        div.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+                        previewContainer.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                });
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -17,6 +17,26 @@ class AdminUser(db.Model, UserMixin):
         return check_password_hash(self.password_hash, password)
 
 
+class StoredImage(db.Model):
+    __tablename__ = 'stored_images'
+
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(255), unique=True, index=True, nullable=False)
+    mimetype = db.Column(db.String(100), nullable=False, default='image/jpeg')
+    data = db.Column(db.LargeBinary, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
+class CarImage(db.Model):
+    __tablename__ = 'car_images'
+
+    id = db.Column(db.Integer, primary_key=True)
+    car_id = db.Column(db.Integer, db.ForeignKey('cars.id', ondelete='CASCADE'), nullable=False)
+    image_filename = db.Column(db.String(255), nullable=False)
+    sort_order = db.Column(db.Integer, default=0)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class Car(db.Model):
     __tablename__ = 'cars'
 
@@ -39,6 +59,19 @@ class Car(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     bookings = db.relationship('Booking', backref='car', lazy=True, cascade="all, delete-orphan")
+    additional_images = db.relationship('CarImage', backref='car', lazy=True, cascade="all, delete-orphan", order_by="CarImage.sort_order, CarImage.id")
+
+    @property
+    def all_images(self):
+        """Returns a list of image filenames starting with the primary image_filename, followed by any additional images."""
+        imgs = []
+        if self.image_filename:
+            imgs.append(self.image_filename)
+        if hasattr(self, 'additional_images') and self.additional_images:
+            for extra in self.additional_images:
+                if extra.image_filename and extra.image_filename not in imgs:
+                    imgs.append(extra.image_filename)
+        return imgs if imgs else ([self.image_filename] if self.image_filename else ['logo.png'])
 
     def to_dict(self):
         return {
@@ -55,7 +88,8 @@ class Car(db.Model):
             "repair_notes": self.repair_notes or "Fully inspected, serviced, and road-tested by mechanic.",
             "features": self.features or "Standard spec",
             "status": self.status,
-            "image_filename": self.image_filename
+            "image_filename": self.image_filename,
+            "all_images": self.all_images
         }
 
 

@@ -14,13 +14,14 @@ if hasattr(sys.stderr, 'reconfigure'):
         pass
 
 from datetime import datetime, date, timedelta
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from io import BytesIO
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 
-from models import db, Car, AdminUser, Booking
+from models import db, Car, AdminUser, Booking, StoredImage, CarImage
 from services.whatsapp import (
     generate_customer_whatsapp_url,
     generate_luca_reply_whatsapp_url,
@@ -70,6 +71,71 @@ def load_user(user_id):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def save_uploaded_image(file_storage, prefix="car_"):
+    """Saves uploaded image to local disk cache AND persists binary to DB so it survives all future deployments."""
+    if not file_storage or not allowed_file(file_storage.filename):
+        return None
+    filename = secure_filename(file_storage.filename)
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S_")
+    saved_filename = f"{prefix}{timestamp}{filename}"
+    file_bytes = file_storage.read()
+    if not file_bytes:
+        return None
+
+    # 1. Save to disk cache in UPLOAD_FOLDER
+    disk_path = os.path.join(app.config['UPLOAD_FOLDER'], saved_filename)
+    try:
+        with open(disk_path, 'wb') as f:
+            f.write(file_bytes)
+    except Exception as e:
+        app.logger.warning(f"Could not write image to local disk cache: {e}")
+
+    # 2. Persist binary in database for resilience across container recycles
+    mimetype = file_storage.mimetype or 'image/jpeg'
+    try:
+        existing = StoredImage.query.filter_by(filename=saved_filename).first()
+        if existing:
+            existing.data = file_bytes
+            existing.mimetype = mimetype
+        else:
+            db_img = StoredImage(filename=saved_filename, mimetype=mimetype, data=file_bytes)
+            db.session.add(db_img)
+        db.session.commit()
+    except Exception as e:
+        app.logger.error(f"Error persisting image {saved_filename} to database: {e}")
+        db.session.rollback()
+
+    return saved_filename
+
+@app.route('/static/uploads/<path:filename>')
+def serve_uploaded_file(filename):
+    """Serves uploaded vehicle photos from disk, with instant auto-recovery from DB if container was recreated."""
+    disk_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(disk_path):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+    # Rehydrate from database if missing on ephemeral filesystem
+    try:
+        stored = StoredImage.query.filter_by(filename=filename).first()
+        if stored and stored.data:
+            try:
+                with open(disk_path, 'wb') as f:
+                    f.write(stored.data)
+            except Exception:
+                pass
+            return send_file(BytesIO(stored.data), mimetype=stored.mimetype or 'image/jpeg')
+    except Exception as e:
+        app.logger.error(f"Error retrieving image {filename} from DB: {e}")
+
+    # Fallback to Hyundai i10 or default logo so prelisted cars NEVER show broken 404 image icons
+    fallback_i10 = os.path.join(app.config['UPLOAD_FOLDER'], '20261006185331_i10.webp')
+    if os.path.exists(fallback_i10):
+        return send_from_directory(app.config['UPLOAD_FOLDER'], '20261006185331_i10.webp')
+    fallback_logo = os.path.join(app.root_path, 'static', 'img', 'logo.png')
+    if os.path.exists(fallback_logo):
+        return send_from_directory(os.path.join(app.root_path, 'static', 'img'), 'logo.png')
+    return "Image not found", 404
 
 # Context processor for templates to always have garage info & direct WhatsApp
 @app.context_processor
@@ -315,7 +381,6 @@ def add_car():
     TransmissionType = request.form.get('TransmissionType', 'Manual')
     fuel_type = request.form.get('fuel_type', 'Petrol')
     
-    # Enhanced fields
     mileage = int(request.form.get('mileage') or 0)
     ulez_compliant = True if request.form.get('ulez_compliant') == 'on' else False
     mot_expiry = request.form.get('mot_expiry', '12 Months MOT')
@@ -323,37 +388,131 @@ def add_car():
     repair_notes = request.form.get('repair_notes', '')
     features = request.form.get('features', '')
 
-    image = request.files.get('image')
+    # Support multiple file uploads
+    uploaded_files = request.files.getlist('images')
+    if not uploaded_files or not any(getattr(f, 'filename', '') for f in uploaded_files):
+        single_file = request.files.get('image')
+        if single_file and single_file.filename:
+            uploaded_files = [single_file]
 
-    if image and allowed_file(image.filename):
-        filename = secure_filename(image.filename)
-        # Avoid filename collisions
-        timestamp_prefix = datetime.now().strftime("%Y%m%d%H%M%S_")
-        saved_filename = timestamp_prefix + filename
-        image.save(os.path.join(app.config['UPLOAD_FOLDER'], saved_filename))
-        
-        new_car = Car(
-            make_model=make_model,
-            year=year,
-            price=price,
-            TransmissionType=TransmissionType,
-            fuel_type=fuel_type,
-            image_filename=saved_filename,
-            mileage=mileage,
-            ulez_compliant=ulez_compliant,
-            mot_expiry=mot_expiry,
-            copart_category=copart_category,
-            repair_notes=repair_notes,
-            features=features,
-            status='Available'
-        )
-        db.session.add(new_car)
+    saved_filenames = []
+    for f in uploaded_files:
+        if f and getattr(f, 'filename', '') and allowed_file(f.filename):
+            saved = save_uploaded_image(f)
+            if saved:
+                saved_filenames.append(saved)
+
+    if not saved_filenames:
+        flash('Please upload at least one valid vehicle photo (JPG, PNG, or WebP).', 'danger')
+        return redirect(url_for('admin_dashboard'))
+
+    primary_image = saved_filenames[0]
+    new_car = Car(
+        make_model=make_model,
+        year=year,
+        price=price,
+        TransmissionType=TransmissionType,
+        fuel_type=fuel_type,
+        image_filename=primary_image,
+        mileage=mileage,
+        ulez_compliant=ulez_compliant,
+        mot_expiry=mot_expiry,
+        copart_category=copart_category,
+        repair_notes=repair_notes,
+        features=features,
+        status='Available'
+    )
+    db.session.add(new_car)
+    db.session.commit()
+
+    # Store any extra photos in CarImage
+    for extra_file in saved_filenames[1:]:
+        db.session.add(CarImage(car_id=new_car.id, image_filename=extra_file))
+    if len(saved_filenames) > 1:
         db.session.commit()
-        flash('Vehicle listed successfully!', 'success')
-        return redirect(url_for('admin_dashboard'))
-    else:
-        flash('Invalid image file. Please upload JPG, PNG, or WebP.', 'danger')
-        return redirect(url_for('admin_dashboard'))
+
+    flash(f'Vehicle "{make_model}" listed successfully with {len(saved_filenames)} photo(s)!', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/car/edit/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_car(id):
+    car = Car.query.get_or_404(id)
+    if request.method == 'POST':
+        car.make_model = request.form.get('make_model', car.make_model).strip()
+        car.year = int(request.form.get('year', car.year))
+        car.price = int(request.form.get('price', car.price))
+        car.TransmissionType = request.form.get('TransmissionType', car.TransmissionType)
+        car.fuel_type = request.form.get('fuel_type', car.fuel_type)
+        car.mileage = int(request.form.get('mileage') or 0)
+        car.ulez_compliant = True if request.form.get('ulez_compliant') == 'on' else False
+        car.mot_expiry = request.form.get('mot_expiry', car.mot_expiry).strip()
+        car.copart_category = request.form.get('copart_category', car.copart_category).strip()
+        car.repair_notes = request.form.get('repair_notes', '').strip()
+        car.features = request.form.get('features', '').strip()
+        new_status = request.form.get('status', car.status)
+        if new_status in ['Available', 'Reserved', 'Sold']:
+            car.status = new_status
+
+        # Handle newly uploaded additional photos
+        new_files = request.files.getlist('new_images')
+        new_saved_count = 0
+        for f in new_files:
+            if f and getattr(f, 'filename', '') and allowed_file(f.filename):
+                saved = save_uploaded_image(f)
+                if saved:
+                    if not car.image_filename:
+                        car.image_filename = saved
+                    else:
+                        db.session.add(CarImage(car_id=car.id, image_filename=saved))
+                    new_saved_count += 1
+
+        db.session.commit()
+        msg = f'Listing for "{car.make_model}" updated successfully!'
+        if new_saved_count > 0:
+            msg += f' Added {new_saved_count} new photo(s).'
+        flash(msg, 'success')
+        return redirect(url_for('edit_car', id=car.id))
+
+    return render_template('edit_car.html', car=car)
+
+@app.route('/admin/car/<int:id>/set-cover/<path:filename>', methods=['POST'])
+@login_required
+def set_car_cover_image(id, filename):
+    car = Car.query.get_or_404(id)
+    if car.image_filename != filename:
+        old_cover = car.image_filename
+        target_img = CarImage.query.filter_by(car_id=car.id, image_filename=filename).first()
+        if target_img:
+            db.session.delete(target_img)
+        if old_cover:
+            existing_old = CarImage.query.filter_by(car_id=car.id, image_filename=old_cover).first()
+            if not existing_old:
+                db.session.add(CarImage(car_id=car.id, image_filename=old_cover))
+        car.image_filename = filename
+        db.session.commit()
+        flash('Primary cover photo updated!', 'success')
+    return redirect(url_for('edit_car', id=car.id))
+
+@app.route('/admin/car/<int:id>/delete-image/<path:filename>', methods=['POST'])
+@login_required
+def delete_car_image(id, filename):
+    car = Car.query.get_or_404(id)
+    target_img = CarImage.query.filter_by(car_id=car.id, image_filename=filename).first()
+    if target_img:
+        db.session.delete(target_img)
+        db.session.commit()
+        flash('Photo removed from vehicle listing.', 'info')
+    elif car.image_filename == filename:
+        next_img = CarImage.query.filter_by(car_id=car.id).first()
+        if next_img:
+            car.image_filename = next_img.image_filename
+            db.session.delete(next_img)
+            db.session.commit()
+            flash('Cover photo removed; next photo promoted to cover.', 'info')
+        else:
+            flash('Cannot remove the only photo. Upload a replacement photo first.', 'warning')
+    return redirect(url_for('edit_car', id=car.id))
 
 @app.route('/admin/status/<int:id>/<string:new_status>', methods=['POST'])
 @login_required
@@ -363,6 +522,33 @@ def update_status(id, new_status):
         car.status = new_status
         db.session.commit()
         flash(f'Status updated to {new_status}.', 'success')
+    return redirect(url_for('admin_dashboard'))
+
+@app.route('/admin/booking/edit/<int:id>', methods=['POST'])
+@login_required
+def edit_booking(id):
+    booking = Booking.query.get_or_404(id)
+    booking_date = request.form.get('booking_date', '').strip()
+    booking_time = request.form.get('booking_time', '').strip()
+    customer_phone = request.form.get('customer_phone', '').strip()
+    customer_email = request.form.get('customer_email', '').strip()
+    status = request.form.get('status', '').strip()
+    notes = request.form.get('notes', '').strip()
+
+    if booking_date:
+        booking.booking_date = booking_date
+    if booking_time:
+        booking.booking_time = booking_time
+    if customer_phone:
+        booking.customer_phone = customer_phone
+    if customer_email:
+        booking.customer_email = customer_email
+    if status in ['Confirmed', 'Pending_Verification', 'Completed', 'Cancelled']:
+        booking.status = status
+    booking.notes = notes
+
+    db.session.commit()
+    flash(f'Viewing appointment for {booking.customer_name} updated successfully!', 'success')
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/booking/cancel/<int:id>', methods=['POST'])
