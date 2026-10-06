@@ -141,8 +141,8 @@
                 <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Sat 9am–6pm &bull; Sun Closed</span>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
-                <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs">
-                    <i class="fa-brands fa-whatsapp text-sm mr-1"></i> <span class="hidden sm:inline">WhatsApp:</span> 07535 321145
+                <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs notranslate" translate="no">
+                    <i class="fa-brands fa-whatsapp text-sm mr-1.5"></i><span class="hidden sm:inline mr-1.5">WhatsApp:</span><span>07535 321145</span>
                 </a>
                 
                 <span class="text-slate-700">|</span>
@@ -546,7 +546,16 @@
                 { pattern: /\bFijado£/gi, replacement: 'Tarifa fija: £' },
                 { pattern: /\b£\s*(\d+)([a-zA-Záéíóúñ])/gi, replacement: '£$1 $2' },
                 { pattern: /\b([a-zA-Záéíóúñ])£(\d+)/gi, replacement: '$1 £$2' },
-                { pattern: /:\s*£/g, replacement: ': £' }
+                { pattern: /:\s*£/g, replacement: ': £' },
+                // Flip Spanish machine-translated currency placement: "1.800 £" -> "£1,800"
+                { pattern: /\b(\d[\d,.]*)\s*£/g, replacement: '£$1' },
+                // WhatsApp notice bar spacing
+                { pattern: /\bWhatsApp:(\d)/gi, replacement: 'WhatsApp: $1' },
+                { pattern: /\bWhatsApp:\s*07535/gi, replacement: 'WhatsApp: 07535' },
+                // Service Card 1 Spanish translations
+                { pattern: /\baceite\s+y\s+filtro\s*•\s*depende\s+del\s+(?:coche|carro)/gi, replacement: 'Aceite y filtro • depende del carro' },
+                { pattern: /\bcompleto\s*•\s*depende\s+del\s+(?:coche|carro)/gi, replacement: 'Completo • depende del carro' },
+                { pattern: /\bServicio\s+[Cc]ompleto\s*\(depende\s+del\s+(?:coche|carro)\)/gi, replacement: 'Servicio Completo (depende del carro)' }
             ];
 
             let checkTimeout = null;
