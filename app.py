@@ -69,6 +69,10 @@ def apply_security_headers(response):
     response.headers['X-XSS-Protection'] = '1; mode=block'
     if os.getenv('RENDER') or not app.debug:
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+    if request.path == '/es' or request.path.startswith('/es/'):
+        response.set_cookie('luca_lang', 'es', max_age=30*86400, samesite='Lax')
+    elif request.path == '/en' or request.path.startswith('/en/'):
+        response.set_cookie('luca_lang', 'en', max_age=30*86400, samesite='Lax')
     return response
 
 UPLOAD_FOLDER = os.path.join(app.root_path, 'static', 'uploads')
@@ -167,6 +171,45 @@ def inject_garage_data():
         "default_whatsapp_url": generate_customer_whatsapp_url()
     }
 
+@app.context_processor
+def inject_locale_urls():
+    path = request.path
+    if path == '/es' or path.startswith('/es/'):
+        current_lang = 'es'
+        alt_lang = 'en'
+        if path in ('/es', '/es/'):
+            en_url = '/en/'
+            es_url = '/es/'
+        else:
+            en_url = path.replace('/es', '/en', 1)
+            es_url = path
+    elif path == '/en' or path.startswith('/en/'):
+        current_lang = 'en'
+        alt_lang = 'es'
+        if path in ('/en', '/en/'):
+            en_url = '/en/'
+            es_url = '/es/'
+        else:
+            en_url = path
+            es_url = path.replace('/en', '/es', 1)
+    else:
+        # Legacy paths: '/', '/about', '/pricing', '/cars', '/car/<id>'
+        current_lang = 'en'
+        alt_lang = 'es'
+        if path == '/':
+            en_url = '/en/'
+            es_url = '/es/'
+        else:
+            en_url = '/en' + path
+            es_url = '/es' + path
+
+    return {
+        "current_lang": current_lang,
+        "alt_lang": alt_lang,
+        "en_url": en_url,
+        "es_url": es_url,
+    }
+
 @app.template_filter('format_date_dmy')
 def format_date_dmy(date_val):
     if not date_val:
@@ -182,27 +225,79 @@ def format_date_dmy(date_val):
 
 @app.route('/')
 def home():
+    if request.cookies.get('luca_lang') == 'es':
+        return redirect('/es/')
     featured_cars = Car.query.filter(Car.status != 'Sold').order_by(Car.created_at.desc()).limit(3).all()
-    return render_template('index.html', cars=featured_cars)
+    return render_template('en/index.html', cars=featured_cars)
+
+@app.route('/en')
+@app.route('/en/')
+def home_en():
+    featured_cars = Car.query.filter(Car.status != 'Sold').order_by(Car.created_at.desc()).limit(3).all()
+    return render_template('en/index.html', cars=featured_cars)
+
+@app.route('/es')
+@app.route('/es/')
+def home_es():
+    featured_cars = Car.query.filter(Car.status != 'Sold').order_by(Car.created_at.desc()).limit(3).all()
+    return render_template('es/index.html', cars=featured_cars)
 
 @app.route('/cars')
 def cars():
     all_cars = Car.query.order_by(Car.status == 'Sold', Car.created_at.desc()).all()
-    return render_template('cars.html', cars=all_cars)
+    return render_template('en/cars.html', cars=all_cars)
+
+@app.route('/en/cars')
+def cars_en():
+    all_cars = Car.query.order_by(Car.status == 'Sold', Car.created_at.desc()).all()
+    return render_template('en/cars.html', cars=all_cars)
+
+@app.route('/es/cars')
+def cars_es():
+    all_cars = Car.query.order_by(Car.status == 'Sold', Car.created_at.desc()).all()
+    return render_template('es/cars.html', cars=all_cars)
 
 @app.route('/car/<int:id>')
 def car_detail(id):
     car = Car.query.get_or_404(id)
     whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="inquiry")
-    return render_template('car_detail.html', car=car, whatsapp_url=whatsapp_url)
+    return render_template('en/car_detail.html', car=car, whatsapp_url=whatsapp_url)
+
+@app.route('/en/car/<int:id>')
+def car_detail_en(id):
+    car = Car.query.get_or_404(id)
+    whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="inquiry")
+    return render_template('en/car_detail.html', car=car, whatsapp_url=whatsapp_url)
+
+@app.route('/es/car/<int:id>')
+def car_detail_es(id):
+    car = Car.query.get_or_404(id)
+    whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="inquiry")
+    return render_template('es/car_detail.html', car=car, whatsapp_url=whatsapp_url)
 
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('en/about.html')
+
+@app.route('/en/about')
+def about_en():
+    return render_template('en/about.html')
+
+@app.route('/es/about')
+def about_es():
+    return render_template('es/about.html')
 
 @app.route('/pricing')
 def pricing():
-    return render_template('pricing.html')
+    return render_template('en/pricing.html')
+
+@app.route('/en/pricing')
+def pricing_en():
+    return render_template('en/pricing.html')
+
+@app.route('/es/pricing')
+def pricing_es():
+    return render_template('es/pricing.html')
 
 @app.route('/robots.txt')
 def robots_txt():
@@ -223,9 +318,17 @@ def sitemap_xml():
 
     static_pages = [
         ('/', '1.0', 'daily'),
+        ('/en/', '1.0', 'daily'),
+        ('/es/', '1.0', 'daily'),
         ('/cars', '0.9', 'daily'),
+        ('/en/cars', '0.9', 'daily'),
+        ('/es/cars', '0.9', 'daily'),
         ('/pricing', '0.8', 'weekly'),
+        ('/en/pricing', '0.8', 'weekly'),
+        ('/es/pricing', '0.8', 'weekly'),
         ('/about', '0.7', 'monthly'),
+        ('/en/about', '0.7', 'monthly'),
+        ('/es/about', '0.7', 'monthly'),
     ]
 
     for path, priority, freq in static_pages:
@@ -238,12 +341,13 @@ def sitemap_xml():
 
     for car in cars:
         lastmod = car.created_at.strftime("%Y-%m-%d") if getattr(car, 'created_at', None) else today_str
-        xml_lines.append('  <url>')
-        xml_lines.append(f'    <loc>{base_url}/car/{car.id}</loc>')
-        xml_lines.append(f'    <lastmod>{lastmod}</lastmod>')
-        xml_lines.append('    <changefreq>weekly</changefreq>')
-        xml_lines.append('    <priority>0.8</priority>')
-        xml_lines.append('  </url>')
+        for prefix in ['/car', '/en/car', '/es/car']:
+            xml_lines.append('  <url>')
+            xml_lines.append(f'    <loc>{base_url}{prefix}/{car.id}</loc>')
+            xml_lines.append(f'    <lastmod>{lastmod}</lastmod>')
+            xml_lines.append(f'    <changefreq>weekly</changefreq>')
+            xml_lines.append(f'    <priority>0.8</priority>')
+            xml_lines.append('  </url>')
 
     xml_lines.append('</urlset>')
     return Response("\n".join(xml_lines), mimetype='application/xml')
@@ -251,12 +355,16 @@ def sitemap_xml():
 @app.errorhandler(404)
 def page_not_found(e):
     """Renders custom automotive 404 page for missing URLs."""
-    return render_template('404.html'), 404
+    if request.path.startswith('/es') or request.cookies.get('luca_lang') == 'es':
+        return render_template('es/404.html'), 404
+    return render_template('en/404.html'), 404
 
 @app.errorhandler(500)
 def server_error(e):
     """Renders friendly 500 error page on unexpected exceptions."""
-    return render_template('500.html'), 500
+    if request.path.startswith('/es') or request.cookies.get('luca_lang') == 'es':
+        return render_template('es/500.html'), 500
+    return render_template('en/500.html'), 500
 
 # ----------------- BOOKING & VERIFICATION ROUTES ----------------- #
 

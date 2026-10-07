@@ -240,7 +240,38 @@ def run_tests():
         assert b"Page Not Found" in priv_resp.data
         print("✅ Test 14 Passed: Footer trade details verified and clean minimalist routing confirmed.")
 
-        print("\n🎉 ALL 14 TESTS PASSED SUCCESSFULLY!")
+        # 15. Test Native Subdirectories (/en/ and /es/) & Language Cookie Persistence
+        resp_en = client.get('/en/')
+        assert resp_en.status_code == 200
+        assert b"Lucas Garage" in resp_en.data
+        assert "luca_lang=en" in resp_en.headers.get('Set-Cookie', '')
+
+        resp_es = client.get('/es/')
+        assert resp_es.status_code == 200
+        assert "Mecánica general y".encode('utf-8') in resp_es.data
+        assert "Reemplazo de frenos".encode('utf-8') in resp_es.data
+        assert "luca_lang=es" in resp_es.headers.get('Set-Cookie', '')
+
+        resp_es_pricing = client.get('/es/pricing')
+        assert resp_es_pricing.status_code == 200
+        assert "Precios de taller".encode('utf-8') in resp_es_pricing.data
+
+        resp_es_cars = client.get('/es/cars')
+        assert resp_es_cars.status_code == 200
+        assert "Carros en venta".encode('utf-8') in resp_es_cars.data
+
+        resp_es_detail = client.get(f'/es/car/{car.id}')
+        assert resp_es_detail.status_code == 200
+        assert "Reservar cita con Luca".encode('utf-8') in resp_es_detail.data
+
+        # Verify root auto-redirects to /es/ when cookie is set
+        client.set_cookie('luca_lang', 'es')
+        resp_root_redir = client.get('/')
+        assert resp_root_redir.status_code == 302
+        assert resp_root_redir.headers.get('Location') == '/es/'
+        print("✅ Test 15 Passed: Native /en and /es subdirectories, Spanish translations, and cookie persistence verified.")
+
+        print("\n🎉 ALL 15 TESTS PASSED SUCCESSFULLY!")
 
 if __name__ == '__main__':
     run_tests()

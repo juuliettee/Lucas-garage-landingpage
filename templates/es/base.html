@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Lucas Garage | 38a Penrose St, London SE17 | Repairs & Used Cars{% endblock %}</title>
-    <link rel="canonical" href="https://lucasgarage.uk{{ en_url }}">
+    <title>{% block title %}Lucas Garage | 38a Penrose St, Londres SE17 | Reparaciones y Carros de Segunda Mano{% endblock %}</title>
+    <link rel="canonical" href="https://lucasgarage.uk{{ es_url }}">
     <link rel="alternate" hreflang="en" href="https://lucasgarage.uk{{ en_url }}">
     <link rel="alternate" hreflang="es" href="https://lucasgarage.uk{{ es_url }}">
     <link rel="alternate" hreflang="x-default" href="https://lucasgarage.uk/en/">
@@ -47,9 +47,9 @@
     <div class="bg-[#070C11] text-slate-400 text-xs py-2 px-3 sm:px-4 border-b border-[#243344]">
         <div class="max-w-6xl mx-auto flex justify-between items-center gap-2">
             <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
-                <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">38a Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">38a Penrose St, SE17 3DW</span></span>
+                <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">38a Penrose Street, Walworth, Londres SE17 3DW</span><span class="sm:hidden">38a Penrose St, SE17 3DW</span></span>
                 <span class="hidden md:inline text-slate-700">|</span>
-                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 9am–1pm &bull; Sun Closed</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Lun–Vie 9:00–18:00 &bull; Sáb 9:00–13:00 &bull; Dom Cerrado</span>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                 <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs">
@@ -61,11 +61,11 @@
                 <!-- Language Selector -->
                 <div class="inline-flex items-center bg-[#0B1117] rounded-lg p-0.5 border border-[#243344] text-[11px] shadow-sm">
                     <a href="{{ en_url }}"
-                        class="px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer">
+                        class="px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1 cursor-pointer">
                         <span>🇬🇧</span> <span>EN</span>
                     </a>
                     <a href="{{ es_url }}"
-                        class="px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1 cursor-pointer">
+                        class="px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer">
                         <span>🇪🇸</span> <span>ES</span>
                     </a>
                 </div>
@@ -76,22 +76,22 @@
     <!-- Main Navigation -->
     <nav class="bg-[#0B1117]/95 backdrop-blur-md border-b border-[#243344] sticky top-0 z-40 shadow-md">
         <div class="max-w-6xl mx-auto px-4 py-2.5 sm:py-3 flex justify-between items-center">
-            <a href="{{ url_for('home_en') }}" class="flex items-center space-x-2.5 sm:space-x-3 group min-w-0">
+            <a href="{{ url_for('home_es') }}" class="flex items-center space-x-2.5 sm:space-x-3 group min-w-0">
                 <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Lucas Garage Logo"
                     class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl object-cover shadow-sm border border-[#243344] group-hover:scale-105 transition flex-shrink-0">
                 <div class="min-w-0">
                     <span class="text-lg sm:text-xl font-black tracking-tight text-slate-50 block leading-tight truncate">Lucas Garage</span>
-                    <span class="text-[10px] sm:text-[11px] text-amber-400 font-bold tracking-wider uppercase block">Mechanic Workshop</span>
+                    <span class="text-[10px] sm:text-[11px] text-amber-400 font-bold tracking-wider uppercase block">Taller Mecánico</span>
                 </div>
             </a>
 
             <!-- Desktop Nav Links -->
             <div class="hidden md:flex space-x-5 text-sm font-semibold items-center">
-                <a href="{{ url_for('home_en') }}" class="text-slate-300 hover:text-amber-400 transition">Home</a>
-                <a href="{{ url_for('home_en') }}#services" class="text-slate-300 hover:text-amber-400 transition">Services</a>
-                <a href="{{ url_for('pricing_en') }}" class="text-slate-300 hover:text-amber-400 transition">Pricing</a>
-                <a href="{{ url_for('cars_en') }}" class="text-slate-300 hover:text-amber-400 transition">Cars For Sale</a>
-                <a href="{{ url_for('about_en') }}" class="text-slate-300 hover:text-amber-400 transition">About Us</a>
+                <a href="{{ url_for('home_es') }}" class="text-slate-300 hover:text-amber-400 transition">Inicio</a>
+                <a href="{{ url_for('home_es') }}#services" class="text-slate-300 hover:text-amber-400 transition">Servicios</a>
+                <a href="{{ url_for('pricing_es') }}" class="text-slate-300 hover:text-amber-400 transition">Precios de taller</a>
+                <a href="{{ url_for('cars_es') }}" class="text-slate-300 hover:text-amber-400 transition">Carros en venta</a>
+                <a href="{{ url_for('about_es') }}" class="text-slate-300 hover:text-amber-400 transition">Sobre nosotros</a>
                 
                 <a href="{{ default_whatsapp_url }}" target="_blank"
                     class="hidden lg:inline-flex items-center px-3.5 py-2 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/20 transition shadow-sm">
@@ -100,17 +100,17 @@
 
                 {% if current_user.is_authenticated %}
                 <a href="{{ url_for('admin_dashboard') }}" class="text-amber-400 hover:text-amber-300 transition flex items-center">
-                    <i class="fa-solid fa-gauge-high mr-1"></i> Admin Panel
+                    <i class="fa-solid fa-gauge-high mr-1"></i> Panel Admin
                 </a>
                 <a href="{{ url_for('logout') }}"
                     class="bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 px-3 py-1.5 rounded-lg text-xs font-bold border border-rose-500/20 transition">
-                    Log Out
+                    Cerrar sesión
                 </a>
                 {% endif %}
             </div>
 
             <!-- Mobile Hamburger Button -->
-            <button id="mobileMenuBtn" type="button" onclick="toggleMobileMenu()" aria-label="Toggle navigation menu"
+            <button id="mobileMenuBtn" type="button" onclick="toggleMobileMenu()" aria-label="Abrir menú de navegación"
                 class="md:hidden w-10 h-10 rounded-xl bg-[#141E28] border border-[#243344] text-slate-200 flex items-center justify-center hover:text-amber-400 hover:border-amber-500/40 transition active:scale-95 flex-shrink-0">
                 <i id="mobileMenuIcon" class="fa-solid fa-bars text-lg"></i>
             </button>
@@ -118,32 +118,32 @@
 
         <!-- Mobile Drawer / Menu Dropdown -->
         <div id="mobileMenuDropdown" class="hidden md:hidden border-t border-[#243344] bg-[#0B1117] px-4 pt-3 pb-5 space-y-1.5 shadow-2xl">
-            <a href="{{ url_for('home_en') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
-                <i class="fa-solid fa-house text-amber-400 mr-3 w-4 text-center"></i> Home
+            <a href="{{ url_for('home_es') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-house text-amber-400 mr-3 w-4 text-center"></i> Inicio
             </a>
-            <a href="{{ url_for('home_en') }}#services" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
-                <i class="fa-solid fa-wrench text-amber-400 mr-3 w-4 text-center"></i> Services & Repairs
+            <a href="{{ url_for('home_es') }}#services" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-wrench text-amber-400 mr-3 w-4 text-center"></i> Servicios y reparaciones
             </a>
-            <a href="{{ url_for('pricing_en') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
-                <i class="fa-solid fa-tags text-amber-400 mr-3 w-4 text-center"></i> Workshop Pricing
+            <a href="{{ url_for('pricing_es') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-tags text-amber-400 mr-3 w-4 text-center"></i> Precios de taller
             </a>
-            <a href="{{ url_for('cars_en') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
-                <i class="fa-solid fa-car text-amber-400 mr-3 w-4 text-center"></i> Cars For Sale
+            <a href="{{ url_for('cars_es') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-car text-amber-400 mr-3 w-4 text-center"></i> Carros en venta
             </a>
-            <a href="{{ url_for('about_en') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
-                <i class="fa-solid fa-circle-info text-amber-400 mr-3 w-4 text-center"></i> About Us
+            <a href="{{ url_for('about_es') }}" onclick="toggleMobileMenu()" class="flex items-center px-3.5 py-2.5 rounded-xl font-bold text-sm text-slate-200 hover:bg-[#141E28] hover:text-amber-400 transition">
+                <i class="fa-solid fa-circle-info text-amber-400 mr-3 w-4 text-center"></i> Sobre nosotros
             </a>
 
             <!-- Mobile Language Selector in Drawer -->
             <div class="pt-3 pb-2 border-t border-[#243344] flex items-center justify-between">
-                <span class="text-xs font-semibold text-slate-400">Language:</span>
+                <span class="text-xs font-semibold text-slate-400">Idioma:</span>
                 <div class="inline-flex items-center bg-[#141E28] rounded-lg p-0.5 border border-[#243344] text-xs shadow-sm">
                     <a href="{{ en_url }}"
-                        class="px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1.5 cursor-pointer">
+                        class="px-3 py-1 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer">
                         <span>🇬🇧</span> <span>EN</span>
                     </a>
                     <a href="{{ es_url }}"
-                        class="px-3 py-1 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer">
+                        class="px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1.5 cursor-pointer">
                         <span>🇪🇸</span> <span>ES</span>
                     </a>
                 </div>
@@ -153,22 +153,22 @@
                 <a href="{{ default_whatsapp_url }}" target="_blank"
                     class="flex items-center justify-center space-x-2 w-full py-3 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white shadow-md transition">
                     <i class="fa-brands fa-whatsapp text-base"></i>
-                    <span>Message Luca on WhatsApp</span>
+                    <span>Escribir a Luca por WhatsApp</span>
                 </a>
                 <a href="tel:07535321145"
                     class="flex items-center justify-center space-x-2 w-full py-2.5 rounded-xl text-xs font-bold bg-[#141E28] hover:bg-[#1B2735] text-slate-200 border border-[#243344] transition">
                     <i class="fa-solid fa-phone text-amber-400"></i>
-                    <span>Call Workshop: 07535 321145</span>
+                    <span>Llamar al taller: 07535 321145</span>
                 </a>
             </div>
 
             {% if current_user.is_authenticated %}
             <div class="pt-2.5 border-t border-[#243344] flex items-center justify-between">
                 <a href="{{ url_for('admin_dashboard') }}" class="text-xs font-bold text-amber-400 flex items-center">
-                    <i class="fa-solid fa-gauge-high mr-1.5"></i> Admin Dashboard
+                    <i class="fa-solid fa-gauge-high mr-1.5"></i> Panel de control
                 </a>
                 <a href="{{ url_for('logout') }}" class="text-xs font-bold text-rose-400 bg-rose-500/10 px-3 py-1 rounded-lg border border-rose-500/20">
-                    Log Out
+                    Cerrar sesión
                 </a>
             </div>
             {% endif %}
@@ -202,7 +202,7 @@
                     <span>Lucas Garage London</span>
                 </h3>
                 <p class="text-xs text-slate-400 leading-relaxed mb-3">
-                    Independent mechanical workshop and quality used vehicle sales.
+                    Taller mecánico independiente y venta de vehículos de segunda mano de calidad.
                 </p>
                 <div class="text-xs text-slate-300">
                     <i class="fa-solid fa-location-dot text-amber-400 mr-1.5"></i> 38a Penrose Street, Walworth, SE17 3DW
@@ -210,47 +210,47 @@
             </div>
 
             <div>
-                <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Opening Hours</h4>
+                <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Horario de apertura</h4>
                 <ul class="text-xs space-y-1.5 text-slate-300">
-                    <li class="flex justify-between"><span>Monday – Friday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
-                    <li class="flex justify-between"><span>Saturday:</span> <span class="font-semibold text-slate-100">9:00 AM – 1:00 PM</span></li>
-                    <li class="flex justify-between text-slate-500"><span>Sunday:</span> <span>Closed</span></li>
+                    <li class="flex justify-between"><span>Lunes – Viernes:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Sábado:</span> <span class="font-semibold text-slate-100">9:00 AM – 1:00 PM</span></li>
+                    <li class="flex justify-between text-slate-500"><span>Domingo:</span> <span>Cerrado</span></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Direct Contact</h4>
+                <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Contacto directo</h4>
                 <p class="text-xs text-slate-300 mb-1.5">
-                    <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Workshop: <strong class="text-slate-100">07535 321145</strong>
+                    <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Taller: <strong class="text-slate-100">07535 321145</strong>
                 </p>
                 <p class="text-xs text-slate-300 mb-3">
                     <i class="fa-solid fa-envelope text-amber-400 mr-1.5"></i> Email: <a href="mailto:lucasgarage@hotmail.co.uk" class="text-slate-200 hover:text-amber-400 underline">lucasgarage@hotmail.co.uk</a>
                 </p>
                 <a href="{{ default_whatsapp_url }}" target="_blank"
                     class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white transition shadow-sm mb-2.5">
-                    <i class="fa-brands fa-whatsapp text-sm mr-1.5"></i> Open WhatsApp Chat
+                    <i class="fa-brands fa-whatsapp text-sm mr-1.5"></i> Abrir chat de WhatsApp
                 </a>
                 <p class="text-[11px] text-slate-500">
-                    London Borough of Southwark &bull; Expanded ULEZ Zone
+                    Distrito de Southwark, Londres &bull; Zona ULEZ ampliada
                 </p>
                 <p class="text-[10px] text-slate-500 mt-1">
-                    Independent Motor Trader &bull; Not VAT registered (prices total payable)
+                    Comerciante independiente de vehículos &bull; Precios finales totales a pagar (No sujeto a IVA)
                 </p>
             </div>
         </div>
 
         <div class="max-w-6xl mx-auto px-4 pt-6 border-t border-[#243344] text-center text-xs text-slate-500 flex flex-wrap justify-between items-center gap-y-2">
-            <p>&copy; 2026 Lucas Garage. All rights reserved. 38a Penrose St, London SE17 3DW.</p>
+            <p>&copy; 2026 Lucas Garage. Todos los derechos reservados. 38a Penrose St, Londres SE17 3DW.</p>
             <div class="space-x-4">
-                <a href="{{ url_for('home_en') }}" class="hover:text-slate-300 transition">Home</a>
-                <a href="{{ url_for('home_en') }}#services" class="hover:text-slate-300 transition">Services</a>
-                <a href="{{ url_for('pricing_en') }}" class="hover:text-slate-300 transition">Pricing</a>
-                <a href="{{ url_for('about_en') }}" class="hover:text-slate-300 transition">About Us</a>
-                <a href="{{ url_for('cars_en') }}" class="hover:text-slate-300 transition">View Stock</a>
-                <a href="{{ url_for('login') }}" class="hover:text-slate-300 transition">Mechanic Login</a>
+                <a href="{{ url_for('home_es') }}" class="hover:text-slate-300 transition">Inicio</a>
+                <a href="{{ url_for('home_es') }}#services" class="hover:text-slate-300 transition">Servicios</a>
+                <a href="{{ url_for('pricing_es') }}" class="hover:text-slate-300 transition">Precios</a>
+                <a href="{{ url_for('about_es') }}" class="hover:text-slate-300 transition">Sobre nosotros</a>
+                <a href="{{ url_for('cars_es') }}" class="hover:text-slate-300 transition">Ver stock</a>
+                <a href="{{ url_for('login') }}" class="hover:text-slate-300 transition">Acceso mecánico</a>
             </div>
             <p class="text-[11px] text-slate-500 w-full mt-2 text-left sm:text-center">
-                Lucas Garage is an independent automotive repairer & motor trader. All vehicles and services supplied subject to the Consumer Rights Act 2015.
+                Lucas Garage es un taller de reparación mecánica y venta de vehículos independiente. Todos los servicios y vehículos están sujetos a la Ley de Derechos del Consumidor de 2015 (Consumer Rights Act 2015).
             </p>
         </div>
     </footer>

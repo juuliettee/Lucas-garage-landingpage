@@ -1,0 +1,117 @@
+{% extends 'en/base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-12 text-slate-100">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 pb-6 border-b border-[#243344] gap-4">
+        <div>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-50">Vehicles For Sale</h1>
+            <p class="mt-2 text-sm text-slate-300">
+                Current stock available to view at 38a Penrose Street, Walworth, London SE17.
+            </p>
+        </div>
+    </div>
+
+    <!-- Live Inventory Availability Notice -->
+    <div class="mb-8 p-4 rounded-2xl bg-[#141E28] border border-[#243344] flex items-start sm:items-center space-x-3.5 text-xs text-slate-300 shadow-sm">
+        <div class="w-8 h-8 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-sm flex-shrink-0 mt-0.5 sm:mt-0">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <p class="leading-relaxed">
+            <strong class="text-slate-100 font-bold">Live Inventory:</strong> If a vehicle is visible on this page, it is currently in stock and available for viewing. Once a deposit is taken or a vehicle is sold, the listing is updated or removed immediately in real time.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for car in cars %}
+        <div class="bg-[#141E28] rounded-2xl shadow-xl border border-[#243344] overflow-hidden flex flex-col group hover:border-amber-500/40 transition duration-200">
+            <div class="relative aspect-video bg-[#0B1117] overflow-hidden">
+                <img src="{{ url_for('static', filename='uploads/' + car.image_filename) }}" alt="{{ car.make_model }}"
+                    class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                
+                <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                    {% if car.status == 'Sold' %}
+                    <span class="bg-rose-600 text-white text-[11px] font-black px-3 py-1 rounded-full shadow tracking-wider uppercase">
+                        SOLD
+                    </span>
+                    {% elif car.status == 'Reserved' %}
+                    <span class="bg-amber-600 text-white text-[11px] font-black px-3 py-1 rounded-full shadow tracking-wider uppercase">
+                        UNDER OFFER
+                    </span>
+                    {% else %}
+                    <span class="bg-emerald-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow">
+                        AVAILABLE
+                    </span>
+                    {% endif %}
+
+                    {% if car.ulez_compliant %}
+                    <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-2 py-1 rounded-full shadow backdrop-blur-sm">
+                        <i class="fa-solid fa-leaf mr-0.5"></i> ULEZ
+                    </span>
+                    {% endif %}
+                </div>
+
+                <div class="absolute bottom-3 right-3 bg-[#0B1117]/95 backdrop-blur-sm text-amber-400 font-mono font-black text-lg px-3.5 py-1 rounded-xl shadow-md border border-[#243344]">
+                    £{{ "{:,}".format(car.price) }}
+                </div>
+
+                {% if car.all_images|length > 1 %}
+                <div class="absolute bottom-3 left-3 bg-[#0B1117]/85 backdrop-blur-sm text-slate-200 border border-[#243344] text-[10px] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-camera text-amber-400 text-[9px]"></i> {{ car.all_images|length }}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="p-6 flex flex-col flex-grow">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="text-xl font-bold text-slate-50">{{ car.year }} {{ car.make_model }}</h3>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 text-center text-xs text-slate-300 mb-4 bg-[#0B1117] p-2.5 rounded-xl border border-[#243344]">
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase font-semibold">Mileage</span>
+                        <span class="font-bold text-slate-100">{{ ("{:,} mi".format(car.mileage)) if (car.mileage and car.mileage > 0) else 'Inquire' }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase font-semibold">Gearbox</span>
+                        <span class="font-bold text-slate-100">{{ car.TransmissionType }}</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block text-[10px] uppercase font-semibold">Fuel</span>
+                        <span class="font-bold text-slate-100">{{ car.fuel_type }}</span>
+                    </div>
+                </div>
+
+                <div class="text-xs text-slate-400 mb-4 space-y-1">
+                    <div><strong class="text-slate-200">MOT:</strong> {{ car.mot_expiry or '12 Months Included' }}</div>
+                    <div><strong class="text-slate-200">History:</strong> {{ car.copart_category or 'Clean / Inspected' }}</div>
+                    <div><strong class="text-slate-200">Warranty:</strong> 3-Month Workshop Labour Guarantee</div>
+                </div>
+
+                {% if car.repair_notes %}
+                <div class="text-xs text-amber-200/90 line-clamp-2 mb-6 bg-amber-950/20 p-2.5 rounded-xl border border-amber-500/25">
+                    <strong class="text-amber-400"><i class="fa-solid fa-wrench mr-1"></i> Work Done:</strong> {{ car.repair_notes }}
+                </div>
+                {% endif %}
+
+                <div class="mt-auto pt-4 border-t border-[#243344] flex items-center justify-between gap-2">
+                    <a href="{{ url_for('car_detail_en', id=car.id) }}"
+                        class="flex-1 text-center bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-bold text-xs py-2.5 px-3 rounded-xl transition shadow-sm">
+                        View Details & Book
+                    </a>
+                    <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I'm%20inquiring%20about%20the%20{{ car.year }}%20{{ car.make_model|urlencode }}"
+                        target="_blank"
+                        class="bg-[#1E2B3A] hover:bg-[#28394D] text-emerald-400 border border-[#243344] text-xs font-bold py-2.5 px-3 rounded-xl transition">
+                        <i class="fa-brands fa-whatsapp text-sm"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-span-full text-center py-20 bg-[#141E28] rounded-2xl border border-dashed border-[#243344]">
+            <i class="fa-solid fa-car text-4xl text-slate-600 mb-3"></i>
+            <h3 class="text-base font-bold text-slate-300">No cars currently listed for sale</h3>
+            <p class="text-xs text-slate-500 mt-1">Check back soon or message Luca on WhatsApp to ask about incoming stock.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

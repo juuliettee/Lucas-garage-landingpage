@@ -1,0 +1,220 @@
+{% extends 'en/base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 text-slate-100">
+
+    <!-- Header -->
+    <div class="mb-8 pb-6 border-b border-[#243344] text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Transparent Workshop Rates</span>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-50 mt-1">Workshop Pricing</h1>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                Honest mechanic pricing, fixed-price menu servicing, and direct quotes with zero dealership markups.
+            </p>
+        </div>
+        <a href="{{ default_whatsapp_url }}" target="_blank"
+            class="inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow-lg shadow-emerald-500/10 flex-shrink-0">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>WhatsApp Luca for a Quote</span>
+        </a>
+    </div>
+
+    <!-- Bring Your Own Parts Feature Banner -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 via-[#141E28] to-[#141E28] border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-lg">
+        <div class="flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="text-base font-black text-slate-50">Bring Your Own Parts Welcome!</h3>
+                    <span class="bg-amber-500 text-[#0B1117] text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 inline-flex items-center shadow-sm">Save Money</span>
+                </div>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed max-w-xl">
+                    Bought your own brake pads, discs, engine oil, filters, or clutch kit online (Euro Car Parts, Autodoc, eBay)? Bring them down to the workshop and Luca will happily fit them for you — <strong>we only charge for the labour</strong> with zero parts markup. (Our guarantee covers our fitting and workmanship; manufacturer part warranties remain with your parts supplier).
+                </p>
+            </div>
+        </div>
+        <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20I%20have%20my%20own%20parts%20for%20my%20car.%20Can%20you%20give%20me%20a%20labour-only%20fitting%20quote?%20Reg:%20" target="_blank"
+            class="flex-shrink-0 inline-flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-black text-xs px-4 py-2.5 rounded-xl transition shadow">
+            <span>Get Labour-Only Quote &rarr;</span>
+        </a>
+    </div>
+
+    <!-- Pricing Table -->
+    <div class="bg-[#141E28] rounded-2xl border border-[#243344] overflow-hidden shadow-xl mb-10">
+        <div class="px-6 py-4 bg-[#0B1117] border-b border-[#243344] flex justify-between items-center text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span>Service / Repair Description</span>
+            <span class="text-right">Price Guide</span>
+        </div>
+
+        <div class="divide-y divide-[#243344] text-sm">
+            
+            <!-- Computer Diagnostics -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Computer Diagnostics</span>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Fixed Price</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Full OBD-II diagnostic scan, reading & clearing live fault codes, engine warning lights (EML), ABS, and sensor checks.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£30</span>
+                    <span class="block text-[11px] text-emerald-400 font-semibold">Fixed Price Scan</span>
+                </div>
+            </div>
+
+            <!-- Mini Service -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Mini Service (Oil &amp; filter)</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Fresh engine oil change, brand-new oil filter replacement, essential fluid levels topped up, and multi-point vehicle safety check.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£130</span>
+                    <span class="block text-[11px] text-slate-400">Depends on car (Oil &amp; filter included)</span>
+                </div>
+            </div>
+
+            <!-- Full Service -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Full Service</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Comprehensive service including engine oil, oil filter, air filter, cabin/pollen filter, spark plugs / fuel filter inspection, brake check, and full mechanical safety report.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£250 – £300</span>
+                    <span class="block text-[11px] text-slate-400">Depends on car</span>
+                </div>
+            </div>
+
+            <!-- Brake Pads Fitting -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Brake Pads Replacement (Front or Rear)</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Professional brake pad replacement and caliper inspection. Bring your own brake pads for fitting or let Luca supply quality OE-spec brake pads.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£60 – £70</span>
+                    <span class="block text-[11px] text-slate-400">Depends on car / fitting</span>
+                </div>
+            </div>
+
+            <!-- Brake Discs & Pads -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Brake Pads & Discs (Full Axle)</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Replacement of vented brake discs and matching brake pads. Eliminates juddering, grinding, and ensures safe braking power.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Quote by Reg</span>
+                    <span class="block text-[11px] text-slate-400">Labour-only or supply & fit</span>
+                </div>
+            </div>
+
+            <!-- Pre-Purchase Check -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Pre-Purchase Car Inspection</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Buying a car privately or from auction? Bring it down to 38a Penrose Street for an underbody rust check, crash damage inspection, chassis condition, and full OBD code readout before you buy.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£50</span>
+                    <span class="block text-[11px] text-slate-400">Includes inspection &amp; OBD scan</span>
+                </div>
+            </div>
+
+            <!-- Clutch Replacement -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Clutch Replacement</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Complete clutch kit fitting, release bearing, pressure plate, and gearbox oil top-up. Labour-only fitting available if you bring your own clutch.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Quote by Reg</span>
+                    <span class="block text-[11px] text-slate-400">Varies by vehicle</span>
+                </div>
+            </div>
+
+            <!-- Suspension & Steering -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Suspension Arms / Springs / Shock Absorbers</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Suspension arms (wishbones), drop links, coil springs, top mounts, and shock absorbers fitted to fix knocks and uneven tyre wear.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Quote by Reg</span>
+                    <span class="block text-[11px] text-slate-400">Quote on registration</span>
+                </div>
+            </div>
+
+            <!-- MOT Prep & Failure Repairs -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Pre-MOT & MOT Repairs</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Failed your MOT or have advisories? Bring your failure sheet down and we will repair the issues quickly so you pass the re-test.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Quote on MOT Sheet</span>
+                    <span class="block text-[11px] text-slate-400">Send sheet on WhatsApp</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Price Transparency Note (Provision of Services Regs 2009) -->
+    <p class="text-[11px] text-slate-400 mb-6 italic text-center sm:text-left">
+        *Pricing notes: Servicing rates depend on engine capacity, cylinder count, and specific synthetic oil specification required by the manufacturer. Not VAT registered; all prices quoted are the final total payable.
+    </p>
+
+    <!-- Used Car Guarantee Card -->
+    <div class="p-6 rounded-2xl bg-[#141E28] border border-[#243344] mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start space-x-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-lg flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-50">3-Month Guarantee on Used Cars Sold</h3>
+                <p class="text-xs text-slate-300 mt-0.5 leading-relaxed">
+                    Every used vehicle sold by Lucas Garage includes a <strong>3-month workshop labour guarantee</strong>. Provided in addition to, and does not affect, your statutory rights under the Consumer Rights Act 2015.
+                </p>
+            </div>
+        </div>
+        <a href="{{ url_for('cars_en') }}"
+            class="flex-shrink-0 bg-[#1B2735] hover:bg-[#243344] text-slate-200 border border-[#243344] font-bold text-xs px-4 py-2.5 rounded-xl transition">
+            View Cars For Sale &rarr;
+        </a>
+    </div>
+
+    <!-- Quick WhatsApp Quote CTA Box -->
+    <div class="text-center bg-[#0B1117] p-6 rounded-2xl border border-[#243344] text-xs text-slate-400 space-y-2">
+        <p class="text-slate-200 font-bold text-sm">Need an exact price for your specific vehicle?</p>
+        <p>Send your <strong>Vehicle Registration</strong> and what you need done directly to Luca on WhatsApp.</p>
+        <div class="pt-2">
+            <a href="https://wa.me/{{ garage_mobile }}?text=Hi%20Luca,%20could%20I%20get%20a%20quote%20for%20my%20car?%20Reg:%20" target="_blank"
+                class="inline-flex items-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+                <span>Message Luca on WhatsApp (07535 321145)</span>
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

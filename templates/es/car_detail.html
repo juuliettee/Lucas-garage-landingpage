@@ -1,0 +1,366 @@
+{% extends 'es/base.html' %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10 text-slate-100">
+
+    <!-- Breadcrumb & Back -->
+    <div class="mb-6 flex items-center justify-between text-xs text-slate-400">
+        <a href="{{ url_for('cars_es') }}" class="hover:text-amber-400 font-bold flex items-center transition">
+            <i class="fa-solid fa-arrow-left mr-1.5"></i> Volver a todos los carros
+        </a>
+        <span>38a Penrose Street, Walworth, SE17 3DW</span>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        <!-- Left: Vehicle Photos & Full Details (7 cols) -->
+        <div class="lg:col-span-7 space-y-8">
+            <!-- Main Photo Card with Interactive Carousel -->
+            <div class="bg-[#141E28] rounded-3xl overflow-hidden border border-[#243344] shadow-xl">
+                <div id="galleryViewport" class="relative aspect-video bg-[#0B1117] select-none group">
+                    <img id="mainGalleryImage" src="{{ url_for('static', filename='uploads/' + car.all_images[0]) }}" alt="{{ car.make_model }}"
+                        class="w-full h-full object-cover transition-opacity duration-200">
+                    
+                    <div class="absolute top-4 left-4 flex flex-wrap gap-2 z-10">
+                        {% if car.status == 'Sold' %}
+                        <span class="bg-rose-600 text-white text-xs font-black px-3.5 py-1.5 rounded-full shadow tracking-wider uppercase">
+                            VENDIDO
+                        </span>
+                        {% elif car.status == 'Reserved' %}
+                        <span class="bg-amber-600 text-white text-xs font-black px-3.5 py-1.5 rounded-full shadow tracking-wider uppercase">
+                            RESERVADO
+                        </span>
+                        {% else %}
+                        <span class="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                            Disponible ahora
+                        </span>
+                        {% endif %}
+
+                        {% if car.ulez_compliant %}
+                        <span class="bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 text-xs font-bold px-3 py-1 rounded-full shadow flex items-center backdrop-blur-sm">
+                            <i class="fa-solid fa-leaf mr-1"></i> Cumple ULEZ (Exento de cargos)
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    {% if car.all_images|length > 1 %}
+                    <!-- Previous Button -->
+                    <button type="button" onclick="prevCarImage()" aria-label="Foto anterior"
+                        class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#0B1117]/80 hover:bg-[#0B1117] text-white flex items-center justify-center border border-[#243344] shadow-lg backdrop-blur-sm transition active:scale-90 z-20 cursor-pointer">
+                        <i class="fa-solid fa-chevron-left text-sm"></i>
+                    </button>
+
+                    <!-- Next Button -->
+                    <button type="button" onclick="nextCarImage()" aria-label="Siguiente foto"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#0B1117]/80 hover:bg-[#0B1117] text-white flex items-center justify-center border border-[#243344] shadow-lg backdrop-blur-sm transition active:scale-90 z-20 cursor-pointer">
+                        <i class="fa-solid fa-chevron-right text-sm"></i>
+                    </button>
+
+                    <!-- Photo Index Badge -->
+                    <div class="absolute bottom-3 right-3 bg-[#0B1117]/85 backdrop-blur-md border border-[#243344] text-slate-200 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow z-10">
+                        <i class="fa-solid fa-camera text-amber-400"></i>
+                        <span id="galleryCounter">1 / {{ car.all_images|length }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if car.all_images|length > 1 %}
+                <!-- Scrollable Thumbnails Strip -->
+                <div class="p-3 bg-[#0B1117] border-b border-[#243344] flex items-center gap-2.5 overflow-x-auto">
+                    {% for img in car.all_images %}
+                    <button type="button" onclick="selectCarImage({{ loop.index0 }})"
+                        id="thumb-btn-{{ loop.index0 }}"
+                        class="gallery-thumb-btn flex-shrink-0 w-16 h-12 sm:w-20 sm:h-14 rounded-xl overflow-hidden border-2 {% if loop.first %}border-amber-500 shadow-md ring-1 ring-amber-500/50{% else %}border-[#243344] opacity-60 hover:opacity-100{% endif %} transition-all cursor-pointer">
+                        <img src="{{ url_for('static', filename='uploads/' + img) }}" alt="Miniatura {{ loop.index }}" class="w-full h-full object-cover">
+                    </button>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="p-6 sm:p-8">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#243344]">
+                        <div>
+                            <div class="flex items-center space-x-2 mb-1.5">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> En taller y disponible
+                                </span>
+                            </div>
+                            <h1 class="text-2xl sm:text-3xl font-black text-slate-50">{{ car.year }} {{ car.make_model }}</h1>
+                            <p class="text-xs text-slate-400 mt-1">Inspeccionado y preparado por <span class="font-semibold">Lucas Garage</span> &bull; Taller mecánico en Londres</p>
+                        </div>
+                        <div class="text-3xl font-black text-amber-400 font-mono tracking-tight">
+                            £{{ "{:,}".format(car.price) }}
+                        </div>
+                    </div>
+
+                    <!-- Quick Specs Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-6">
+                        <div class="bg-[#0B1117] p-3.5 rounded-2xl border border-[#243344] text-center">
+                            <span class="text-slate-400 block text-[11px] uppercase font-bold">Millaje</span>
+                            <span class="text-slate-50 font-bold text-sm">{{ ("{:,} mi".format(car.mileage)) if (car.mileage and car.mileage > 0) else 'Consultar' }}</span>
+                        </div>
+                        <div class="bg-[#0B1117] p-3.5 rounded-2xl border border-[#243344] text-center">
+                            <span class="text-slate-400 block text-[11px] uppercase font-bold">Caja de cambios</span>
+                            <span class="text-slate-50 font-bold text-sm">{{ 'Automático' if car.TransmissionType == 'Automatic' else ('Manual' if car.TransmissionType == 'Manual' else car.TransmissionType) }}</span>
+                        </div>
+                        <div class="bg-[#0B1117] p-3.5 rounded-2xl border border-[#243344] text-center">
+                            <span class="text-slate-400 block text-[11px] uppercase font-bold">Combustible</span>
+                            <span class="text-slate-50 font-bold text-sm">{{ 'Gasolina' if car.fuel_type == 'Petrol' else ('Diésel' if car.fuel_type == 'Diesel' else ('Híbrido' if car.fuel_type == 'Hybrid' else car.fuel_type)) }}</span>
+                        </div>
+                        <div class="bg-[#0B1117] p-3.5 rounded-2xl border border-[#243344] text-center">
+                            <span class="text-slate-400 block text-[11px] uppercase font-bold">Año</span>
+                            <span class="text-slate-50 font-bold text-sm">{{ car.year }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Technical Specifications Table -->
+                    <div class="my-6">
+                        <h3 class="text-sm font-bold text-slate-50 mb-3 uppercase tracking-wider">Detalles del vehículo</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-2.5 gap-x-6 text-xs">
+                            <div class="flex justify-between py-2 border-b border-[#243344]">
+                                <span class="text-slate-400">Vencimiento MOT:</span>
+                                <span class="font-bold text-slate-50">{{ car.mot_expiry or '12 meses incluidos' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-[#243344]">
+                                <span class="text-slate-400">Exención ULEZ:</span>
+                                <span class="font-bold {% if car.ulez_compliant %}text-emerald-400{% else %}text-rose-400{% endif %}">
+                                    {{ "Exento (Sin cargos diarios)" if car.ulez_compliant else "Sujeto a tasa diaria de £12.50" }}
+                                </span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-[#243344]">
+                                <span class="text-slate-400">Historial / Categoría:</span>
+                                <span class="font-bold text-slate-50">{{ car.copart_category or 'Sin siniestros registrados / Inspeccionado' }}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-[#243344]">
+                                <span class="text-slate-400">Ubicación:</span>
+                                <span class="font-bold text-slate-50">38a Penrose St, SE17 3DW</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-[#243344] sm:col-span-2">
+                                <span class="text-slate-400">Equipamiento:</span>
+                                <span class="font-bold text-slate-50">{{ car.features or 'Equipamiento estándar' }}</span>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-3 italic">
+                            *Las inspecciones de taller y las garantías de mano de obra se proporcionan de forma adicional y no afectan a sus derechos legales conforme a la Ley de Derechos del Consumidor de 2015 (Consumer Rights Act 2015).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: In-Person Viewing Booking & WhatsApp Actions (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+            
+            <!-- WhatsApp Viewing Scheduler Card -->
+            <div class="bg-[#141E28] rounded-3xl p-6 sm:p-8 border border-[#243344] shadow-xl lg:sticky lg:top-20 text-slate-100">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-[#0B1117] text-[#25D366] border border-[#243344] flex items-center justify-center text-xl">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-black text-slate-50">Reservar cita con Luca</h2>
+                        <p class="text-xs text-slate-400">Mensaje directo de WhatsApp con fecha y hora para ver el carro</p>
+                    </div>
+                </div>
+
+                <div class="bg-[#0B1117] p-3.5 rounded-xl border border-[#243344] text-[11px] text-slate-300 mb-5 space-y-2">
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-xs mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-100">¿Sigue disponible?</strong> Sí — si este vehículo aparece en la página, está disponible en el taller (38a Penrose Street).
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-2 pt-1.5 border-t border-[#243344]/60">
+                        <i class="fa-solid fa-clock text-amber-400 text-xs mt-0.5"></i>
+                        <div>
+                            <strong class="text-slate-100">Horario de visitas:</strong> Lun–Vie 9am–6pm, Sáb 9am–1pm (Domingos cerrado). Luca le atenderá personalmente y puede subir el carro al elevador para revisarlo.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Date & Time Picker for WhatsApp -->
+                <div class="space-y-4 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label for="waBookingDate" class="block font-bold text-slate-300 mb-1">Elige una fecha *</label>
+                            <div class="relative cursor-pointer group" onclick="try{document.getElementById('waBookingDate').showPicker()}catch(e){}">
+                                <div id="waDateDisplayBox" class="w-full px-3.5 py-2.5 pr-10 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 font-semibold text-xs flex items-center justify-between transition group-hover:border-amber-500/50">
+                                    <span id="waFormattedDateText" class="text-slate-100">DD/MM/AAAA</span>
+                                    <div class="text-amber-400 pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2">
+                                        <i class="fa-solid fa-calendar-days text-sm"></i>
+                                    </div>
+                                </div>
+                                <input type="date" id="waBookingDate" required
+                                    onchange="updateFormattedDate(this.value)"
+                                    oninput="updateFormattedDate(this.value)"
+                                    onclick="try{this.showPicker()}catch(e){}"
+                                    class="absolute inset-0 opacity-0 w-full h-full cursor-pointer z-10 [color-scheme:dark]">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="waBookingTime" class="block font-bold text-slate-300 mb-1">Selecciona hora *</label>
+                            <select id="waBookingTime" required
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#0B1117] border border-[#243344] text-slate-100 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition cursor-pointer">
+                                <option value="09:30 AM">09:30 AM</option>
+                                <option value="10:30 AM">10:30 AM</option>
+                                <option value="11:30 AM">11:30 AM</option>
+                                <option value="12:30 PM">12:30 PM</option>
+                                <option value="01:30 PM" selected>01:30 PM</option>
+                                <option value="02:30 PM">02:30 PM</option>
+                                <option value="03:30 PM">03:30 PM</option>
+                                <option value="04:30 PM">04:30 PM</option>
+                                <option value="05:00 PM">05:00 PM</option>
+                                <option value="05:30 PM">05:30 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Direct WhatsApp Launch Button -->
+                    <button type="button" id="launchWhatsAppBtn" onclick="launchWhatsAppViewing()"
+                        class="w-full bg-[#25D366] hover:bg-[#20BD5A] text-white font-black py-3.5 px-4 rounded-xl text-sm transition shadow-lg shadow-emerald-500/20 flex items-center justify-center space-x-2 cursor-pointer">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                        <span>Enviar mensaje a Luca por WhatsApp para reservar</span>
+                    </button>
+
+                    <!-- Direct Phone Call Option -->
+                    <a href="tel:07535321145"
+                        class="w-full inline-flex items-center justify-center space-x-2 bg-[#0B1117] hover:bg-[#182330] text-slate-300 border border-[#243344] font-bold text-xs py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-phone text-amber-400"></i>
+                        <span>O llamar a Luca directamente: 07535 321145</span>
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    function formatToDMY(iso) {
+        if (!iso) return '';
+        const parts = iso.split('-');
+        if (parts.length === 3 && parts[0].length === 4) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`; // Date/Month/Year (DD/MM/YYYY)
+        }
+        return iso;
+    }
+
+    function updateFormattedDate(iso) {
+        const textEl = document.getElementById('waFormattedDateText');
+        if (textEl && iso) {
+            textEl.textContent = formatToDMY(iso);
+        }
+    }
+
+    // Set minimum date to today & handle calendar popup
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('waBookingDate');
+    if (dateInput) {
+        dateInput.min = today;
+        dateInput.value = today;
+        updateFormattedDate(today);
+
+        const openCalendar = () => {
+            if (typeof dateInput.showPicker === 'function') {
+                try { dateInput.showPicker(); } catch (err) {}
+            }
+        };
+        dateInput.addEventListener('click', openCalendar);
+        dateInput.addEventListener('focus', openCalendar);
+    }
+
+    function launchWhatsAppViewing() {
+        const rawDate = document.getElementById('waBookingDate') ? document.getElementById('waBookingDate').value : '';
+        const timeVal = document.getElementById('waBookingTime') ? document.getElementById('waBookingTime').value : '';
+        const dateVal = formatToDMY(rawDate);
+
+        const carName = "{{ car.year }} {{ car.make_model }} (£{{ '{:,}'.format(car.price) }})";
+        const greeting = `Hola Luca, me gustaría reservar una cita para ver el ${carName} en Lucas Garage (38a Penrose Street).`;
+        
+        let details = [];
+        if (dateVal) details.push(`Fecha: ${dateVal}`);
+        if (timeVal) details.push(`Hora: ${timeVal}`);
+
+        let fullText = "";
+        if (details.length > 0) {
+            fullText = `${greeting}\n\n${details.join('\n')}\n\n¿Está disponible este horario para ver el carro?`;
+        } else {
+            fullText = `${greeting}\n\n¿Está disponible este carro para verlo?`;
+        }
+
+        const url = `https://wa.me/447535321145?text=${encodeURIComponent(fullText)}`;
+        window.open(url, '_blank');
+    }
+
+    // Photo Gallery Carousel Controller
+    const carImages = [{% for img in car.all_images %}'{{ img }}'{% if not loop.last %}, {% endif %}{% endfor %}];
+    let currentImageIndex = 0;
+
+    function selectCarImage(index) {
+        if (index < 0 || index >= carImages.length) return;
+        currentImageIndex = index;
+        const mainImg = document.getElementById('mainGalleryImage');
+        const counter = document.getElementById('galleryCounter');
+        
+        if (mainImg) {
+            mainImg.style.opacity = '0.3';
+            setTimeout(() => {
+                mainImg.src = "{{ url_for('static', filename='uploads/') }}" + carImages[currentImageIndex];
+                mainImg.style.opacity = '1';
+            }, 100);
+        }
+
+        if (counter) {
+            counter.innerText = `${currentImageIndex + 1} / ${carImages.length}`;
+        }
+
+        // Update thumbnail borders
+        document.querySelectorAll('.gallery-thumb-btn').forEach((btn, idx) => {
+            if (idx === currentImageIndex) {
+                btn.className = 'gallery-thumb-btn flex-shrink-0 w-16 h-12 sm:w-20 sm:h-14 rounded-xl overflow-hidden border-2 border-amber-500 shadow-md ring-1 ring-amber-500/50 scale-105 transition-all cursor-pointer opacity-100';
+            } else {
+                btn.className = 'gallery-thumb-btn flex-shrink-0 w-16 h-12 sm:w-20 sm:h-14 rounded-xl overflow-hidden border-2 border-[#243344] opacity-60 hover:opacity-100 transition-all cursor-pointer';
+            }
+        });
+    }
+
+    function prevCarImage() {
+        const newIndex = (currentImageIndex - 1 + carImages.length) % carImages.length;
+        selectCarImage(newIndex);
+    }
+
+    function nextCarImage() {
+        const newIndex = (currentImageIndex + 1) % carImages.length;
+        selectCarImage(newIndex);
+    }
+
+    // Keyboard Arrow Navigation
+    document.addEventListener('keydown', function(e) {
+        if (carImages.length <= 1) return;
+        if (e.key === 'ArrowLeft') prevCarImage();
+        if (e.key === 'ArrowRight') nextCarImage();
+    });
+
+    // Touch Swipe Support on Mobile
+    const viewport = document.getElementById('galleryViewport');
+    if (viewport && carImages.length > 1) {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        viewport.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+        viewport.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchEndX - touchStartX;
+            if (Math.abs(diff) > 40) {
+                if (diff < 0) {
+                    nextCarImage();
+                } else {
+                    prevCarImage();
+                }
+            }
+        }, { passive: true });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,220 @@
+{% extends 'es/base.html' %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-12 text-slate-100">
+
+    <!-- Header -->
+    <div class="mb-8 pb-6 border-b border-[#243344] text-center md:text-left flex flex-col md:flex-row md:items-end justify-between gap-4">
+        <div>
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Tarifas transparentes de taller</span>
+            <h1 class="text-3xl sm:text-4xl font-black text-slate-50 mt-1">Precios de taller</h1>
+            <p class="text-xs sm:text-sm text-slate-400 mt-1">
+                Precios honestos de mecánico, tarifas fijas de mantenimiento y presupuestos directos sin sobreprecios de concesionario.
+            </p>
+        </div>
+        <a href="{{ default_whatsapp_url }}" target="_blank"
+            class="inline-flex items-center justify-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs px-5 py-3 rounded-xl transition shadow-lg shadow-emerald-500/10 flex-shrink-0">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>Pedir presupuesto por WhatsApp</span>
+        </a>
+    </div>
+
+    <!-- Bring Your Own Parts Feature Banner -->
+    <div class="mb-8 p-6 rounded-2xl bg-gradient-to-r from-amber-500/10 via-[#141E28] to-[#141E28] border border-amber-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 shadow-lg">
+        <div class="flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-boxes-packing"></i>
+            </div>
+            <div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="text-base font-black text-slate-50">¡Puedes traer tus propios repuestos!</h3>
+                    <span class="bg-amber-500 text-[#0B1117] text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full whitespace-nowrap flex-shrink-0 inline-flex items-center shadow-sm">Ahorra dinero</span>
+                </div>
+                <p class="text-xs text-slate-300 mt-1 leading-relaxed max-w-xl">
+                    ¿Compraste tus pastillas de freno, discos, aceite de motor, filtros o embrague por internet (Euro Car Parts, Autodoc, eBay)? Tráelos al taller y Luca te los monta: <strong>solo cobramos la mano de obra</strong> sin recargo en repuestos. (Nuestra garantía cubre nuestro montaje y mano de obra; las garantías de los repuestos corresponden a tu proveedor).
+                </p>
+            </div>
+        </div>
+        <a href="https://wa.me/{{ garage_mobile }}?text=Hola%20Luca,%20tengo%20mis%20propios%20repuestos%20para%20mi%20carro.%20%C2%BFCu%C3%A1nto%20me%20cobras%20solo%20por%20la%20mano%20de%20obra%20de%20instalaci%C3%B3n?%20Matr%C3%ADcula:%20" target="_blank"
+            class="flex-shrink-0 inline-flex items-center space-x-1.5 bg-amber-500 hover:bg-amber-600 text-[#0B1117] font-black text-xs px-4 py-2.5 rounded-xl transition shadow">
+            <span>Presupuesto solo mano de obra &rarr;</span>
+        </a>
+    </div>
+
+    <!-- Pricing Table -->
+    <div class="bg-[#141E28] rounded-2xl border border-[#243344] overflow-hidden shadow-xl mb-10">
+        <div class="px-6 py-4 bg-[#0B1117] border-b border-[#243344] flex justify-between items-center text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span>Servicio / Descripción de reparación</span>
+            <span class="text-right">Guía de precios</span>
+        </div>
+
+        <div class="divide-y divide-[#243344] text-sm">
+            
+            <!-- Computer Diagnostics -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Diagnosis electrónica</span>
+                        <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Precio fijo</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Escaneo OBD-II completo, lectura y borrado de códigos de avería en tiempo real, testigos del motor (check engine), ABS y sensores.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£30</span>
+                    <span class="block text-[11px] text-emerald-400 font-semibold">Tarifa fija de escaneo</span>
+                </div>
+            </div>
+
+            <!-- Mini Service -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Mini Servicio (aceite y filtro)</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Cambio de aceite de motor nuevo, filtro de aceite a estrenar, rellenado de niveles esenciales e inspección de seguridad del vehículo.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£130</span>
+                    <span class="block text-[11px] text-slate-400">Depende del carro (aceite y filtro incluidos)</span>
+                </div>
+            </div>
+
+            <!-- Full Service -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Servicio completo</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Mantenimiento integral con aceite, filtro de aceite, filtro de aire, filtro de habitáculo, bujías/filtro de combustible, frenos e informe mecánico.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£250 – £300</span>
+                    <span class="block text-[11px] text-slate-400">Depende del carro</span>
+                </div>
+            </div>
+
+            <!-- Brake Pads Fitting -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Reemplazo de pastillas de freno (delanteras o traseras)</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Instalación profesional de pastillas de freno y revisión de pinzas. Trae tus propias pastillas o te las suministramos con especificación original.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£60 – £70</span>
+                    <span class="block text-[11px] text-slate-400">Depende del carro / montaje</span>
+                </div>
+            </div>
+
+            <!-- Brake Discs & Pads -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Pastillas y discos de freno (eje completo)</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Sustitución de discos de freno ventilados y pastillas. Elimina vibraciones, ruidos de roce y asegura una frenada fiable.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Presupuesto con matrícula</span>
+                    <span class="block text-[11px] text-slate-400">Solo mano de obra o suministro y montaje</span>
+                </div>
+            </div>
+
+            <!-- Pre-Purchase Check -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Revisión general del carro antes de comprar</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">¿Vas a comprar un coche a un particular o subasta? Tráelo a 38a Penrose Street para revisar óxido en chasis, posibles golpes y códigos OBD antes de pagar.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-black text-amber-400 text-lg">£50</span>
+                    <span class="block text-[11px] text-slate-400">Incluye revisión en elevador y escaneo OBD</span>
+                </div>
+            </div>
+
+            <!-- Clutch Replacement -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Sustitución de embrague</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Kit de embrague completo, collarín de empuje, plato de presión y valvulina de caja de cambios. Opción de solo mano de obra si traes tu propio embrague.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Presupuesto con matrícula</span>
+                    <span class="block text-[11px] text-slate-400">Varía según vehículo</span>
+                </div>
+            </div>
+
+            <!-- Suspension & Steering -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Brazos de suspensión / Muelles / Amortiguadores</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">Brazos de suspensión (trapecios), bieletas, muelles, copelas y amortiguadores para corregir holguras y desgastes de neumáticos.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Presupuesto con matrícula</span>
+                    <span class="block text-[11px] text-slate-400">Presupuesto con matrícula</span>
+                </div>
+            </div>
+
+            <!-- MOT Prep & Failure Repairs -->
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 hover:bg-[#182330] transition">
+                <div class="space-y-0.5">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-100">Inspección Pre-MOT y reparaciones de ITV/MOT</span>
+                    </div>
+                    <span class="text-xs text-slate-400 block">¿No has pasado el MOT o tienes advertencias? Tráenos la hoja de rechazo (fail sheet) y reparamos los fallos rápido para pasar la prueba.</span>
+                </div>
+                <div class="text-left sm:text-right flex-shrink-0">
+                    <span class="font-mono font-bold text-amber-400 text-base">Presupuesto según hoja de MOT</span>
+                    <span class="block text-[11px] text-slate-400">Envía la hoja por WhatsApp</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Price Transparency Note (Provision of Services Regs 2009) -->
+    <p class="text-[11px] text-slate-400 mb-6 italic text-center sm:text-left">
+        *Notas de precios: Las tarifas de mantenimiento dependen de la cilindrada, número de cilindros y especificación exacta del aceite sintético requerido por el fabricante. No sujeto a IVA; todos los precios indicados son el total final a pagar.
+    </p>
+
+    <!-- Used Car Guarantee Card -->
+    <div class="p-6 rounded-2xl bg-[#141E28] border border-[#243344] mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-start space-x-4">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center justify-center text-lg flex-shrink-0 mt-0.5">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <div>
+                <h3 class="text-sm font-bold text-slate-50">Garantía de 3 meses en carros vendidos</h3>
+                <p class="text-xs text-slate-300 mt-0.5 leading-relaxed">
+                    Cada carro de segunda mano vendido por Lucas Garage incluye una <strong>garantía de taller de 3 meses en mano de obra</strong>. Se otorga de forma adicional y no afecta a tus derechos legales bajo la Ley de Derechos del Consumidor de 2015.
+                </p>
+            </div>
+        </div>
+        <a href="{{ url_for('cars_es') }}"
+            class="flex-shrink-0 bg-[#1B2735] hover:bg-[#243344] text-slate-200 border border-[#243344] font-bold text-xs px-4 py-2.5 rounded-xl transition">
+            Ver carros en venta &rarr;
+        </a>
+    </div>
+
+    <!-- Quick WhatsApp Quote CTA Box -->
+    <div class="text-center bg-[#0B1117] p-6 rounded-2xl border border-[#243344] text-xs text-slate-400 space-y-2">
+        <p class="text-slate-200 font-bold text-sm">¿Necesitas el precio exacto para tu vehículo?</p>
+        <p>Envía tu <strong>matrícula</strong> y lo que necesitas hacerle directamente a Luca por WhatsApp.</p>
+        <div class="pt-2">
+            <a href="https://wa.me/{{ garage_mobile }}?text=Hola%20Luca,%20%C2%BFme%20puedes%20dar%20un%20presupuesto%20para%20mi%20carro?%20Matr%C3%ADcula:%20" target="_blank"
+                class="inline-flex items-center space-x-2 bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                <i class="fa-brands fa-whatsapp text-sm"></i>
+                <span>Mensaje a Luca por WhatsApp (07535 321145)</span>
+            </a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

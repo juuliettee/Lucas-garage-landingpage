@@ -1,0 +1,20 @@
+{% extends 'en/base.html' %}
+
+{% block title %}Page Not Found | Lucas Garage{% endblock %}
+
+{% block content %}
+<section class="min-h-[60vh] flex items-center justify-center px-4 py-20 text-center">
+    <div class="max-w-md w-full">
+        <h1 class="text-6xl font-black text-amber-500 mb-2 font-mono">404</h1>
+        <h2 class="text-xl sm:text-2xl font-bold text-slate-100 mb-3">Page Not Found</h2>
+        <p class="text-sm text-slate-400 mb-8">
+            The page you're looking for doesn't exist or has been moved.
+        </p>
+        <a href="{{ url_for('home_en') }}"
+           class="inline-flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-[#070C11] font-bold text-sm px-6 py-3 rounded-xl transition shadow-md shadow-amber-500/10">
+            <i class="fa-solid fa-house text-xs"></i>
+            <span>Return Home</span>
+        </a>
+    </div>
+</section>
+{% endblock %}
