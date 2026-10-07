@@ -203,12 +203,6 @@ def about():
 def pricing():
     return render_template('pricing.html')
 
-@app.route('/privacy')
-@app.route('/privacy-policy')
-def privacy_policy():
-    """Renders the UK legal compliance, privacy notice, and PECR cookie policy."""
-    return render_template('privacy.html')
-
 @app.route('/robots.txt')
 def robots_txt():
     """Serves SEO and crawler directives."""
@@ -231,7 +225,6 @@ def sitemap_xml():
         ('/cars', '0.9', 'daily'),
         ('/pricing', '0.8', 'weekly'),
         ('/about', '0.7', 'monthly'),
-        ('/privacy', '0.5', 'monthly'),
     ]
 
     for path, priority, freq in static_pages:

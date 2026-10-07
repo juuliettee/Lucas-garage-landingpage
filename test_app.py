@@ -214,27 +214,19 @@ def run_tests():
         assert sitemap_resp.status_code == 200
         assert b"<urlset" in sitemap_resp.data
         assert b"https://lucasgarage.uk/cars" in sitemap_resp.data
-        assert b"https://lucasgarage.uk/privacy" in sitemap_resp.data
         print("✅ Test 13 Passed: Custom 404 page, robots.txt, and sitemap.xml verified.")
 
-        # 14. Test UK Legal Compliance, GDPR Privacy Notice & Footer Disclosures
-        priv_resp = client.get('/privacy')
-        assert priv_resp.status_code == 200
-        assert b"Privacy &amp; Legal Notice" in priv_resp.data or b"Privacy & Legal Notice" in priv_resp.data
-        assert b"E-Commerce Regs 2002" in priv_resp.data
-        assert b"Consumer Rights Act 2015" in priv_resp.data
-        assert b"lucasgarage@hotmail.co.uk" in priv_resp.data
-        assert b"PECR Regulation 6" in priv_resp.data
-
-        priv_alias_resp = client.get('/privacy-policy')
-        assert priv_alias_resp.status_code == 200
-
-        # Verify footer on home page includes email and privacy notice link
+        # 14. Test Footer Trade Details & Clean Routing
         home_page = client.get('/')
         assert b"lucasgarage@hotmail.co.uk" in home_page.data
-        assert b"/privacy" in home_page.data
+        assert b"38a Penrose St" in home_page.data
         assert b"Consumer Rights Act 2015" in home_page.data
-        print("✅ Test 14 Passed: UK Legal compliance notice, GDPR/PECR disclosures, and footer links verified.")
+
+        # Verify /privacy returns 404 (no unnecessary policy page)
+        priv_resp = client.get('/privacy')
+        assert priv_resp.status_code == 404
+        assert b"Page Not Found" in priv_resp.data
+        print("✅ Test 14 Passed: Footer trade details verified and clean minimalist routing confirmed.")
 
         print("\n🎉 ALL 14 TESTS PASSED SUCCESSFULLY!")
 
