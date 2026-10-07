@@ -321,7 +321,7 @@
                     <i class="fa-solid fa-phone text-amber-400 mr-1.5"></i> Workshop: <strong class="text-slate-100">07535 321145</strong>
                 </p>
                 <p class="text-xs text-slate-300 mb-3">
-                    <i class="fa-solid fa-envelope text-amber-400 mr-1.5"></i> Email: <a href="mailto:lucasgarage@hotmail.co.uk" class="text-slate-200 hover:text-amber-400 underline">lucasgarage@hotmail.co.uk</a>
+                    <i class="fa-solid fa-envelope text-amber-400 mr-1.5"></i> Email: <span class="notranslate" translate="no"><a href="mailto:lucasgarage@hotmail.co.uk" class="text-slate-200 hover:text-amber-400 underline notranslate" translate="no">lucasgarage@hotmail.co.uk</a></span>
                 </p>
                 <a href="{{ default_whatsapp_url }}" target="_blank"
                     class="inline-flex items-center px-4 py-2 rounded-xl text-xs font-bold bg-[#25D366] hover:bg-[#20BD5A] text-white transition shadow-sm mb-2.5">
@@ -427,7 +427,8 @@
         // Automotive Bilingual Quality Guard & Safety Check for Lucas Garage
         function observeAndRevertTranslations() {
             const automotiveReplacements = [
-                // Brand name protection
+                // Brand name & email protection
+                { pattern: /\blucas\s+garage@hotmail\.co\.uk\b/gi, replacement: 'lucasgarage@hotmail.co.uk' },
                 { pattern: /\b(Taller\s+de\s+Lucas|Taller\s+Lucas|Garaje\s+de\s+Lucas|Garaje\s+Lucas|Taller\s+de\s+Luca|Garaje\s+de\s+Luca|Garaje\s+Luca)\b/gi, replacement: 'Lucas Garage' },
                 // Eliminate embarrassing "compresas" (sanitary pads) mistranslation
                 { pattern: /\bcompresas\b/gi, replacement: 'pastillas de freno' },
