@@ -36,7 +36,8 @@ GARAGE_INFO = {
     "address": "38a Penrose Street, Walworth, London SE17 3DW",
     "phone": "07535 321145",
     "hours": {
-        "monday_to_saturday": "9:00 AM – 6:00 PM",
+        "monday_to_friday": "9:00 AM – 6:00 PM",
+        "saturday": "9:00 AM – 1:00 PM",
         "sunday": "Closed"
     },
     "services": "Mechanical repairs, servicing, diagnostics, MOT prep, and quality used car sales."
@@ -295,9 +296,12 @@ def book_viewing_api():
         time_decimal = hour + (minute / 60.0)
 
         if weekday == 6:
-            return jsonify({"success": False, "message": "The garage is closed on Sundays. Please choose Monday through Saturday between 9:00 AM and 6:00 PM."}), 400
+            return jsonify({"success": False, "message": "The garage is closed on Sundays. Please choose Monday through Friday (9:00 AM – 6:00 PM) or Saturday (9:00 AM – 1:00 PM)."}), 400
+        elif weekday == 5:
+            if time_decimal < 9.0 or time_decimal > 12.5:
+                return jsonify({"success": False, "message": "Saturday opening hours are 9:00 AM – 1:00 PM. Please choose a slot between 09:00 and 12:30."}), 400
         elif time_decimal < 9.0 or time_decimal > 17.5:
-            return jsonify({"success": False, "message": "Opening hours are Monday to Saturday 9:00 AM – 6:00 PM. Please choose a slot between 09:00 and 17:30."}), 400
+            return jsonify({"success": False, "message": "Weekday opening hours are Monday to Friday 9:00 AM – 6:00 PM. Please choose a slot between 09:00 and 17:30."}), 400
     except Exception as e:
         return jsonify({"success": False, "message": f"Invalid date or time format: {e}"}), 400
 

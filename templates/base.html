@@ -4,6 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        (function() {
+            var lang = localStorage.getItem('luca_garage_lang');
+            if (!lang) {
+                var m = document.cookie.match(/(?:^|;\s*)googtrans=\/(?:en|auto)\/([a-z]+)/);
+                if (m && m[1]) lang = m[1];
+            }
+            if (lang === 'es') {
+                var host = window.location.hostname;
+                var domains = ['', host, '.' + host];
+                if (host && host.indexOf('.') !== -1) {
+                    var parts = host.split('.');
+                    if (parts.length >= 2) {
+                        var root = parts.slice(-2).join('.');
+                        domains.push(root);
+                        domains.push('.' + root);
+                    }
+                }
+                domains.forEach(function(d) {
+                    var dAttr = d ? '; domain=' + d : '';
+                    document.cookie = 'googtrans=/en/es; path=/' + dAttr;
+                    document.cookie = 'googtrans=/en/es; path=/' + dAttr + '; SameSite=Lax';
+                });
+                if (!window.location.hash || window.location.hash.indexOf('googtrans') === -1) {
+                    window.location.hash = '#googtrans(en|es)';
+                }
+            }
+        })();
+    </script>
     <title>Lucas Garage | 38a Penrose St, London SE17 | Repairs & Used Cars</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -138,7 +167,7 @@
             <div class="flex items-center space-x-2 sm:space-x-4 min-w-0">
                 <span class="truncate"><i class="fa-solid fa-location-dot text-amber-400 mr-1.5 flex-shrink-0"></i><span class="hidden sm:inline">38a Penrose Street, Walworth, London SE17 3DW</span><span class="sm:hidden">38a Penrose St, SE17 3DW</span></span>
                 <span class="hidden md:inline text-slate-700">|</span>
-                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Sat 9am–6pm &bull; Sun Closed</span>
+                <span class="hidden md:inline"><i class="fa-solid fa-clock text-amber-400 mr-1.5"></i> Mon–Fri 9am–6pm &bull; Sat 9am–1pm &bull; Sun Closed</span>
             </div>
             <div class="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
                 <a href="{{ default_whatsapp_url }}" target="_blank" class="text-emerald-400 hover:text-emerald-300 font-medium flex items-center transition text-[11px] sm:text-xs notranslate" translate="no">
@@ -325,7 +354,8 @@
             <div>
                 <h4 class="text-slate-100 font-bold text-xs uppercase tracking-wider mb-3">Opening Hours</h4>
                 <ul class="text-xs space-y-1.5 text-slate-300">
-                    <li class="flex justify-between"><span>Monday – Saturday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Monday – Friday:</span> <span class="font-semibold text-slate-100">9:00 AM – 6:00 PM</span></li>
+                    <li class="flex justify-between"><span>Saturday:</span> <span class="font-semibold text-slate-100">9:00 AM – 1:00 PM</span></li>
                     <li class="flex justify-between text-slate-500"><span>Sunday:</span> <span>Closed</span></li>
                 </ul>
             </div>
@@ -768,13 +798,17 @@
             const pref = getSavedLanguage();
             if (pref === 'es') {
                 setGoogleTransCookie('/en/es');
-                setTimeout(function () {
-                    const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
+                var attempts = 0;
+                var pollInterval = setInterval(function () {
+                    attempts++;
+                    var isTranslated = document.documentElement.classList.contains('translated-ltr') ||
                                          document.querySelector('font') !== null;
-                    if (!isTranslated) {
+                    if (isTranslated || attempts > 25) {
+                        clearInterval(pollInterval);
+                    } else {
                         applyGoogleLanguage('es');
                     }
-                }, 1000);
+                }, 120);
             }
         }
 
@@ -807,8 +841,12 @@
 
             if (lang === 'es') {
                 setGoogleTransCookie('/en/es');
+                window.location.hash = '#googtrans(en|es)';
             } else {
                 clearGoogleTransCookie();
+                if (window.location.hash.indexOf('googtrans') !== -1) {
+                    history.replaceState(null, null, window.location.pathname + window.location.search);
+                }
             }
             // Seamless reload applies translation across mobile and desktop without dropped synthetic events
             window.location.reload();
@@ -828,16 +866,6 @@
         window.addEventListener('pageshow', function (event) {
             const saved = getSavedLanguage();
             updateLangButtons(saved);
-            const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
-                                 document.documentElement.classList.contains('translated-rtl') ||
-                                 document.querySelector('font') !== null;
-            if (saved === 'es' && !isTranslated) {
-                setGoogleTransCookie('/en/es');
-                window.location.reload();
-            } else if (saved === 'en' && isTranslated) {
-                clearGoogleTransCookie();
-                window.location.reload();
-            }
         });
 
         // Completely kill Google Translate hover highlight, blue background & mouse flickering dynamically

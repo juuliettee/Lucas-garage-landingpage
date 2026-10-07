@@ -96,7 +96,19 @@ def run_tests():
         resp = client.post('/api/book-viewing', data=saturday_payload)
         assert resp.status_code == 200
         assert resp.get_json()['success'] is True
-        print("✅ Test 5b Passed: Opening hours verified (Sunday closed, Mon–Sat 9am–6pm accepted).")
+
+        # Saturday afternoon slot (14:30) rejected because Saturday closes at 1pm
+        sat_late_payload = {
+            "car_id": car.id,
+            "customer_name": "James Bond",
+            "customer_phone": "07007 007007",
+            "booking_date": "2026-09-26", # Saturday
+            "booking_time": "14:30"
+        }
+        resp = client.post('/api/book-viewing', data=sat_late_payload)
+        assert resp.status_code == 400
+        assert "saturday opening hours" in resp.get_json()['message'].lower()
+        print("✅ Test 5b Passed: Opening hours verified (Sunday closed, Mon–Fri 9am–6pm, Sat 9am–1pm accepted, Sat afternoon rejected).")
 
         # 6. Test Admin Authentication & Dashboard
         import os
