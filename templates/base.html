@@ -553,8 +553,8 @@
                 { pattern: /\bServicio\s+[cC]ompleto:\s*(?:£\s*250\s*–\s*£?\s*300|250\s*–\s*300\s*£)\s*\(?(?:depende|dependiente)\s+del\s+(?:coche|carro)\)?/gi, replacement: 'Servicio completo: £250 – £300 (depende del carro)' },
                 // Traction control (control de tracción, NOT tracción de control)
                 { pattern: /\btracci[oó]n\s+de\s+control\b/gi, replacement: 'control de tracción' },
-                // Brakes only card translation
-                { pattern: /\bFrenos\s+y\s+suspensi[oó]n\b/gi, replacement: 'Reparación y cambio de frenos' },
+                // Brakes only card translation (strictly Reemplazo de frenos)
+                { pattern: /\b(Reparaci[oó]n\s+y\s+(?:reemplazo|remplazo|cambio)\s+de\s+frenos|Reemplazo\s+y\s+reparaci[oó]n\s+de\s+frenos|Frenos\s+y\s+suspensi[oó]n|Cambio\s+de\s+frenos)\b/gi, replacement: 'Reemplazo de frenos' },
                 // Pre-purchase inspection translations
                 { pattern: /\bComprobaciones\s+previas\s+a\s+la\s+compra(?:\s+de\s+elevadores\s+hidr[aá]ulicos)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
                 { pattern: /\bInspecci[oó]n\s+(?:del\s+carro\s+)?previa\s+a\s+la\s+compra(?:\s+del\s+carro)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
