@@ -470,24 +470,26 @@ def book_viewing_api():
 
 @app.route('/booking/verify')
 def verify_booking():
+    is_es = request.path.startswith('/es') or request.cookies.get('luca_lang') == 'es'
+    tpl = 'es/booking_confirmed.html' if is_es else 'en/booking_confirmed.html'
     token = request.args.get('token')
     if not token:
-        return render_template('booking_confirmed.html', success=False, error_msg="Missing confirmation token.")
+        return render_template(tpl, success=False, error_msg="Missing confirmation token." if not is_es else "Falta el token de confirmación.")
 
     is_valid, data_or_err = verify_booking_token(token)
     if not is_valid:
-        return render_template('booking_confirmed.html', success=False, error_msg=data_or_err)
+        return render_template(tpl, success=False, error_msg=data_or_err)
 
     booking = Booking.query.filter_by(verification_token=token).first()
     if not booking:
-        return render_template('booking_confirmed.html', success=False, error_msg="Booking reference not found.")
+        return render_template(tpl, success=False, error_msg="Booking reference not found." if not is_es else "Referencia de reserva no encontrada.")
 
     car = booking.car or Car.query.get(booking.car_id)
 
     if booking.status == "Confirmed":
         gcal_url = create_google_calendar_url(car.make_model, booking.booking_date, booking.booking_time, booking.customer_name, booking.customer_phone)
         whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="viewing")
-        return render_template('booking_confirmed.html', success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
+        return render_template(tpl, success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
 
     # Check for double-booking conflict
     conflict = Booking.query.filter(
@@ -500,7 +502,7 @@ def verify_booking():
     if conflict:
         booking.status = "Cancelled"
         db.session.commit()
-        return render_template('booking_confirmed.html', success=False, error_msg="Another buyer just confirmed this slot. Please choose another time.")
+        return render_template(tpl, success=False, error_msg="Another buyer just confirmed this slot. Please choose another time." if not is_es else "Otro comprador acaba de confirmar este horario. Por favor, selecciona otra hora.")
 
     # Flip status to Confirmed
     booking.status = "Confirmed"
@@ -515,7 +517,7 @@ def verify_booking():
     gcal_url = create_google_calendar_url(car.make_model, booking.booking_date, booking.booking_time, booking.customer_name, booking.customer_phone)
     whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="viewing")
 
-    return render_template('booking_confirmed.html', success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
+    return render_template(tpl, success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
 
 # ----------------- ADMIN ROUTES ----------------- #
 
