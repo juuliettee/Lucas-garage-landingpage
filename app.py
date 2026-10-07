@@ -667,7 +667,7 @@ def cancel_booking(id):
 def marketplace_text(id):
     car = Car.query.get_or_404(id)
     ulez_text = "YES - ULEZ EXEMPT (Euro 6)" if car.ulez_compliant else "Non-ULEZ"
-    miles_str = f"{car.mileage:,}" if car.mileage else "Low"
+    miles_str = f"{car.mileage:,}" if (car.mileage and car.mileage > 0) else "Inquire / refer to odometer"
     text = (
         f"{car.year} {car.make_model} - £{car.price:,}\n\n"
         f"📍 Location: Lucas Garage, 38a Penrose Street, Walworth, London SE17 3DW\n"

@@ -68,7 +68,7 @@
                 <div class="grid grid-cols-3 gap-2 text-center text-xs text-slate-300 mb-4 bg-[#0B1117] p-2.5 rounded-xl border border-[#243344]">
                     <div>
                         <span class="text-slate-400 block text-[10px] uppercase font-semibold">Mileage</span>
-                        <span class="font-bold text-slate-100">{{ "{:,}".format(car.mileage) if car.mileage else 'Low' }} mi</span>
+                        <span class="font-bold text-slate-100">{{ ("{:,} mi".format(car.mileage)) if (car.mileage and car.mileage > 0) else 'Inquire' }}</span>
                     </div>
                     <div>
                         <span class="text-slate-400 block text-[10px] uppercase font-semibold">Gearbox</span>
