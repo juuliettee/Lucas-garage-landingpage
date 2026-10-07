@@ -3,9 +3,12 @@ Disallow: /admin/
 Disallow: /login
 Disallow: /api/
 Allow: /
+Allow: /en/
+Allow: /es/
 Allow: /cars
 Allow: /car/
 Allow: /pricing
 Allow: /about
+Allow: /static/
 
 Sitemap: https://lucasgarage.uk/sitemap.xml

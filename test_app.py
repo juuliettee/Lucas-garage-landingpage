@@ -220,6 +220,8 @@ def run_tests():
         robots_resp = client.get('/robots.txt')
         assert robots_resp.status_code == 200
         assert b"Disallow: /admin/" in robots_resp.data
+        assert b"Allow: /en/" in robots_resp.data
+        assert b"Allow: /es/" in robots_resp.data
         assert b"Sitemap: https://lucasgarage.uk/sitemap.xml" in robots_resp.data
 
         sitemap_resp = client.get('/sitemap.xml')
