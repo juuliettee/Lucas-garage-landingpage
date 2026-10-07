@@ -6,7 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         (function() {
-            var lang = localStorage.getItem('luca_garage_lang');
+            var lang = '';
+            if (window.location.hash && window.location.hash.indexOf('googtrans(en|es)') !== -1) {
+                lang = 'es';
+            }
+            if (!lang) {
+                try {
+                    lang = localStorage.getItem('luca_garage_lang');
+                } catch(e) {}
+            }
             if (!lang) {
                 var m = document.cookie.match(/(?:^|;\s*)googtrans=\/(?:en|auto)\/([a-z]+)/);
                 if (m && m[1]) lang = m[1];
@@ -24,8 +32,7 @@
                 }
                 domains.forEach(function(d) {
                     var dAttr = d ? '; domain=' + d : '';
-                    document.cookie = 'googtrans=/en/es; path=/' + dAttr;
-                    document.cookie = 'googtrans=/en/es; path=/' + dAttr + '; SameSite=Lax';
+                    document.cookie = 'googtrans=/en/es; path=/' + dAttr + '; max-age=31536000; SameSite=Lax';
                 });
                 if (!window.location.hash || window.location.hash.indexOf('googtrans') === -1) {
                     window.location.hash = '#googtrans(en|es)';
@@ -475,8 +482,6 @@
                 // Brand name & email protection
                 { pattern: /\blucas\s+garage@hotmail\.co\.uk\b/gi, replacement: 'lucasgarage@hotmail.co.uk' },
                 { pattern: /\b(Taller\s+de\s+Lucas|Taller\s+Lucas|Garaje\s+de\s+Lucas|Garaje\s+Lucas|Taller\s+de\s+Luca|Garaje\s+de\s+Luca|Garaje\s+Luca)\b/gi, replacement: 'Lucas Garage' },
-                // Hero title Spanish translation override (Mecánica general y venta de carros de segunda mano en excelente condición)
-                { pattern: /\b(Mec[aá]nica\s+general|Mec[aá]nicos?\s+generales?)\s*(&|y)?\s*(autos?|coches?|veh[ií]culos?|carros?|calidad)\s*(de\s+segunda\s+mano|usados?|segunda\s+mano)?[^<.\n]*/gi, replacement: 'Mecánica general y venta de carros de segunda mano en excelente condición' },
                 // Eliminate embarrassing "compresas" (sanitary pads) mistranslation
                 { pattern: /\bcompresas\b/gi, replacement: 'pastillas de freno' },
                 { pattern: /\bcompresa\b/gi, replacement: 'pastilla de freno' },
@@ -563,11 +568,6 @@
                 // Homepage subtitle SPAG fix
                 { pattern: /\bmantenimiento\s+y\s+diagn[oó]sticos\b/gi, replacement: 'mantenimiento, diagnósticos' },
                 { pattern: /\s+en\s+38a\s+Penrose\s+Street[,\s]+Walworth\.?/gi, replacement: '.' },
-                // Homepage hero headline translation
-                { pattern: /\b(Reparaciones\s+en\s+taller\s+independiente\s+y\s+(venta\s+de\s+)?(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+de\s+calidad)?|Mec[aá]nica\s+general\s+y\s+venta\s+de\s+(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+en\s+perfectas\s+condiciones)?)\b/gi, replacement: 'Mecánica general y venta de carros de segunda mano en excelente condición' },
-                { pattern: /\b(?:calidad\s+)?(?:coches|carros|autom[oó]viles)\s+de\s+segunda\s+mano(?:\s+de\s+calidad)?(?:\s+en\s+(?:excelentes?|perfectas?)\s+condiciones?)?\b/gi, replacement: 'venta de carros de segunda mano en excelente condición' },
-                { pattern: /\b(?:coches|carros|veh[ií]culos)\s+usados(?:\s+de\s+calidad)?(?:\s+en\s+(?:excelentes?|perfectas?)\s+condiciones?)?\b/gi, replacement: 'venta de carros de segunda mano en excelente condición' },
-                { pattern: /\bMec[aá]nica\s+general\s+y\s+(?:venta\s+de\s+)?(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+en\s+(?:perfectas\s+condiciones|excelente\s+condici[oó]n))?\b/gi, replacement: 'Mecánica general y venta de carros de segunda mano en excelente condición' },
                 // Global terminology shift: coche -> carro
                 { pattern: /\bcoches\b/gi, replacement: 'carros' },
                 { pattern: /\bcoche\b/gi, replacement: 'carro' },
@@ -586,8 +586,8 @@
                 { pattern: /\bServicio\s+[cC]ompleto:\s*(?:£\s*250\s*–\s*£?\s*300|250\s*–\s*300\s*£)\s*\(?(?:depende|dependiente)\s+del\s+(?:coche|carro)\)?/gi, replacement: 'Servicio completo: £250 – £300 (depende del carro)' },
                 // Traction control (control de tracción, NOT tracción de control)
                 { pattern: /\btracci[oó]n\s+de\s+control\b/gi, replacement: 'control de tracción' },
-                // Brakes only card translation (strictly Reemplazo de frenos)
-                { pattern: /\b(Reparaci[oó]n\s+y\s+(?:reemplazo|remplazo|cambio)\s+de\s+frenos|Reemplazo\s+y\s+reparaci[oó]n\s+de\s+frenos|Frenos\s+y\s+suspensi[oó]n|Cambio\s+de\s+frenos|Sustituci[oó]n\s+de\s+frenos)\b/gi, replacement: 'Reemplazo de frenos' },
+                // Brakes replacement terminology
+                { pattern: /\b(?:Reparaci[oó]n\s+y\s+(?:reemplazo|remplazo|cambio)\s+de\s+frenos|Reemplazo\s+y\s+reparaci[oó]n\s+de\s+frenos|Sustituci[oó]n\s+de\s+frenos)\b/gi, replacement: 'Reemplazo de frenos' },
                 // Pre-purchase inspection translations
                 { pattern: /\bComprobaciones\s+previas\s+a\s+la\s+compra(?:\s+de\s+elevadores\s+hidr[aá]ulicos)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
                 { pattern: /\bInspecci[oó]n\s+(?:del\s+carro\s+)?previa\s+a\s+la\s+compra(?:\s+del\s+carro)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
@@ -623,70 +623,80 @@
                 const isEs = document.documentElement.classList.contains('translated-ltr') || getSavedLanguage() === 'es';
                 if (!isEs) return;
 
-                // Enforce exact hero title in Spanish: "Mecánica general y venta de carros de segunda mano en excelente condición"
+                // 1. Enforce exact hero title in Spanish: "Mecánica general y venta de carros de segunda mano en excelente condición"
                 const heroTitle = document.getElementById('heroHeadlineTitle');
                 if (heroTitle) {
-                    const text = heroTitle.textContent || '';
-                    if (text.includes('Mecánica') || text.includes('carros') || text.includes('coches') || text.includes('segunda mano') || text.includes('usados') || text.includes('General Mechanics')) {
-                        const fonts = heroTitle.querySelectorAll('font font');
-                        if (fonts.length >= 2) {
-                            if (!fonts[0].textContent.includes('Mecánica general y')) {
-                                fonts[0].textContent = 'Mecánica general y ';
-                            }
-                            if (fonts[1].textContent.trim() !== 'venta de carros de segunda mano en excelente condición') {
-                                fonts[1].textContent = 'venta de carros de segunda mano en excelente condición';
-                            }
-                        } else if (fonts.length === 1) {
-                            fonts[0].innerHTML = 'Mecánica general y <br class="hidden sm:inline"> venta de carros de segunda mano en excelente condición';
+                    const targetClean = 'Mecánica general y venta de carros de segunda mano en excelente condición';
+                    const currentClean = (heroTitle.textContent || '').replace(/\s+/g, ' ').trim();
+                    if (currentClean !== targetClean) {
+                        const isTriggered = currentClean.includes('Mecánica') ||
+                                            currentClean.includes('carros') ||
+                                            currentClean.includes('coches') ||
+                                            currentClean.includes('segunda mano') ||
+                                            currentClean.includes('usados') ||
+                                            currentClean.includes('General Mechanics');
+                        if (isTriggered) {
+                            heroTitle.innerHTML = '<font class="notranslate" translate="no">Mecánica general y <br class="hidden sm:inline"> venta de carros de segunda mano en excelente condición</font>';
                         }
                     }
                 }
 
-                // Enforce exact brake replacement heading in Spanish: "Reemplazo de frenos"
+                // 2. Enforce exact brake replacement heading in Spanish: "Reemplazo de frenos"
                 const brakeHeading = document.getElementById('brakeServiceHeading');
                 if (brakeHeading) {
-                    const text = brakeHeading.textContent.trim();
-                    if (text !== 'Brake Replacement' && text !== 'Reemplazo de frenos') {
-                        const fonts = brakeHeading.querySelectorAll('font');
-                        if (fonts.length > 0) {
-                            fonts[fonts.length - 1].textContent = 'Reemplazo de frenos';
-                        } else {
-                            brakeHeading.textContent = 'Reemplazo de frenos';
-                        }
+                    const currentBrake = (brakeHeading.textContent || '').trim();
+                    if (currentBrake !== 'Brake Replacement' && currentBrake !== 'Reemplazo de frenos') {
+                        brakeHeading.innerHTML = '<font class="notranslate" translate="no">Reemplazo de frenos</font>';
                     }
                 }
             };
 
+            let isFixing = false;
             let checkTimeout = null;
+
             const fixElements = () => {
-                fixHeroAndBrakes();
-                const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
-                let textNode;
-                while ((textNode = walker.nextNode())) {
-                    const parent = textNode.parentElement;
-                    if (!parent) continue;
-                    if (['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA'].includes(parent.tagName)) continue;
-                    let text = textNode.nodeValue;
-                    if (!text || !text.trim()) continue;
-                    let changed = false;
-                    for (let item of automotiveReplacements) {
-                        if (item.pattern.test(text)) {
-                            text = text.replace(item.pattern, item.replacement);
-                            changed = true;
+                if (isFixing) return;
+                isFixing = true;
+                try {
+                    fixHeroAndBrakes();
+                    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                    let textNode;
+                    while ((textNode = walker.nextNode())) {
+                        const parent = textNode.parentElement;
+                        if (!parent) continue;
+                        if (['SCRIPT', 'STYLE', 'INPUT', 'TEXTAREA'].includes(parent.tagName)) continue;
+                        if (parent.closest('.notranslate') || parent.closest('[translate="no"]')) continue;
+                        if (parent.closest('#heroHeadlineTitle') || parent.closest('#brakeServiceHeading')) continue;
+
+                        let text = textNode.nodeValue;
+                        if (!text || !text.trim()) continue;
+                        let changed = false;
+                        for (let item of automotiveReplacements) {
+                            const newText = text.replace(item.pattern, item.replacement);
+                            if (newText !== text) {
+                                text = newText;
+                                changed = true;
+                            }
+                        }
+                        if (changed) {
+                            textNode.nodeValue = text;
                         }
                     }
-                    if (changed) {
-                        textNode.nodeValue = text;
-                    }
+                } catch (e) {
+                    console.warn('[i18n] replacement error', e);
+                } finally {
+                    setTimeout(() => {
+                        isFixing = false;
+                    }, 60);
                 }
             };
 
             const observer = new MutationObserver(() => {
-                if (checkTimeout) return;
+                if (isFixing || checkTimeout) return;
                 checkTimeout = setTimeout(() => {
-                    fixElements();
                     checkTimeout = null;
-                }, 60);
+                    fixElements();
+                }, 80);
             });
             observer.observe(document.body, { childList: true, subtree: true });
         }
@@ -709,8 +719,7 @@
             const unique = Array.from(new Set(domainList));
             unique.forEach(d => {
                 const domainAttr = d ? '; domain=' + d : '';
-                document.cookie = 'googtrans=' + val + '; path=/' + domainAttr;
-                document.cookie = 'googtrans=' + val + '; path=/' + domainAttr + '; SameSite=Lax';
+                document.cookie = 'googtrans=' + val + '; path=/' + domainAttr + '; max-age=31536000; SameSite=Lax';
             });
         }
 
@@ -733,16 +742,20 @@
             const unique = Array.from(new Set(domainList));
             unique.forEach(d => {
                 const domainAttr = d ? '; domain=' + d : '';
-                document.cookie = 'googtrans=; expires=' + past + '; path=/' + domainAttr;
-                document.cookie = 'googtrans=; expires=' + past + '; path=/' + domainAttr + '; SameSite=Lax';
+                document.cookie = 'googtrans=; expires=' + past + '; max-age=0; path=/' + domainAttr + '; SameSite=Lax';
             });
         }
 
         function getSavedLanguage() {
+            if (window.location.hash && window.location.hash.indexOf('googtrans(en|es)') !== -1) {
+                return 'es';
+            }
             const match = document.cookie.match(/(?:^|;\s*)googtrans=\/(?:en|auto)\/([a-z]+)/);
             if (match && match[1]) return match[1];
-            const local = localStorage.getItem('luca_garage_lang');
-            if (local) return local;
+            try {
+                const local = localStorage.getItem('luca_garage_lang');
+                if (local) return local;
+            } catch (e) {}
             return 'en';
         }
 
@@ -803,7 +816,7 @@
                     attempts++;
                     var isTranslated = document.documentElement.classList.contains('translated-ltr') ||
                                          document.querySelector('font') !== null;
-                    if (isTranslated || attempts > 25) {
+                    if (isTranslated || attempts > 50) {
                         clearInterval(pollInterval);
                     } else {
                         applyGoogleLanguage('es');
@@ -851,6 +864,24 @@
             // Seamless reload applies translation across mobile and desktop without dropped synthetic events
             window.location.reload();
         }
+
+        // Maintain language on internal link clicks when Spanish is selected
+        document.addEventListener('click', function (e) {
+            const anchor = e.target.closest('a');
+            if (!anchor || !anchor.href) return;
+            const currentLang = getSavedLanguage();
+            if (currentLang === 'es') {
+                try {
+                    const url = new URL(anchor.href, window.location.origin);
+                    if (url.origin === window.location.origin && !url.hash.includes('googtrans')) {
+                        if (!url.hash) {
+                            url.hash = '#googtrans(en|es)';
+                            anchor.href = url.href;
+                        }
+                    }
+                } catch (err) {}
+            }
+        }, true);
 
         // On DOMContentLoaded (initial page load & regular navigation)
         document.addEventListener('DOMContentLoaded', function () {
