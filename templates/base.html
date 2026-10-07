@@ -105,14 +105,14 @@
             color: inherit !important;
         }
         #google_translate_element {
-            position: absolute !important;
-            left: -9999px !important;
-            top: -9999px !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            right: 0 !important;
             width: 1px !important;
             height: 1px !important;
-            opacity: 0 !important;
-            pointer-events: none !important;
             overflow: hidden !important;
+            opacity: 0.01 !important;
+            z-index: -1 !important;
         }
         .notranslate {
             translate: no !important;
@@ -534,7 +534,10 @@
                 { pattern: /\bmantenimiento\s+y\s+diagn[oó]sticos\b/gi, replacement: 'mantenimiento, diagnósticos' },
                 { pattern: /\s+en\s+38a\s+Penrose\s+Street[,\s]+Walworth\.?/gi, replacement: '.' },
                 // Homepage hero headline translation
-                { pattern: /\b(Reparaciones\s+en\s+taller\s+independiente\s+y\s+(venta\s+de\s+)?(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+de\s+calidad)?|Mec[aá]nica\s+general\s+y\s+venta\s+de\s+(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+en\s+perfectas\s+condiciones)?)\b/gi, replacement: 'Mecánica general y venta de carros de segunda mano en perfectas condiciones' },
+                { pattern: /\b(Reparaciones\s+en\s+taller\s+independiente\s+y\s+(venta\s+de\s+)?(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+de\s+calidad)?|Mec[aá]nica\s+general\s+y\s+venta\s+de\s+(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+en\s+perfectas\s+condiciones)?)\b/gi, replacement: 'Mecánica general y venta de carros de segunda mano en excelente condición' },
+                { pattern: /\b(?:calidad\s+)?(?:coches|carros|autom[oó]viles)\s+de\s+segunda\s+mano(?:\s+de\s+calidad)?(?:\s+en\s+(?:excelentes?|perfectas?)\s+condiciones?)?\b/gi, replacement: 'venta de carros de segunda mano en excelente condición' },
+                { pattern: /\b(?:coches|carros|veh[ií]culos)\s+usados(?:\s+de\s+calidad)?(?:\s+en\s+(?:excelentes?|perfectas?)\s+condiciones?)?\b/gi, replacement: 'venta de carros de segunda mano en excelente condición' },
+                { pattern: /\bMec[aá]nica\s+general\s+y\s+(?:venta\s+de\s+)?(?:coches|carros)\s+de\s+segunda\s+mano(?:\s+en\s+(?:perfectas\s+condiciones|excelente\s+condici[oó]n))?\b/gi, replacement: 'Mecánica general y venta de carros de segunda mano en excelente condición' },
                 // Global terminology shift: coche -> carro
                 { pattern: /\bcoches\b/gi, replacement: 'carros' },
                 { pattern: /\bcoche\b/gi, replacement: 'carro' },
@@ -554,7 +557,7 @@
                 // Traction control (control de tracción, NOT tracción de control)
                 { pattern: /\btracci[oó]n\s+de\s+control\b/gi, replacement: 'control de tracción' },
                 // Brakes only card translation (strictly Reemplazo de frenos)
-                { pattern: /\b(Reparaci[oó]n\s+y\s+(?:reemplazo|remplazo|cambio)\s+de\s+frenos|Reemplazo\s+y\s+reparaci[oó]n\s+de\s+frenos|Frenos\s+y\s+suspensi[oó]n|Cambio\s+de\s+frenos)\b/gi, replacement: 'Reemplazo de frenos' },
+                { pattern: /\b(Reparaci[oó]n\s+y\s+(?:reemplazo|remplazo|cambio)\s+de\s+frenos|Reemplazo\s+y\s+reparaci[oó]n\s+de\s+frenos|Frenos\s+y\s+suspensi[oó]n|Cambio\s+de\s+frenos|Sustituci[oó]n\s+de\s+frenos)\b/gi, replacement: 'Reemplazo de frenos' },
                 // Pre-purchase inspection translations
                 { pattern: /\bComprobaciones\s+previas\s+a\s+la\s+compra(?:\s+de\s+elevadores\s+hidr[aá]ulicos)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
                 { pattern: /\bInspecci[oó]n\s+(?:del\s+carro\s+)?previa\s+a\s+la\s+compra(?:\s+del\s+carro)?\b/gi, replacement: 'Revisión general del carro antes de comprar' },
@@ -586,8 +589,47 @@
                 { pattern: /\bServicio\s+[Cc]ompleto\s*\(depende\s+del\s+(?:coche|carro)\)/gi, replacement: 'Servicio Completo (depende del carro)' }
             ];
 
+            const fixHeroAndBrakes = () => {
+                const isEs = document.documentElement.classList.contains('translated-ltr') || getSavedLanguage() === 'es';
+                if (!isEs) return;
+
+                // Enforce exact hero title in Spanish: "Mecánica general y venta de carros de segunda mano en excelente condición"
+                const heroTitle = document.getElementById('heroHeadlineTitle');
+                if (heroTitle) {
+                    const text = heroTitle.textContent || '';
+                    if (text.includes('Mecánica') || text.includes('carros') || text.includes('coches') || text.includes('segunda mano') || text.includes('usados') || text.includes('General Mechanics')) {
+                        const fonts = heroTitle.querySelectorAll('font font');
+                        if (fonts.length >= 2) {
+                            if (!fonts[0].textContent.includes('Mecánica general y')) {
+                                fonts[0].textContent = 'Mecánica general y ';
+                            }
+                            if (fonts[1].textContent.trim() !== 'venta de carros de segunda mano en excelente condición') {
+                                fonts[1].textContent = 'venta de carros de segunda mano en excelente condición';
+                            }
+                        } else if (fonts.length === 1) {
+                            fonts[0].innerHTML = 'Mecánica general y <br class="hidden sm:inline"> venta de carros de segunda mano en excelente condición';
+                        }
+                    }
+                }
+
+                // Enforce exact brake replacement heading in Spanish: "Reemplazo de frenos"
+                const brakeHeading = document.getElementById('brakeServiceHeading');
+                if (brakeHeading) {
+                    const text = brakeHeading.textContent.trim();
+                    if (text !== 'Brake Replacement' && text !== 'Reemplazo de frenos') {
+                        const fonts = brakeHeading.querySelectorAll('font');
+                        if (fonts.length > 0) {
+                            fonts[fonts.length - 1].textContent = 'Reemplazo de frenos';
+                        } else {
+                            brakeHeading.textContent = 'Reemplazo de frenos';
+                        }
+                    }
+                }
+            };
+
             let checkTimeout = null;
             const fixElements = () => {
+                fixHeroAndBrakes();
                 const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
                 let textNode;
                 while ((textNode = walker.nextNode())) {
@@ -621,46 +663,53 @@
 
         function setGoogleTransCookie(val) {
             const host = window.location.hostname;
-            const parts = host ? host.split('.') : [];
             const domainList = [''];
             if (host) {
                 domainList.push(host);
                 domainList.push('.' + host);
-            }
-            if (parts.length >= 2) {
-                const root = parts.slice(-2).join('.');
-                domainList.push(root);
-                domainList.push('.' + root);
+                if (host.includes('.')) {
+                    const parts = host.split('.');
+                    if (parts.length >= 2) {
+                        const rootDomain = parts.slice(-2).join('.');
+                        domainList.push(rootDomain);
+                        domainList.push('.' + rootDomain);
+                    }
+                }
             }
             const unique = Array.from(new Set(domainList));
             unique.forEach(d => {
                 const domainAttr = d ? '; domain=' + d : '';
+                document.cookie = 'googtrans=' + val + '; path=/' + domainAttr;
                 document.cookie = 'googtrans=' + val + '; path=/' + domainAttr + '; SameSite=Lax';
             });
         }
 
         function clearGoogleTransCookie() {
             const host = window.location.hostname;
-            const parts = host ? host.split('.') : [];
+            const past = 'Thu, 01 Jan 1970 00:00:00 UTC';
             const domainList = [''];
             if (host) {
                 domainList.push(host);
                 domainList.push('.' + host);
-            }
-            if (parts.length >= 2) {
-                const root = parts.slice(-2).join('.');
-                domainList.push(root);
-                domainList.push('.' + root);
+                if (host.includes('.')) {
+                    const parts = host.split('.');
+                    if (parts.length >= 2) {
+                        const rootDomain = parts.slice(-2).join('.');
+                        domainList.push(rootDomain);
+                        domainList.push('.' + rootDomain);
+                    }
+                }
             }
             const unique = Array.from(new Set(domainList));
             unique.forEach(d => {
                 const domainAttr = d ? '; domain=' + d : '';
-                document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/' + domainAttr;
+                document.cookie = 'googtrans=; expires=' + past + '; path=/' + domainAttr;
+                document.cookie = 'googtrans=; expires=' + past + '; path=/' + domainAttr + '; SameSite=Lax';
             });
         }
 
         function getSavedLanguage() {
-            const match = document.cookie.match(/googtrans=\/en\/([a-z]+)/);
+            const match = document.cookie.match(/(?:^|;\s*)googtrans=\/(?:en|auto)\/([a-z]+)/);
             if (match && match[1]) return match[1];
             const local = localStorage.getItem('luca_garage_lang');
             if (local) return local;
@@ -707,32 +756,6 @@
             return true;
         }
 
-        let langWatcherInterval = null;
-
-        function ensureLanguageApplied(lang) {
-            if (langWatcherInterval) {
-                clearInterval(langWatcherInterval);
-                langWatcherInterval = null;
-            }
-
-            if (lang === 'en') return;
-
-            // Attempt immediately
-            if (applyGoogleLanguage(lang)) {
-                return;
-            }
-
-            // Watch every 80ms up to 100 times (8 seconds) until widget mounts
-            let checks = 0;
-            langWatcherInterval = setInterval(function () {
-                checks++;
-                if (applyGoogleLanguage(lang) || checks > 100) {
-                    clearInterval(langWatcherInterval);
-                    langWatcherInterval = null;
-                }
-            }, 80);
-        }
-
         function googleTranslateElementInit() {
             enforceLucasGarageNotranslate();
             new google.translate.TranslateElement({
@@ -742,10 +765,16 @@
             }, 'google_translate_element');
             observeAndRevertTranslations();
 
-            // When widget initializes, immediately enforce preferred language
             const pref = getSavedLanguage();
             if (pref === 'es') {
-                ensureLanguageApplied('es');
+                setGoogleTransCookie('/en/es');
+                setTimeout(function () {
+                    const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
+                                         document.querySelector('font') !== null;
+                    if (!isTranslated) {
+                        applyGoogleLanguage('es');
+                    }
+                }, 1000);
             }
         }
 
@@ -754,18 +783,20 @@
             const esButtons = document.querySelectorAll('.lang-btn-es');
 
             enButtons.forEach(btn => {
-                if (btn.classList.contains('px-3')) {
-                    btn.className = (lang === 'en' ? 'px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1.5 cursor-pointer' : 'px-3 py-1 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer') + ' lang-btn-en';
+                const isDrawer = btn.classList.contains('px-3');
+                if (lang === 'en') {
+                    btn.className = (isDrawer ? 'px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1.5 cursor-pointer' : 'px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer') + ' lang-btn-en';
                 } else {
-                    btn.className = (lang === 'en' ? 'px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer' : 'px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1 cursor-pointer') + ' lang-btn-en';
+                    btn.className = (isDrawer ? 'px-3 py-1 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer' : 'px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer') + ' lang-btn-en';
                 }
             });
 
             esButtons.forEach(btn => {
-                if (btn.classList.contains('px-3')) {
-                    btn.className = (lang === 'es' ? 'px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1.5 cursor-pointer' : 'px-3 py-1 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer') + ' lang-btn-es';
+                const isDrawer = btn.classList.contains('px-3');
+                if (lang === 'es') {
+                    btn.className = (isDrawer ? 'px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1.5 cursor-pointer' : 'px-3 py-1 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer') + ' lang-btn-es';
                 } else {
-                    btn.className = (lang === 'es' ? 'px-2 py-0.5 rounded font-black transition text-[#0B1117] bg-amber-500 shadow-sm flex items-center gap-1 cursor-pointer' : 'px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1 cursor-pointer') + ' lang-btn-es';
+                    btn.className = (isDrawer ? 'px-3 py-1 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer' : 'px-2 py-0.5 rounded font-bold transition text-slate-400 hover:text-slate-100 flex items-center gap-1.5 cursor-pointer') + ' lang-btn-es';
                 }
             });
         }
@@ -776,17 +807,11 @@
 
             if (lang === 'es') {
                 setGoogleTransCookie('/en/es');
-                ensureLanguageApplied('es');
             } else {
                 clearGoogleTransCookie();
-                applyGoogleLanguage('en');
-                const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
-                                     document.documentElement.classList.contains('translated-rtl') ||
-                                     document.querySelector('font') !== null;
-                if (isTranslated) {
-                    window.location.reload();
-                }
             }
+            // Seamless reload applies translation across mobile and desktop without dropped synthetic events
+            window.location.reload();
         }
 
         // On DOMContentLoaded (initial page load & regular navigation)
@@ -796,16 +821,22 @@
             updateLangButtons(saved);
             if (saved === 'es') {
                 setGoogleTransCookie('/en/es');
-                ensureLanguageApplied('es');
             }
         });
 
         // On pageshow (handles mobile Safari / Android Chrome BFCache back-and-forth)
-        window.addEventListener('pageshow', function () {
+        window.addEventListener('pageshow', function (event) {
             const saved = getSavedLanguage();
             updateLangButtons(saved);
-            if (saved === 'es') {
-                ensureLanguageApplied('es');
+            const isTranslated = document.documentElement.classList.contains('translated-ltr') ||
+                                 document.documentElement.classList.contains('translated-rtl') ||
+                                 document.querySelector('font') !== null;
+            if (saved === 'es' && !isTranslated) {
+                setGoogleTransCookie('/en/es');
+                window.location.reload();
+            } else if (saved === 'en' && isTranslated) {
+                clearGoogleTransCookie();
+                window.location.reload();
             }
         });
 
