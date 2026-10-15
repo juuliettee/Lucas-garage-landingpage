@@ -124,6 +124,13 @@ def run_tests():
         adm_p = os.getenv('ADMIN_PASSWORD', 'LucaGarage2026!')
         login_page = client.get('/login')
         login_csrf = extract_csrf_token(login_page.data)
+
+        # Verify missing & forged CSRF tokens are blocked with 400 Bad Request
+        no_csrf_resp = client.post('/login', data={"username": adm_u, "password": adm_p})
+        assert no_csrf_resp.status_code == 400
+        forged_csrf_resp = client.post('/login', data={"username": adm_u, "password": adm_p, "csrf_token": "forged_invalid_token"})
+        assert forged_csrf_resp.status_code == 400
+
         login_resp = client.post('/login', data={"username": adm_u, "password": adm_p, "csrf_token": login_csrf}, follow_redirects=True)
         assert login_resp.status_code == 200
         assert b"Workshop & Vehicle Portal" in login_resp.data
@@ -223,7 +230,13 @@ def run_tests():
         admin_page = client.get('/admin')
         assert b'openEditBookingModalFromBtn(this)' in admin_page.data
         assert b'data-name=' in admin_page.data
-        print("✅ Test 12 Passed: Defensive security hardening verified (headers, cookies, traversal, XSS defense).")
+
+        # CSRF token protection verification on protected mutation routes
+        csrf_missing_resp = client.post('/admin/add', data={'make_model': 'Test Car'})
+        assert csrf_missing_resp.status_code == 400, "Protected admin route allowed POST without CSRF token"
+        csrf_forged_resp = client.post('/admin/add', data={'make_model': 'Test Car', 'csrf_token': 'fake_bad_token'})
+        assert csrf_forged_resp.status_code == 400, "Protected admin route allowed POST with forged CSRF token"
+        print("✅ Test 12 Passed: Defensive security hardening verified (CSRF tokens, headers, cookies, traversal, XSS defense).")
 
         # 13. Test Custom 404 Page & SEO Directives
         not_found_resp = client.get('/nefwjnfwjnfjewnfn')
