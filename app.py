@@ -1,5 +1,8 @@
 import os
 import sys
+import hmac
+import secrets
+import time
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, 'reconfigure'):
@@ -15,7 +18,7 @@ if hasattr(sys.stderr, 'reconfigure'):
 
 from datetime import datetime, date, timedelta
 from io import BytesIO
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file, abort, Response
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, send_from_directory, send_file, abort, Response, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
@@ -44,12 +47,22 @@ load_dotenv()
 
 app = Flask(__name__)
 
+IS_PRODUCTION = bool(os.getenv('RENDER') or os.getenv('FLASK_ENV', '').lower() == 'production')
+
 # Security configuration & session hardening
-app.secret_key = os.getenv('SECRET_KEY', 'default-fallback-dev-key-lucas-garage')
+secret_key = os.getenv('SECRET_KEY')
+if IS_PRODUCTION and not secret_key:
+    raise RuntimeError("SECRET_KEY must be set in production.")
+app.secret_key = secret_key or 'default-fallback-dev-key-lucas-garage'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB max payload limit
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = bool(os.getenv('RENDER') or os.getenv('FLASK_ENV') == 'production')
+app.config['SESSION_COOKIE_SECURE'] = IS_PRODUCTION
+
+LOGIN_RATE_LIMIT_WINDOW_SECONDS = int(os.getenv('LOGIN_RATE_LIMIT_WINDOW_SECONDS', '900'))
+LOGIN_RATE_LIMIT_MAX_ATTEMPTS = int(os.getenv('LOGIN_RATE_LIMIT_MAX_ATTEMPTS', '8'))
+LOGIN_RATE_LIMIT_LOCKOUT_SECONDS = int(os.getenv('LOGIN_RATE_LIMIT_LOCKOUT_SECONDS', '900'))
+FAILED_LOGIN_ATTEMPTS = {}
 
 raw_db_url = os.getenv('DATABASE_URL', 'sqlite:///garage.db')
 if raw_db_url.startswith("postgres://"):
@@ -64,7 +77,7 @@ def apply_security_headers(response):
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
     response.headers['X-XSS-Protection'] = '1; mode=block'
-    if os.getenv('RENDER') or not app.debug:
+    if IS_PRODUCTION or not app.debug:
         response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
     if request.path == '/es' or request.path.startswith('/es/'):
         response.set_cookie('luca_lang', 'es', max_age=30*86400, samesite='Lax')
@@ -89,6 +102,70 @@ def load_user(user_id):
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_csrf_token():
+    token = session.get('csrf_token')
+    if not token:
+        token = secrets.token_urlsafe(32)
+        session['csrf_token'] = token
+    return token
+
+@app.context_processor
+def inject_csrf_token():
+    return {"csrf_token": get_csrf_token()}
+
+def _is_valid_csrf_request():
+    sent_token = request.form.get('csrf_token') or request.headers.get('X-CSRF-Token')
+    expected_token = session.get('csrf_token')
+    return bool(sent_token and expected_token and hmac.compare_digest(sent_token, expected_token))
+
+@app.before_request
+def enforce_csrf_protection():
+    if request.method != 'POST':
+        return
+    if request.path == '/api/book-viewing':
+        return
+    is_protected_post = request.path.startswith('/admin') or request.path in ('/login', '/logout')
+    if is_protected_post and not _is_valid_csrf_request():
+        abort(400)
+
+def _normalize_ip(raw_ip):
+    if not raw_ip:
+        return "unknown"
+    return raw_ip.split(",")[0].strip()[:100]
+
+def _login_rate_key(username):
+    xff = request.headers.get('X-Forwarded-For')
+    real_ip = request.headers.get('X-Real-IP')
+    ip = _normalize_ip(xff or real_ip or request.remote_addr)
+    return f"{ip}|{(username or '').strip().lower()[:120]}"
+
+def _prune_login_attempts(entry, now_ts):
+    attempts = entry.get('attempts', [])
+    entry['attempts'] = [ts for ts in attempts if now_ts - ts <= LOGIN_RATE_LIMIT_WINDOW_SECONDS]
+    return entry['attempts']
+
+def _check_login_rate_limit(rate_key):
+    now_ts = time.time()
+    entry = FAILED_LOGIN_ATTEMPTS.get(rate_key)
+    if not entry:
+        return False, 0
+    lockout_until = entry.get('lockout_until', 0)
+    if lockout_until > now_ts:
+        return True, int(lockout_until - now_ts)
+    _prune_login_attempts(entry, now_ts)
+    return False, 0
+
+def _register_failed_login(rate_key):
+    now_ts = time.time()
+    entry = FAILED_LOGIN_ATTEMPTS.setdefault(rate_key, {'attempts': [], 'lockout_until': 0})
+    attempts = _prune_login_attempts(entry, now_ts)
+    attempts.append(now_ts)
+    if len(attempts) >= LOGIN_RATE_LIMIT_MAX_ATTEMPTS:
+        entry['lockout_until'] = now_ts + LOGIN_RATE_LIMIT_LOCKOUT_SECONDS
+
+def _clear_failed_logins(rate_key):
+    FAILED_LOGIN_ATTEMPTS.pop(rate_key, None)
 
 def save_uploaded_image(file_storage, prefix="car_"):
     """Saves uploaded image to local disk cache AND persists binary to DB so it survives all future deployments."""
@@ -463,14 +540,23 @@ def verify_booking():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form.get('username')
+        username = (request.form.get('username') or '').strip()
         password = request.form.get('password')
+        rate_key = _login_rate_key(username)
+
+        is_limited, retry_after = _check_login_rate_limit(rate_key)
+        if is_limited:
+            minutes = max(1, int(retry_after / 60))
+            flash(f'Too many failed login attempts. Please try again in about {minutes} minute(s).', 'danger')
+            return render_template('login.html'), 429
         
         user = AdminUser.query.filter_by(username=username).first()
         if user and user.check_password(password):
+            _clear_failed_logins(rate_key)
             login_user(user)
             return redirect(url_for('admin_dashboard'))
         else:
+            _register_failed_login(rate_key)
             flash('Invalid credentials.', 'danger')
             
     return render_template('login.html')
@@ -746,8 +832,16 @@ def logout():
 with app.app_context():
     db.create_all()
 
-    env_admin_username = os.getenv('ADMIN_USER', 'luca')
-    env_admin_password = os.getenv('ADMIN_PASSWORD', 'lucasgarage2026')
+    env_admin_username = os.getenv('ADMIN_USER')
+    env_admin_password = os.getenv('ADMIN_PASSWORD')
+
+    if IS_PRODUCTION and (not env_admin_username or not env_admin_password):
+        raise RuntimeError("ADMIN_USER and ADMIN_PASSWORD must be set in production.")
+
+    if not env_admin_username:
+        env_admin_username = 'luca'
+    if not env_admin_password:
+        env_admin_password = 'lucasgarage2026'
 
     if not AdminUser.query.filter_by(username=env_admin_username).first():
         secure_hash = generate_password_hash(env_admin_password)

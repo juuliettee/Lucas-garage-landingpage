@@ -1,8 +1,16 @@
 """
 Comprehensive verification test suite for Lucas Garage web app.
 """
+import re
+
 from app import app
 from models import db, Car, Booking, AdminUser
+
+def extract_csrf_token(response_bytes):
+    html = response_bytes.decode('utf-8', errors='ignore')
+    match = re.search(r'name="csrf_token"\s+value="([^"]+)"', html)
+    assert match, "CSRF token not found in response HTML"
+    return match.group(1)
 
 def run_tests():
     with app.app_context():
@@ -114,11 +122,14 @@ def run_tests():
         import os
         adm_u = os.getenv('ADMIN_USER', 'admin')
         adm_p = os.getenv('ADMIN_PASSWORD', 'LucaGarage2026!')
-        login_resp = client.post('/login', data={"username": adm_u, "password": adm_p}, follow_redirects=True)
+        login_page = client.get('/login')
+        login_csrf = extract_csrf_token(login_page.data)
+        login_resp = client.post('/login', data={"username": adm_u, "password": adm_p, "csrf_token": login_csrf}, follow_redirects=True)
         assert login_resp.status_code == 200
         assert b"Workshop & Vehicle Portal" in login_resp.data
         assert b"Booked Customer Viewings" in login_resp.data
         assert b"Sarah Connor" in login_resp.data
+        admin_csrf = extract_csrf_token(login_resp.data)
         print("✅ Test 6 Passed: Admin login works, shows active bookings and WhatsApp customer buttons.")
 
         # 7. Test Facebook Marketplace Ad Text Generator
@@ -138,7 +149,9 @@ def run_tests():
 
         # Post edit with updated description & simulated second photo
         fake_photo = (BytesIO(b"fake_image_bytes_png"), "test_extra.png")
+        edit_csrf = extract_csrf_token(edit_get.data)
         edit_post = client.post(f'/admin/car/edit/{car.id}', data={
+            "csrf_token": edit_csrf,
             "make_model": car.make_model,
             "year": car.year,
             "price": car.price + 50,
@@ -173,6 +186,7 @@ def run_tests():
         booking_to_edit = Booking.query.filter_by(customer_name="Sarah Connor").first()
         assert booking_to_edit is not None
         resched_resp = client.post(f'/admin/booking/edit/{booking_to_edit.id}', data={
+            "csrf_token": admin_csrf,
             "booking_date": "2026-09-30",
             "booking_time": "15:00",
             "customer_phone": "07987 000111",

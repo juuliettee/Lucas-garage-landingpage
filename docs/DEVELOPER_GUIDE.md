@@ -41,6 +41,7 @@ This guide is for developers maintaining the Lucas Garage app.
 
 ### Update admin credentials
 - Prefer setting `ADMIN_USER` and `ADMIN_PASSWORD` in environment.
+- In production, both must be set as secure deploy environment variables before startup.
 - On fresh DB, startup bootstrap creates the configured admin user.
 - For existing users, update via DB (passwords are hashed).
 

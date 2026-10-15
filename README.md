@@ -45,10 +45,11 @@ Only set what you need; sane defaults exist for local development.
 - `FLASK_ENV` / `RENDER` - influence secure cookie + HSTS behavior.
 
 ### Admin login bootstrap
-- `ADMIN_USER` (default `luca`)
-- `ADMIN_PASSWORD` (default `lucasgarage2026`)
+- `ADMIN_USER`
+- `ADMIN_PASSWORD`
 
 At startup, `app.py` auto-creates the admin user if missing.
+In production, both variables are required and must be provided through secure environment variables (for example, Render dashboard secret env vars).
 
 ### Messaging & WhatsApp
 - `GARAGE_MOBILE` - Luca's phone number with country code (default `447535321145`).
