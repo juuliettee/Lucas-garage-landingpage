@@ -69,6 +69,7 @@
                 <div class="p-3 bg-[#111A24] flex items-center justify-between gap-1.5 border-t border-[#243344]">
                     {% if img_name != car.image_filename %}
                     <form action="{{ url_for('set_car_cover_image', id=car.id, filename=img_name) }}" method="POST" class="inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <button type="submit" class="text-[11px] font-bold text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 px-2.5 py-1 rounded-lg transition flex items-center gap-1">
                             <i class="fa-regular fa-star"></i> Set as Cover
                         </button>
@@ -80,6 +81,7 @@
                     {% if car.all_images|length > 1 %}
                     <form action="{{ url_for('delete_car_image', id=car.id, filename=img_name) }}" method="POST"
                           onsubmit="return confirm('Remove this photo from the vehicle listing?');" class="inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                         <button type="submit" class="text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 p-1.5 rounded-lg transition text-xs" title="Delete Photo">
                             <i class="fa-regular fa-trash-can"></i>
                         </button>
@@ -104,6 +106,7 @@
         </div>
 
         <form action="{{ url_for('edit_car', id=car.id) }}" method="POST" enctype="multipart/form-data" class="space-y-6 text-xs">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             
             <!-- Upload Additional Photos -->
             <div class="bg-[#0B1117] p-5 rounded-2xl border border-[#243344] space-y-3">

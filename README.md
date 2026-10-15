@@ -46,10 +46,11 @@ Only set what you need; sane defaults exist for local development.
 - `FLASK_ENV` / `RENDER` - influence secure cookie + HSTS behavior.
 
 ### Admin login bootstrap
-- `ADMIN_USER` (default `luca`)
-- `ADMIN_PASSWORD` (default `lucasgarage2026`)
+- `ADMIN_USER`
+- `ADMIN_PASSWORD`
 
 At startup, `app.py` auto-creates the admin user if missing.
+In production, both variables are required and must be provided through secure environment variables (for example, Render dashboard secret env vars).
 
 ### Messaging/notifications
 - Email (SMTP): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `FROM_EMAIL`, `LUCA_EMAIL`

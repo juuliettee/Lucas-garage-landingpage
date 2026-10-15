@@ -74,6 +74,7 @@
 
                         {% if b.status == 'Confirmed' %}
                         <form action="{{ url_for('cancel_booking', id=b.id) }}" method="POST" onsubmit="return confirm('Cancel this appointment?');" class="inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                             <button type="submit" class="text-xs font-semibold text-rose-400 hover:bg-rose-500/10 border border-rose-500/25 px-3 py-2 rounded-xl transition">
                                 Cancel
                             </button>
@@ -109,6 +110,7 @@
             </div>
 
             <form action="{{ url_for('add_car') }}" method="POST" enctype="multipart/form-data" class="space-y-5 text-xs">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                 <div>
                     <label class="block font-bold text-slate-300 mb-1">Make & Model *</label>
                     <input type="text" name="make_model" placeholder="e.g. Ford Focus 1.0 EcoBoost Titanium" required
@@ -251,12 +253,14 @@
                         <div class="flex items-center space-x-1">
                             {% if car.status != 'Sold' %}
                             <form action="{{ url_for('update_status', id=car.id, new_status='Sold') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                 <button type="submit" class="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 px-2 py-1.5 rounded-lg transition">
                                     Mark Sold
                                 </button>
                             </form>
                             {% else %}
                             <form action="{{ url_for('update_status', id=car.id, new_status='Available') }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                 <button type="submit" class="text-[10px] font-bold text-slate-200 bg-[#1E2B3A] hover:bg-[#28394D] border border-[#243344] px-2 py-1.5 rounded-lg transition">
                                     Relist
                                 </button>
@@ -264,6 +268,7 @@
                             {% endif %}
 
                             <form action="{{ url_for('delete_car', id=car.id) }}" method="POST" onsubmit="return confirm('Permanently delete this car?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                 <button type="submit" class="text-[10px] font-bold text-rose-400 hover:bg-rose-500/10 border border-rose-500/25 px-2 py-1.5 rounded-lg transition">
                                     <i class="fa-regular fa-trash-can"></i>
                                 </button>
@@ -313,6 +318,7 @@
             <button onclick="closeEditBookingModal()" class="text-slate-400 hover:text-slate-100"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <form id="editBookingForm" method="POST" class="space-y-4 text-xs">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <div>
                 <label class="block font-bold text-slate-300 mb-1">Customer</label>
                 <input type="text" id="modalCustomerName" readonly

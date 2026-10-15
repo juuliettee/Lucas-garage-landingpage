@@ -14,6 +14,6 @@ services:
       - key: GARAGE_MOBILE
         value: "447535321145"
       - key: ADMIN_USER
-        value: admin
+        sync: false
       - key: ADMIN_PASSWORD
-        value: Lucagarage2026!
+        sync: false
