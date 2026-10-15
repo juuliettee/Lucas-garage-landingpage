@@ -25,15 +25,14 @@ This folder houses retired code, legacy components, and prior iterations that ar
 
 ### 2. `services/`
 * **What it contains**:
-  - `ai_assistant.py`
+  - `ai_assistant.py`: Early prototype background AI chatbot. Retired in favor of direct 1-tap WhatsApp communication.
+  - `notifications.py`: Transactional email (SMTP/Resend) & Telegram alert dispatcher for the old web booking form. Retired since customer viewings are arranged directly through 1-tap WhatsApp messaging with Luca.
+  - `verification.py`: Cryptographic token generation & validation (`itsdangerous`) for the deprecated 2-step email verification link flow.
+  - `calendar_service.py`: RFC 5545 `.ics` and Google Calendar deep-link generator built for the old email invite flow.
 * **Reason for Archiving**:
-  This was an early prototype background AI sales chatbot. It was deprecated and retired in favor of high-conversion, direct 1-tap WhatsApp communication with Luca and in-person workshop viewings.
+  The website viewing flow was intentionally streamlined for a busy 5-6 man South London garage: customers select their preferred date/time directly on the vehicle page and tap **"Message Luca on WhatsApp to Book"** (`launchWhatsAppViewing()`), removing email verification friction and fake reservations.
 * **Current Active Replacement**:
-  Active backend production services reside in the root `services/` directory:
-  - `services/whatsapp.py`: 1-tap pre-filled WhatsApp links & customer communication
-  - `services/calendar_service.py`: Google Calendar & RFC 5545 `.ics` booking integration
-  - `services/notifications.py`: Transactional email notifications & instant dispatch alerts
-  - `services/verification.py`: Cryptographic tokenized booking verification
+  - Root `services/whatsapp.py`: Powers 1-tap pre-filled WhatsApp links for customer inquiries, vehicle viewing requests, and the mechanic admin reply dashboard.
 
 ---
 
@@ -46,10 +45,7 @@ This folder houses retired code, legacy components, and prior iterations that ar
 ├── requirements.txt            # Python dependencies (Flask, SQLAlchemy, Gunicorn, etc.)
 ├── render.yaml                 # Render cloud web service configuration
 ├── services/                   # Active production backend services
-│   ├── calendar_service.py     # Calendar links & .ics generation
-│   ├── notifications.py        # Email & alert dispatchers
-│   ├── verification.py         # Cryptographic token verification
-│   └── whatsapp.py             # Pre-filled WhatsApp deep links
+│   └── whatsapp.py             # Pre-filled WhatsApp deep links & admin reply URLs
 ├── static/
 │   ├── img/                    # Static image assets (logos, icons)
 │   └── robots.txt              # Production search engine crawl directives
@@ -61,7 +57,7 @@ This folder houses retired code, legacy components, and prior iterations that ar
 │   ├── edit_car.html           # Vehicle editor modal & multi-image upload
 │   └── login.html              # Secure mechanic portal login
 └── archive/                    # Archived / deprecated historical assets
-    ├── legacy_templates/       # Pre-i18n single-directory templates
-    ├── services/               # Retired service modules (e.g. ai_assistant.py)
+    ├── legacy_templates/       # Pre-i18n single-directory & verification templates
+    ├── services/               # Retired service modules (ai_assistant, notifications, verification, calendar)
     └── README.md               # This archive documentation guide
 ```

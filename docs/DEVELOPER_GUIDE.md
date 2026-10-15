@@ -11,11 +11,8 @@ This guide is for developers maintaining the Lucas Garage app.
 ## 2) Core architecture map
 - **Entry point:** `app.py`
 - **Data models:** `models.py`
-- **Notifications:** `services/notifications.py`
-- **WhatsApp links/alerts:** `services/whatsapp.py`
-- **Booking verification token logic:** `services/verification.py`
-- **Calendar invite generation:** `services/calendar_service.py`
-- **AI assistant fallback + Gemini integration:** `services/ai_assistant.py`
+- **WhatsApp links & admin replies:** `services/whatsapp.py`
+- **Archived legacy modules:** `archive/services/` (notifications, verification, calendar_service, ai_assistant)
 
 ## 3) Key business flows
 
@@ -25,10 +22,9 @@ This guide is for developers maintaining the Lucas Garage app.
 - Uploaded files are cached on disk under `static/uploads` and also persisted in `StoredImage`.
 
 ### Viewing booking flow
-- Public API endpoint: `/api/book-viewing`.
-- Booking is created in `Pending_Verification` state with signed token.
-- Confirmation route validates token and transitions to `Confirmed`.
-- Confirmation dispatches email + calendar + optional Telegram alert.
+- Direct 1-tap WhatsApp booking on vehicle detail pages (`templates/en/car_detail.html` & `templates/es/car_detail.html`).
+- Customer selects date & time, then taps "Message Luca on WhatsApp to Book" (`launchWhatsAppViewing()`), opening a pre-filled WhatsApp conversation with Luca.
+- Optional internal API endpoint: `/api/book-viewing` for creating appointment records in the database.
 
 ### Image serving resiliency
 - Route: `/static/uploads/<filename>`.
@@ -68,16 +64,14 @@ This guide is for developers maintaining the Lucas Garage app.
 ## 5) Testing expectations before merging
 - Minimum verification for feature/bugfix work:
   - `python test_app.py`
-- If change touches notifications, manually validate at least one path (e.g., `/admin/test-email`).
 - If change touches templates, check both `/en/*` and `/es/*` routes for affected pages.
 
 ## 6) Security and operational notes
 - Keep `SECRET_KEY` private and unique per environment.
-- Do not commit API keys or mail credentials.
+- Do not commit API keys or sensitive credentials.
 - Uploaded files are restricted by extension and size checks; keep these checks intact.
 - Security headers are applied globally in `app.py` via `@app.after_request`.
 
 ## 7) Known quirks to be aware of
 - `seed_data.py` uses sample credentials and data intended for local bootstrapping only.
-- `services/ai_assistant.py` contains garage hours text independent of booking validation logic; if business hours change, update both areas.
 - Test script reads admin defaults from env with fallback values, so env mismatch can cause login test failures.

@@ -17,9 +17,8 @@ Flask-based website and admin portal for Lucas Garage vehicle listings, viewing 
 
 ## Repository structure
 - `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/app.py` - main Flask app, routes, startup bootstrap
-- `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/models.py` - SQLAlchemy models
-- `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/services/` - integrations/utilities (notifications, WhatsApp, calendar, verification, AI assistant)
-- `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/templates/` - UI templates
+- `services/` - production WhatsApp link integration (`services/whatsapp.py`)
+- `archive/` - retired legacy templates and services (`archive/services/`)
 - `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/test_app.py` - regression verification script
 - `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/seed_data.py` - sample data seeding script
 
@@ -51,14 +50,9 @@ Only set what you need; sane defaults exist for local development.
 
 At startup, `app.py` auto-creates the admin user if missing.
 
-### Messaging/notifications
-- Email (SMTP): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `FROM_EMAIL`, `LUCA_EMAIL`
-- Email (Resend): `RESEND_API_KEY`
-- Telegram: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_LUCA_CHAT_ID`
-- WhatsApp helper: `GARAGE_MOBILE`, `CALLMEBOT_API_KEY`
-
-### Optional AI assistant
-- `GEMINI_API_KEY`
+### Messaging & WhatsApp
+- `GARAGE_MOBILE` - Luca's phone number with country code (default `447535321145`).
+- `CALLMEBOT_API_KEY` - Optional CallMeBot WhatsApp alert key.
 
 ## Database notes
 - Tables are created automatically at app startup (`db.create_all()` in `app.py`).

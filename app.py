@@ -27,9 +27,6 @@ from services.whatsapp import (
     generate_luca_reply_whatsapp_url,
     GARAGE_MOBILE
 )
-from services.verification import generate_verification_token, verify_booking_token
-from services.notifications import send_verification_email, dispatch_confirmed_booking_notifications
-from services.calendar_service import create_google_calendar_url
 
 GARAGE_INFO = {
     "name": "Lucas Garage",
@@ -427,11 +424,6 @@ def book_viewing_api():
     db.session.add(booking)
     db.session.commit()
 
-    # Generate 1-tap Google Calendar link
-    gcal_url = create_google_calendar_url(
-        car.make_model, booking_date, booking_time, customer_name, customer_phone
-    )
-
     # 1-Tap WhatsApp direct confirmation URL with full booking details
     import urllib.parse
     dmy_date = booking_date
@@ -447,12 +439,6 @@ def book_viewing_api():
     )
     whatsapp_url = f"https://wa.me/{GARAGE_MOBILE}?text={urllib.parse.quote(booking_msg)}"
 
-    # Multi-channel alerts (Buyer email if provided, Luca alert email/telegram)
-    try:
-        dispatch_confirmed_booking_notifications(booking, car)
-    except Exception as e:
-        app.logger.warning(f"Notification alert notice: {e}")
-
     return jsonify({
         "success": True,
         "booking_id": booking.id,
@@ -462,7 +448,6 @@ def book_viewing_api():
         "booking_date": booking_date,
         "booking_time": booking_time,
         "car_name": f"{car.year} {car.make_model}",
-        "gcal_url": gcal_url,
         "whatsapp_url": whatsapp_url,
         "message": f"Viewing confirmed for {booking_date} at {booking_time}!"
     })
@@ -471,53 +456,7 @@ def book_viewing_api():
 @app.route('/booking/verify')
 def verify_booking():
     is_es = request.path.startswith('/es') or request.cookies.get('luca_lang') == 'es'
-    tpl = 'es/booking_confirmed.html' if is_es else 'en/booking_confirmed.html'
-    token = request.args.get('token')
-    if not token:
-        return render_template(tpl, success=False, error_msg="Missing confirmation token." if not is_es else "Falta el token de confirmación.")
-
-    is_valid, data_or_err = verify_booking_token(token)
-    if not is_valid:
-        return render_template(tpl, success=False, error_msg=data_or_err)
-
-    booking = Booking.query.filter_by(verification_token=token).first()
-    if not booking:
-        return render_template(tpl, success=False, error_msg="Booking reference not found." if not is_es else "Referencia de reserva no encontrada.")
-
-    car = booking.car or Car.query.get(booking.car_id)
-
-    if booking.status == "Confirmed":
-        gcal_url = create_google_calendar_url(car.make_model, booking.booking_date, booking.booking_time, booking.customer_name, booking.customer_phone)
-        whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="viewing")
-        return render_template(tpl, success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
-
-    # Check for double-booking conflict
-    conflict = Booking.query.filter(
-        Booking.car_id == booking.car_id,
-        Booking.booking_date == booking.booking_date,
-        Booking.booking_time == booking.booking_time,
-        Booking.status == "Confirmed",
-        Booking.id != booking.id
-    ).first()
-    if conflict:
-        booking.status = "Cancelled"
-        db.session.commit()
-        return render_template(tpl, success=False, error_msg="Another buyer just confirmed this slot. Please choose another time." if not is_es else "Otro comprador acaba de confirmar este horario. Por favor, selecciona otra hora.")
-
-    # Flip status to Confirmed
-    booking.status = "Confirmed"
-    db.session.commit()
-
-    # Trigger multi-channel alerts (Buyer .ics calendar, Luca .ics calendar, and Telegram)
-    try:
-        dispatch_confirmed_booking_notifications(booking, car)
-    except Exception as e:
-        app.logger.warning(f"Notification dispatch error: {e}")
-
-    gcal_url = create_google_calendar_url(car.make_model, booking.booking_date, booking.booking_time, booking.customer_name, booking.customer_phone)
-    whatsapp_url = generate_customer_whatsapp_url(car_name=f"{car.year} {car.make_model}", message_type="viewing")
-
-    return render_template(tpl, success=True, booking=booking, car=car, gcal_url=gcal_url, customer_whatsapp_url=whatsapp_url)
+    return redirect(url_for('cars_es' if is_es else 'cars_en'))
 
 # ----------------- ADMIN ROUTES ----------------- #
 
@@ -557,30 +496,6 @@ def admin_dashboard():
         })
 
     return render_template('admin.html', cars=all_cars, bookings=booking_items)
-
-@app.route('/admin/test-email')
-@login_required
-def admin_test_email():
-    from services.notifications import send_email, LUCA_EMAIL, SMTP_USER, SMTP_PASS
-    resend_key = os.getenv("RESEND_API_KEY")
-    if not (SMTP_USER and SMTP_PASS) and not resend_key:
-        flash("Email alert not sent: SMTP_USER and SMTP_PASS (or RESEND_API_KEY) are not yet configured in your .env file.", "danger")
-        return redirect(url_for('admin_dashboard'))
-
-    test_subject = "Test Booking Alert - Lucas Garage"
-    test_body = f"""
-    <div style="font-family: Arial, sans-serif; padding: 20px; color: #1e293b;">
-        <h2 style="color: #0b1117;">Lucas Garage Email Alert Test</h2>
-        <p>This test email confirms your mailbox is properly connected to the Lucas Garage website.</p>
-        <p>Whenever a customer books a vehicle viewing, you will automatically receive an email alert with the customer's name, phone number, car, and appointment date/time.</p>
-    </div>
-    """
-    success = send_email(LUCA_EMAIL, test_subject, test_body)
-    if success:
-        flash(f"Test email successfully dispatched to {LUCA_EMAIL}!", "success")
-    else:
-        flash(f"Failed to deliver email to {LUCA_EMAIL}. Please verify your credentials in .env.", "danger")
-    return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/add', methods=['POST'])
 @login_required
