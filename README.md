@@ -16,11 +16,13 @@ Flask-based website and admin portal for Lucas Garage vehicle listings, viewing 
 - Jinja templates in `/templates`, static files in `/static`
 
 ## Repository structure
-- `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/app.py` - main Flask app, routes, startup bootstrap
+- `app.py` - main Flask app, routes, startup bootstrap
+- `models.py` - SQLAlchemy models (Car, Booking, StoredImage, AdminUser)
 - `services/` - production WhatsApp link integration (`services/whatsapp.py`)
+- `dummy_data/` - organized seed datasets & seeder script (`dummy_data/seed_data.py`)
+- `tests/` - automated verification test suite (`tests/test_app.py`)
+- `templates/` - UI templates (`/en/`, `/es/`, and admin views)
 - `archive/` - retired legacy templates and services (`archive/services/`)
-- `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/test_app.py` - regression verification script
-- `/home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/seed_data.py` - sample data seeding script
 
 ## Local development setup
 1. Create and activate a virtual environment.
@@ -60,13 +62,15 @@ In production, both variables are required and must be provided through secure e
 - Local default DB file is `garage.db` in project root.
 - To seed sample data:
   ```bash
-  python /home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/seed_data.py
+  python dummy_data/seed_data.py
+  # or: python seed_data.py
   ```
 
 ## Running verification tests
 Run:
 ```bash
-python /home/runner/work/Lucas-garage-landingpage/Lucas-garage-landingpage/test_app.py
+python tests/test_app.py
+# or: python test_app.py
 ```
 
 The script exercises homepage rendering, inventory/detail pages, booking API/business rules, admin login, editing flows, image serving, and security headers.

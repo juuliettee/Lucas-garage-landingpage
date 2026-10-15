@@ -5,12 +5,14 @@ This guide is for developers maintaining the Lucas Garage app.
 ## 1) Quick start checklist
 1. Install deps: `pip install -r requirements.txt`
 2. Start app: `python app.py`
-3. Run regression checks: `python test_app.py`
+3. Run regression checks: `python tests/test_app.py`
 4. Log in admin at `/login` using `ADMIN_USER` / `ADMIN_PASSWORD`
 
 ## 2) Core architecture map
 - **Entry point:** `app.py`
 - **Data models:** `models.py`
+- **Automated tests:** `tests/test_app.py`
+- **Dummy & seed data:** `dummy_data/` (`cars.json`, `seed_data.py`)
 - **WhatsApp links & admin replies:** `services/whatsapp.py`
 - **Archived legacy modules:** `archive/services/` (notifications, verification, calendar_service, ai_assistant)
 
@@ -64,7 +66,7 @@ This guide is for developers maintaining the Lucas Garage app.
 
 ## 5) Testing expectations before merging
 - Minimum verification for feature/bugfix work:
-  - `python test_app.py`
+  - `python tests/test_app.py`
 - If change touches templates, check both `/en/*` and `/es/*` routes for affected pages.
 
 ## 6) Security and operational notes
@@ -74,5 +76,5 @@ This guide is for developers maintaining the Lucas Garage app.
 - Security headers are applied globally in `app.py` via `@app.after_request`.
 
 ## 7) Known quirks to be aware of
-- `seed_data.py` uses sample credentials and data intended for local bootstrapping only.
+- `dummy_data/seed_data.py` uses sample credentials and data intended for local bootstrapping only.
 - Test script reads admin defaults from env with fallback values, so env mismatch can cause login test failures.

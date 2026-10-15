@@ -38,10 +38,15 @@ This folder houses retired code, legacy components, and prior iterations that ar
 
 ## Active Project Structure Quick Reference
 
-```text
 ├── app.py                      # Flask routes, context processors & i18n subdirectory routing
 ├── models.py                   # SQLAlchemy models (Car, Booking, StoredImage, AdminUser)
-├── test_app.py                 # Automated verification test suite (15 passing tests)
+├── dummy_data/                 # Organized seed datasets & database population scripts
+│   ├── cars.json               # Sample vehicle inventory dataset
+│   ├── seed_data.py            # Automated database seeder
+│   └── README.md               # Seeding documentation
+├── tests/                      # Automated test suite
+│   ├── test_app.py             # 15 verification regression tests
+│   └── __init__.py
 ├── requirements.txt            # Python dependencies (Flask, SQLAlchemy, Gunicorn, etc.)
 ├── render.yaml                 # Render cloud web service configuration
 ├── services/                   # Active production backend services

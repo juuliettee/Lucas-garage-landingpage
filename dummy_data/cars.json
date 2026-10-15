@@ -1,0 +1,47 @@
+[
+  {
+    "make_model": "Ford Focus 1.0 EcoBoost Titanium",
+    "year": 2018,
+    "price": 6995,
+    "TransmissionType": "Manual",
+    "fuel_type": "Petrol",
+    "image_filename": "ford_focus.jpg",
+    "mileage": 52400,
+    "ulez_compliant": true,
+    "mot_expiry": "March 2027 (12 Months)",
+    "copart_category": "Cat N (Non-structural cosmetic repair)",
+    "repair_notes": "Sourced with non-structural passenger front wing and bumper scuff. Replaced with genuine Ford OEM wing panel, freshly resprayed to factory color match. Full major service completed (new oil, spark plugs, air/cabin filters, and front brake pads). Road-tested for 150 miles.",
+    "features": "SYNC 3 Touchscreen with Apple CarPlay, Rear Parking Sensors, Cruise Control, Dual Climate, Keyless Start",
+    "status": "Available"
+  },
+  {
+    "make_model": "Volkswagen Golf 1.4 TSI Match Edition",
+    "year": 2017,
+    "price": 8450,
+    "TransmissionType": "Automatic",
+    "fuel_type": "Petrol",
+    "image_filename": "vw_golf.jpg",
+    "mileage": 61200,
+    "ulez_compliant": true,
+    "mot_expiry": "November 2026",
+    "copart_category": "Clean / Unrecorded",
+    "repair_notes": "Clean title. Workshop repairs: Replaced rear brake discs & pads, refreshed DSG transmission oil, brand new Michelin front tires, full alignment on hunter rack.",
+    "features": "Adaptive Cruise Control, Front & Rear Sensors, Heated Front Seats, Discover Navigation, Bluetooth",
+    "status": "Available"
+  },
+  {
+    "make_model": "Vauxhall Corsa 1.4 ecoFLEX Energy",
+    "year": 2019,
+    "price": 5750,
+    "TransmissionType": "Manual",
+    "fuel_type": "Petrol",
+    "image_filename": "vauxhall_corsa.jpg",
+    "mileage": 43100,
+    "ulez_compliant": true,
+    "mot_expiry": "October 2026",
+    "copart_category": "Cat N (Light plastic bumper repair)",
+    "repair_notes": "Light cosmetic rear bumper damage from auction. Repaired and resprayed. Full diagnostics cleared, new 12V Bosch battery fitted, air conditioning freshly re-gassed.",
+    "features": "Heated Steering Wheel & Seats, City Steering Mode, Touchscreen Bluetooth, Alloy Wheels",
+    "status": "Available"
+  }
+]
