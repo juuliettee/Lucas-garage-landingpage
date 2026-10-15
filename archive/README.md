@@ -23,6 +23,18 @@ This folder houses retired code, legacy components, and prior iterations that ar
   - English: `templates/en/` (`/en/`, `/en/about`, `/en/pricing`, `/en/cars`, `/en/car/<id>`)
   - Spanish: `templates/es/` (`/es/`, `/es/about`, `/es/pricing`, `/es/cars`, `/es/car/<id>`)
 
+### 2. `services/`
+* **What it contains**:
+  - `ai_assistant.py`
+* **Reason for Archiving**:
+  This was an early prototype background AI sales chatbot. It was deprecated and retired in favor of high-conversion, direct 1-tap WhatsApp communication with Luca and in-person workshop viewings.
+* **Current Active Replacement**:
+  Active backend production services reside in the root `services/` directory:
+  - `services/whatsapp.py`: 1-tap pre-filled WhatsApp links & customer communication
+  - `services/calendar_service.py`: Google Calendar & RFC 5545 `.ics` booking integration
+  - `services/notifications.py`: Transactional email notifications & instant dispatch alerts
+  - `services/verification.py`: Cryptographic tokenized booking verification
+
 ---
 
 ## Active Project Structure Quick Reference
@@ -33,6 +45,11 @@ This folder houses retired code, legacy components, and prior iterations that ar
 ├── test_app.py                 # Automated verification test suite (15 passing tests)
 ├── requirements.txt            # Python dependencies (Flask, SQLAlchemy, Gunicorn, etc.)
 ├── render.yaml                 # Render cloud web service configuration
+├── services/                   # Active production backend services
+│   ├── calendar_service.py     # Calendar links & .ics generation
+│   ├── notifications.py        # Email & alert dispatchers
+│   ├── verification.py         # Cryptographic token verification
+│   └── whatsapp.py             # Pre-filled WhatsApp deep links
 ├── static/
 │   ├── img/                    # Static image assets (logos, icons)
 │   └── robots.txt              # Production search engine crawl directives
@@ -45,5 +62,6 @@ This folder houses retired code, legacy components, and prior iterations that ar
 │   └── login.html              # Secure mechanic portal login
 └── archive/                    # Archived / deprecated historical assets
     ├── legacy_templates/       # Pre-i18n single-directory templates
+    ├── services/               # Retired service modules (e.g. ai_assistant.py)
     └── README.md               # This archive documentation guide
 ```
