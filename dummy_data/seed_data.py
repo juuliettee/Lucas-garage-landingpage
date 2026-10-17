@@ -12,7 +12,7 @@ from werkzeug.security import generate_password_hash
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import app
-from models import db, Car, AdminUser, Booking
+from models import db, Car, AdminUser
 
 def seed_database():
     """Seeds realistic demo data into the active database."""
@@ -86,22 +86,6 @@ def seed_database():
             db.session.add_all(cars)
             db.session.commit()
             print(f"Seeded {len(cars)} sample cars.")
-
-            # 3. Seed sample booking for first car
-            sample_date = (date.today() + timedelta(days=1)).strftime("%Y-%m-%d")
-            booking = Booking(
-                car_id=cars[0].id,
-                customer_name="Mark Davies",
-                customer_phone="07700 900123",
-                customer_email="mark.davies@example.co.uk",
-                booking_date=sample_date,
-                booking_time="14:30",
-                notes="Interested in test driving the Focus and checking the wing repair on the lift.",
-                status="Confirmed"
-            )
-            db.session.add(booking)
-            db.session.commit()
-            print("Seeded sample booking.")
 
         print("Database seeding completed successfully.")
 

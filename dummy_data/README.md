@@ -7,7 +7,7 @@ This directory houses mock and seed datasets used for local development, staging
 ## Contents
 
 * **`cars.json`**: Structured JSON dataset containing realistic used vehicles, Copart salvage repair records, MOT dates, features, and specs (Ford Focus, VW Golf, Vauxhall Corsa).
-* **`seed_data.py`**: Automated seeding script that parses `cars.json`, creates the initial admin user, populates vehicle inventory, and generates a sample booking.
+* **`seed_data.py`**: Automated seeding script that parses `cars.json`, creates the initial admin user, and populates vehicle inventory.
 
 ---
 

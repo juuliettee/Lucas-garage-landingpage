@@ -24,10 +24,9 @@ from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash
 from dotenv import load_dotenv
 
-from models import db, Car, AdminUser, Booking, StoredImage, CarImage
+from models import db, Car, AdminUser, StoredImage, CarImage
 from services.whatsapp import (
     generate_customer_whatsapp_url,
-    generate_luca_reply_whatsapp_url,
     GARAGE_MOBILE
 )
 
@@ -122,8 +121,6 @@ def _is_valid_csrf_request():
 @app.before_request
 def enforce_csrf_protection():
     if request.method != 'POST':
-        return
-    if request.path == '/api/book-viewing':
         return
     is_protected_post = request.path.startswith('/admin') or request.path in ('/login', '/logout')
     if is_protected_post and not _is_valid_csrf_request():
@@ -440,101 +437,6 @@ def server_error(e):
         return render_template('es/500.html'), 500
     return render_template('en/500.html'), 500
 
-# ----------------- BOOKING & VERIFICATION ROUTES ----------------- #
-
-@app.route('/api/book-viewing', methods=['POST'])
-def book_viewing_api():
-    data = request.get_json() if request.is_json else request.form.to_dict()
-
-    car_id = data.get('car_id')
-    customer_name = str(data.get('customer_name', '')).strip()[:100]
-    customer_phone = str(data.get('customer_phone', '')).strip()[:30]
-    customer_email = str(data.get('customer_email', '')).strip()[:120]
-    booking_date = str(data.get('booking_date', '')).strip()[:10] # YYYY-MM-DD
-    booking_time = str(data.get('booking_time', '')).strip()[:5] # HH:MM
-    notes = str(data.get('notes', '')).strip()[:500]
-
-    if not (car_id and customer_name and customer_phone and booking_date and booking_time):
-        return jsonify({"success": False, "message": "Please fill in your Name, Phone number, Date, and Time."}), 400
-
-    try:
-        car_id_int = int(car_id)
-    except (ValueError, TypeError):
-        return jsonify({"success": False, "message": "Invalid vehicle reference."}), 400
-
-    car = Car.query.get(car_id_int)
-    if not car:
-        return jsonify({"success": False, "message": "Vehicle not found."}), 404
-
-    # Validate garage hours:
-    # Mon-Fri: 9:00 - 18:00; Sat: 13:00 - 18:00; Sun: Closed
-    try:
-        dt = datetime.strptime(booking_date, "%Y-%m-%d")
-        if dt.year < 2024 or dt.year > 2030:
-            return jsonify({"success": False, "message": "Invalid booking date."}), 400
-        weekday = dt.weekday() # 0 = Monday, 5 = Saturday, 6 = Sunday
-        hour = int(booking_time.split(":")[0])
-        minute = int(booking_time.split(":")[1])
-        time_decimal = hour + (minute / 60.0)
-
-        if weekday == 6:
-            return jsonify({"success": False, "message": "The garage is closed on Sundays. Please choose Monday through Friday (9:00 AM – 6:00 PM) or Saturday (9:00 AM – 1:00 PM)."}), 400
-        elif weekday == 5:
-            if time_decimal < 9.0 or time_decimal > 12.5:
-                return jsonify({"success": False, "message": "Saturday opening hours are 9:00 AM – 1:00 PM. Please choose a slot between 09:00 and 12:30."}), 400
-        elif time_decimal < 9.0 or time_decimal > 17.5:
-            return jsonify({"success": False, "message": "Weekday opening hours are Monday to Friday 9:00 AM – 6:00 PM. Please choose a slot between 09:00 and 17:30."}), 400
-    except Exception as e:
-        return jsonify({"success": False, "message": f"Invalid date or time format: {e}"}), 400
-
-    # Save directly as Confirmed (Frictionless for 5-6 man garage)
-    booking = Booking(
-        car_id=car.id,
-        customer_name=customer_name,
-        customer_phone=customer_phone,
-        customer_email=customer_email or "Not provided",
-        booking_date=booking_date,
-        booking_time=booking_time,
-        notes=notes,
-        status="Confirmed"
-    )
-    db.session.add(booking)
-    db.session.commit()
-
-    # 1-Tap WhatsApp direct confirmation URL with full booking details
-    import urllib.parse
-    dmy_date = booking_date
-    if booking_date and "-" in booking_date:
-        parts = booking_date.split("-")
-        if len(parts) == 3 and len(parts[0]) == 4:
-            dmy_date = f"{parts[2]}/{parts[1]}/{parts[0]}"
-
-    booking_msg = (
-        f"Hi Luca, I just booked a viewing for the {car.year} {car.make_model} "
-        f"on {dmy_date} at {booking_time}. My name is {customer_name} ({customer_phone}). "
-        f"Booking Ref: #LG-{booking.id}"
-    )
-    whatsapp_url = f"https://wa.me/{GARAGE_MOBILE}?text={urllib.parse.quote(booking_msg)}"
-
-    return jsonify({
-        "success": True,
-        "booking_id": booking.id,
-        "booking_ref": f"#LG-{booking.id}",
-        "customer_name": customer_name,
-        "customer_phone": customer_phone,
-        "booking_date": booking_date,
-        "booking_time": booking_time,
-        "car_name": f"{car.year} {car.make_model}",
-        "whatsapp_url": whatsapp_url,
-        "message": f"Viewing confirmed for {booking_date} at {booking_time}!"
-    })
-
-
-@app.route('/booking/verify')
-def verify_booking():
-    is_es = request.path.startswith('/es') or request.cookies.get('luca_lang') == 'es'
-    return redirect(url_for('cars_es' if is_es else 'cars_en'))
-
 # ----------------- ADMIN ROUTES ----------------- #
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -565,23 +467,7 @@ def login():
 @login_required
 def admin_dashboard():
     all_cars = Car.query.order_by(Car.created_at.desc()).all()
-    upcoming_bookings = Booking.query.order_by(Booking.booking_date.asc(), Booking.booking_time.asc()).all()
-
-    # Generate 1-tap WhatsApp reply link for each booking
-    booking_items = []
-    for b in upcoming_bookings:
-        reply_url = generate_luca_reply_whatsapp_url(
-            customer_phone=b.customer_phone,
-            car_name=b.car.make_model if b.car else "the vehicle",
-            booking_date=b.booking_date,
-            booking_time=b.booking_time
-        )
-        booking_items.append({
-            "booking": b,
-            "reply_url": reply_url
-        })
-
-    return render_template('admin.html', cars=all_cars, bookings=booking_items)
+    return render_template('admin.html', cars=all_cars)
 
 @app.route('/admin/add', methods=['POST'])
 @login_required
@@ -739,42 +625,6 @@ def update_status(id, new_status):
         car.status = new_status
         db.session.commit()
         flash(f'Status updated to {new_status}.', 'success')
-    return redirect(url_for('admin_dashboard'))
-
-@app.route('/admin/booking/edit/<int:id>', methods=['POST'])
-@login_required
-def edit_booking(id):
-    booking = Booking.query.get_or_404(id)
-    booking_date = request.form.get('booking_date', '').strip()
-    booking_time = request.form.get('booking_time', '').strip()
-    customer_phone = request.form.get('customer_phone', '').strip()
-    customer_email = request.form.get('customer_email', '').strip()
-    status = request.form.get('status', '').strip()
-    notes = request.form.get('notes', '').strip()
-
-    if booking_date:
-        booking.booking_date = booking_date
-    if booking_time:
-        booking.booking_time = booking_time
-    if customer_phone:
-        booking.customer_phone = customer_phone
-    if customer_email:
-        booking.customer_email = customer_email
-    if status in ['Confirmed', 'Pending_Verification', 'Completed', 'Cancelled']:
-        booking.status = status
-    booking.notes = notes
-
-    db.session.commit()
-    flash(f'Viewing appointment for {booking.customer_name} updated successfully!', 'success')
-    return redirect(url_for('admin_dashboard'))
-
-@app.route('/admin/booking/cancel/<int:id>', methods=['POST'])
-@login_required
-def cancel_booking(id):
-    booking = Booking.query.get_or_404(id)
-    booking.status = 'Cancelled'
-    db.session.commit()
-    flash('Viewing appointment marked as cancelled.', 'info')
     return redirect(url_for('admin_dashboard'))
 
 @app.route('/admin/marketplace-text/<int:id>')

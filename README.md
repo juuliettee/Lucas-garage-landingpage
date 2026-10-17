@@ -4,10 +4,10 @@ Flask-based website and admin portal for Lucas Garage vehicle listings, viewing 
 
 ## What this project does
 - Public pages for inventory, vehicle details, pricing, and about information (English + Spanish routes).
-- Booking flow with email verification and booking status management.
-- Admin dashboard for vehicle CRUD, booking updates, and marketplace ad text generation.
-- Notification integrations for email, Telegram, and WhatsApp helper links.
-- Persistent image serving with DB fallback when local upload files are missing.
+- Direct 1-tap WhatsApp booking & inquiry communication.
+- Admin dashboard for vehicle inventory CRUD, status toggling, and 1-click marketplace ad text generation.
+- Production WhatsApp link generators for direct mechanic communication.
+- Persistent image serving with PostgreSQL BLOB fallback when local upload files are missing.
 
 ## Tech stack
 - Python 3 + Flask
@@ -17,7 +17,7 @@ Flask-based website and admin portal for Lucas Garage vehicle listings, viewing 
 
 ## Repository structure
 - `app.py` - main Flask app, routes, startup bootstrap
-- `models.py` - SQLAlchemy models (Car, Booking, StoredImage, AdminUser)
+- `models.py` - SQLAlchemy models (Car, CarImage, StoredImage, AdminUser)
 - `services/` - production WhatsApp link integration (`services/whatsapp.py`)
 - `dummy_data/` - organized seed datasets & seeder script (`dummy_data/seed_data.py`)
 - `tests/` - automated verification test suite (`tests/test_app.py`)
@@ -73,7 +73,7 @@ python tests/test_app.py
 # or: python test_app.py
 ```
 
-The script exercises homepage rendering, inventory/detail pages, booking API/business rules, admin login, editing flows, image serving, and security headers.
+The script exercises homepage rendering, inventory/detail pages, WhatsApp viewing link generation, admin login, editing flows, image serving, and security headers.
 
 ## Docker
 Docker instructions are in:

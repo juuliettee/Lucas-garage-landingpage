@@ -9,7 +9,7 @@ import re
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app import app
-from models import db, Car, Booking, AdminUser
+from models import db, Car, AdminUser
 
 def extract_csrf_token(response_bytes):
     html = response_bytes.decode('utf-8', errors='ignore')
@@ -43,7 +43,7 @@ def run_tests():
         resp = client.get(f'/car/{car.id}')
         assert resp.status_code == 200
         assert b"Lucas Garage" in resp.data
-        print("✅ Test 3 Passed: Vehicle detail page renders with Lucas Garage and booking form.")
+        print("✅ Test 3 Passed: Vehicle detail page renders with Lucas Garage and viewing information.")
 
         # 4. Test About, Pricing & Services routes
         resp = client.get('/about')
@@ -60,68 +60,29 @@ def run_tests():
         assert resp.status_code == 200
         print("✅ Test 4c Passed: Services anchor accessible.")
 
-        # 5. Test Viewing Booking API
-        # Clean up existing test booking if present
-        Booking.query.filter_by(customer_name="Sarah Connor").delete()
-        db.session.commit()
+        # 5. Test 1-Tap WhatsApp Viewing & Inquiry URL Generator
+        from services.whatsapp import generate_customer_whatsapp_url, generate_viewing_request_whatsapp_url
 
-        # 5a. Valid booking on a Monday at 14:30
-        booking_payload = {
-            "car_id": car.id,
-            "customer_name": "Sarah Connor",
-            "customer_phone": "07987 654321",
-            "customer_email": "sarah@example.com",
-            "booking_date": "2026-09-28", # Monday
-            "booking_time": "14:30",
-            "notes": "Looking to inspect the underneath on the lift."
-        }
-        resp = client.post('/api/book-viewing', data=booking_payload)
-        assert resp.status_code == 200, f"Booking failed with code {resp.status_code}: {resp.data}"
-        book_data = resp.get_json()
-        assert book_data['success'] is True
-        assert "Viewing confirmed" in book_data['message']
+        # 5a. General vehicle viewing request link
+        viewing_url = generate_customer_whatsapp_url(car_name=car.make_model, message_type="viewing")
+        assert "wa.me/447535321145" in viewing_url
+        assert "38a%20Penrose%20Street" in viewing_url
+        assert "wa.me" in viewing_url
+        print("✅ Test 5a Passed: 1-Tap WhatsApp viewing link correctly generated with garage mobile and address.")
 
-        # Verify booking exists in DB
-        created_booking = Booking.query.filter_by(customer_name="Sarah Connor").first()
-        assert created_booking is not None
-        assert created_booking.booking_time == "14:30"
-        print("✅ Test 5a Passed: Valid viewing booked, saved to database, and WhatsApp alert triggered.")
-
-        # 5b. Sunday booking rejected (closed); Saturday 10:30 accepted (Mon-Sat 9am-6pm)
-        sunday_payload = {
-            "car_id": car.id,
-            "customer_name": "James Bond",
-            "customer_phone": "07007 007007",
-            "booking_date": "2026-09-27", # Sunday
-            "booking_time": "11:30"
-        }
-        resp = client.post('/api/book-viewing', data=sunday_payload)
-        assert resp.status_code == 400
-        assert "closed on sundays" in resp.get_json()['message'].lower()
-
-        saturday_payload = {
-            "car_id": car.id,
-            "customer_name": "James Bond",
-            "customer_phone": "07007 007007",
-            "booking_date": "2026-09-26", # Saturday
-            "booking_time": "10:30"
-        }
-        resp = client.post('/api/book-viewing', data=saturday_payload)
-        assert resp.status_code == 200
-        assert resp.get_json()['success'] is True
-
-        # Saturday afternoon slot (14:30) rejected because Saturday closes at 1pm
-        sat_late_payload = {
-            "car_id": car.id,
-            "customer_name": "James Bond",
-            "customer_phone": "07007 007007",
-            "booking_date": "2026-09-26", # Saturday
-            "booking_time": "14:30"
-        }
-        resp = client.post('/api/book-viewing', data=sat_late_payload)
-        assert resp.status_code == 400
-        assert "saturday opening hours" in resp.get_json()['message'].lower()
-        print("✅ Test 5b Passed: Opening hours verified (Sunday closed, Mon–Fri 9am–6pm, Sat 9am–1pm accepted, Sat afternoon rejected).")
+        # 5b. Preferred slot viewing request link
+        custom_viewing_url = generate_viewing_request_whatsapp_url(
+            car_name=car.make_model,
+            booking_date="2026-10-20",
+            booking_time="14:00",
+            customer_name="Sarah Connor",
+            customer_note="Inspect on hydraulic lift"
+        )
+        assert "wa.me/447535321145" in custom_viewing_url
+        assert "Sarah%20Connor" in custom_viewing_url
+        assert "20/10/2026" in custom_viewing_url
+        assert "14%3A00" in custom_viewing_url
+        print("✅ Test 5b Passed: Customer viewing request with prefilled date/time/lift notes generated cleanly.")
 
         # 6. Test Admin Authentication & Dashboard
         import os
@@ -139,10 +100,10 @@ def run_tests():
         login_resp = client.post('/login', data={"username": adm_u, "password": adm_p, "csrf_token": login_csrf}, follow_redirects=True)
         assert login_resp.status_code == 200
         assert b"Workshop & Vehicle Portal" in login_resp.data
-        assert b"Booked Customer Viewings" in login_resp.data
-        assert b"Sarah Connor" in login_resp.data
+        assert b"List a Repaired Vehicle" in login_resp.data
+        assert b"Current Inventory" in login_resp.data
         admin_csrf = extract_csrf_token(login_resp.data)
-        print("✅ Test 6 Passed: Admin login works, shows active bookings and WhatsApp customer buttons.")
+        print("✅ Test 6 Passed: Admin login works, shows vehicle inventory management portal.")
 
         # 7. Test Facebook Marketplace Ad Text Generator
         ad_resp = client.get(f'/admin/marketplace-text/{car.id}')
@@ -194,24 +155,18 @@ def run_tests():
         assert b"prevCarImage" in detail_resp.data
         print("✅ Test 9 Passed: Interactive photo carousel and thumbnail gallery rendered on vehicle detail page.")
 
-        # 10. Test Edit / Reschedule Booking
-        booking_to_edit = Booking.query.filter_by(customer_name="Sarah Connor").first()
-        assert booking_to_edit is not None
-        resched_resp = client.post(f'/admin/booking/edit/{booking_to_edit.id}', data={
-            "csrf_token": admin_csrf,
-            "booking_date": "2026-09-30",
-            "booking_time": "15:00",
-            "customer_phone": "07987 000111",
-            "customer_email": "sarah_new@example.com",
-            "status": "Confirmed",
-            "notes": "Customer requested 3:00 PM instead."
-        }, follow_redirects=True)
-        assert resched_resp.status_code == 200
-        reloaded_b = Booking.query.get(booking_to_edit.id)
-        assert reloaded_b.booking_time == "15:00"
-        assert reloaded_b.booking_date == "2026-09-30"
-        assert reloaded_b.customer_phone == "07987 000111"
-        print("✅ Test 10 Passed: Appointment rescheduling and details edit successful.")
+        # 10. Test Vehicle Status Toggling (Available -> Sold -> Available)
+        status_resp = client.post(f'/admin/status/{car.id}/Sold', data={"csrf_token": admin_csrf}, follow_redirects=True)
+        assert status_resp.status_code == 200
+        reloaded_car = Car.query.get(car.id)
+        assert reloaded_car.status == "Sold"
+
+        # Toggle back to Available
+        status_resp2 = client.post(f'/admin/status/{car.id}/Available', data={"csrf_token": admin_csrf}, follow_redirects=True)
+        assert status_resp2.status_code == 200
+        reloaded_car2 = Car.query.get(car.id)
+        assert reloaded_car2.status == "Available"
+        print("✅ Test 10 Passed: Vehicle status toggle (Available <-> Sold) verified with CSRF protection.")
 
         # 11. Test Resilient Image Serving Route
         img_resp = client.get(f'/static/uploads/{car.image_filename}')
@@ -231,10 +186,10 @@ def run_tests():
         traversal_resp = client.get('/static/uploads/..%2fapp.py')
         assert traversal_resp.status_code in [400, 404]
 
-        # Admin template Stored XSS defense verification
+        # Admin template Stored XSS defense verification & safe rendering
         admin_page = client.get('/admin')
-        assert b'openEditBookingModalFromBtn(this)' in admin_page.data
-        assert b'data-name=' in admin_page.data
+        assert b'copyMarketplaceAd(' in admin_page.data
+        assert b'name="csrf_token"' in admin_page.data
 
         # CSRF token protection verification on protected mutation routes
         csrf_missing_resp = client.post('/admin/add', data={'make_model': 'Test Car'})

@@ -58,7 +58,6 @@ class Car(db.Model):
     status = db.Column(db.String(50), nullable=False, default="Available") # Available, Reserved, Sold
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    bookings = db.relationship('Booking', backref='car', lazy=True, cascade="all, delete-orphan")
     additional_images = db.relationship('CarImage', backref='car', lazy=True, cascade="all, delete-orphan", order_by="CarImage.sort_order, CarImage.id")
 
     @property
@@ -90,42 +89,4 @@ class Car(db.Model):
             "status": self.status,
             "image_filename": self.image_filename,
             "all_images": self.all_images
-        }
-
-
-class Booking(db.Model):
-    __tablename__ = 'bookings'
-
-    id = db.Column(db.Integer, primary_key=True)
-    car_id = db.Column(db.Integer, db.ForeignKey('cars.id'), nullable=False)
-    customer_name = db.Column(db.String(100), nullable=False)
-    customer_phone = db.Column(db.String(30), nullable=False)
-    customer_email = db.Column(db.String(120), nullable=False)
-    booking_date = db.Column(db.String(20), nullable=False) # Format: YYYY-MM-DD
-    booking_time = db.Column(db.String(20), nullable=False) # Format: HH:MM
-    notes = db.Column(db.Text, nullable=True)
-    status = db.Column(db.String(30), nullable=False, default="Pending_Verification") # Pending_Verification, Confirmed, Completed, Cancelled
-    verification_token = db.Column(db.String(255), unique=True, index=True, nullable=True)
-    token_expires_at = db.Column(db.DateTime, nullable=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def is_token_valid(self):
-        return (
-            self.status == 'Pending_Verification' and
-            self.token_expires_at and
-            datetime.utcnow() <= self.token_expires_at
-        )
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "car_id": self.car_id,
-            "car_name": self.car.make_model if self.car else "Vehicle",
-            "customer_name": self.customer_name,
-            "customer_phone": self.customer_phone,
-            "customer_email": self.customer_email or "",
-            "booking_date": self.booking_date,
-            "booking_time": self.booking_time,
-            "status": self.status,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M")
         }
